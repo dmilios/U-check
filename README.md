@@ -9,17 +9,22 @@ Machine learning methods for model checking uncertain CTMCs
 - smoothedMC
 
 
+
 ## Dependencies
+
+### gaussianProcesses
+- commons.math
+- jblas
+
+### gpOptimisation
 - gaussianProcesses
-..* commons.math
-..* jblas
-- gpOptimisation
-..* gaussianProcesses
+
+### stochasticSimulation
+- biopepa-core
+- commons.math
+- java-cup-11a-runtime
+
+### smoothedMC
 - stochasticSimulation
-..* biopepa-core
-..* commons.math
-..* java-cup-11a-runtime
-- smoothedMC
-..* stochasticSimulation
-..* commons.cli
+- commons.cli
 
