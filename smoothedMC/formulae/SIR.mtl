@@ -1,0 +1,5 @@
+
+const double T_ext_low = 100;
+const double T_ext = 120;
+
+(F[T_ext_low,T_ext] I = 0) & ( G<=T_ext_low I > 0 )
