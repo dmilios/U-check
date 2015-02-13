@@ -1,0 +1,9 @@
+const double tf = 100000;
+const double t1 = 50000;
+const double t2 = 1000;
+const int X = 40;
+
+F<=tf (G<=t2 LacZ > X)  &  F<=tf LacZ < X
+
+//  F<=tf (G<=20 -0.1*m<LacZ-m & LacZ-m<0.1*m)
+

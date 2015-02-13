@@ -1,0 +1,118 @@
+// location Cell : type=compartment;
+
+
+Initial_PLac = 1;
+Initial_RNAP = 3;
+Initial_PLacRNAP = 0;
+Initial_TrLacZ1 = 0;
+Initial_RbsLacZ = 0;
+Initial_TrLacZ2 = 0;
+Initial_TrLacY1 = 0;
+Initial_RbsLacY = 0;
+Initial_TrLacY2 = 0;
+Initial_Ribosome = 30;
+Initial_RbsRibosomeLacZ = 0;
+Initial_RbsRibosomeLacY = 0;
+Initial_TrRbsLacZ = 0;
+Initial_TrRbsLacY = 0;
+Initial_LacZ = 0;
+Initial_LacY = 0;
+Initial_dgrLacZ = 0;
+Initial_dgrLacY = 0;
+Initial_dgrRbsLacZ = 0;
+Initial_dgrRbsLacY = 0;
+Initial_lactose = 0;
+Initial_product = 0;
+
+
+k1 = 0.17 ;
+k2 = 10 ;
+k3 = 1 ;
+k4 = 1 ;
+k5 = 0.015 ;
+k6 = 1 ;
+k7 = 0.36 ;
+k8 = 0.17 ;
+k9 = 0.17 ;
+k10 = 0.45 ;
+k11 = 0.45 ;
+k12 = 0.4 ;
+k13 = 0.4 ;
+k14 = 0.015 ;
+k15 = 0.036 ;
+k16 = 6.42e-5 ;
+k17 = 6.42e-5 ;
+k18 = 0.3 ;
+k19 = 0.3 ;
+k20 = 0.0005731 ;
+k21 = 14 ;
+
+
+kineticLawOf r1 : k1 * (PLac * RNAP) ;
+kineticLawOf r2 : k2 * PLacRNAP ;
+kineticLawOf r3 : k3 * PLacRNAP ;
+kineticLawOf r4 : k4 * TrLacZ1 ;
+kineticLawOf r5 : k5 * TrLacZ2 ;
+kineticLawOf r6 : k6 * TrLacY1 ;
+kineticLawOf r7 : k7 * TrLacY2 ;
+kineticLawOf r8 : k8 * (Ribosome * RbsLacZ) ;
+kineticLawOf r9 : k9 * (Ribosome * RbsLacY) ;
+kineticLawOf r10 : k10 * RbsRibosomeLacZ ;
+kineticLawOf r11 : k11 * RbsRibosomeLacY ;
+kineticLawOf r12 : k12 * RbsRibosomeLacZ ;
+kineticLawOf r13 : k13 * RbsRibosomeLacY ;
+kineticLawOf r14 : k14 * TrRbsLacZ ;
+kineticLawOf r15 : k15 * TrRbsLacY ;
+kineticLawOf r16 : k16 * LacZ ;
+kineticLawOf r17 : k17 * LacY ;
+kineticLawOf r18 : k18 * RbsLacZ ;
+kineticLawOf r19 : k19 * RbsLacY ;
+kineticLawOf r20 : k20 * (LacZ * lactose) ;
+kineticLawOf r21 : k21 * LacY ;
+
+PLac = r1 <<  + r2 >>  + r4 >> ;
+RNAP = r1 <<  + r2 >>  + r7 >> ;
+PLacRNAP = r1 >>  + r2 <<  + r3 << ;
+TrLacZ1 = r3 >>  + r4 << ;
+RbsLacZ = r4 >>  + r8 <<  + r10 >>  + r12 >>  + r18 << ;
+TrLacZ2 = r4 >>  + r5 << ;
+TrLacY1 = r5 >>  + r6 << ;
+RbsLacY = r6 >>  + r9 <<  + r11 >>  + r13 >>  + r19 << ;
+TrLacY2 = r6 >>  + r7 << ;
+Ribosome = r8 <<  + r9 <<  + r10 >>  + r11 >> ;
+RbsRibosomeLacZ = r8 >>  + r10 <<  + r12 << ;
+RbsRibosomeLacY = r9 >>  + r11 <<  + r13 << ;
+TrRbsLacZ = r12 >>  + r14 << ;
+TrRbsLacY = r13 >>  + r15 << ;
+LacZ = r14 >>  + r16 <<  + r20 (.) ;
+LacY = r15 >>  + r17 <<  + r21 (.) ;
+dgrLacZ = r16 >> ;
+dgrLacY = r17 >> ;
+dgrRbsLacZ = r18 >> ;
+dgrRbsLacY = r19 >> ;
+lactose = r20 <<  + r21 >> ;
+product = r20 >> ;
+
+
+PLac [Initial_PLac] <*>
+RNAP [Initial_RNAP] <*>
+PLacRNAP [Initial_PLacRNAP] <*>
+TrLacZ1 [Initial_TrLacZ1] <*>
+RbsLacZ [Initial_RbsLacZ] <*>
+TrLacZ2 [Initial_TrLacZ2] <*>
+TrLacY1 [Initial_TrLacY1] <*>
+RbsLacY [Initial_RbsLacY] <*>
+TrLacY2 [Initial_TrLacY2] <*>
+Ribosome [Initial_Ribosome] <*>
+RbsRibosomeLacZ [Initial_RbsRibosomeLacZ] <*>
+RbsRibosomeLacY [Initial_RbsRibosomeLacY] <*>
+TrRbsLacZ [Initial_TrRbsLacZ] <*>
+TrRbsLacY [Initial_TrRbsLacY] <*>
+LacZ [Initial_LacZ] <*>
+LacY [Initial_LacY] <*>
+dgrLacZ [Initial_dgrLacZ] <*>
+dgrLacY [Initial_dgrLacY] <*>
+dgrRbsLacZ [Initial_dgrRbsLacZ] <*>
+dgrRbsLacY [Initial_dgrRbsLacY] <*>
+lactose [Initial_lactose] <*>
+product [Initial_product]

@@ -1,0 +1,10 @@
+const double T1 = 5;
+const double T2 = 3;
+
+G<=T1 S > 0
+
+// ole!
+// Finally below 0.1
+F<=T1 S < 0.1
+
+F<=T2 I = 0
