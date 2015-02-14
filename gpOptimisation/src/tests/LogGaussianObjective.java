@@ -9,7 +9,7 @@ import linalg.IMatrix;
 import linalg.JblasAlgebra;
 import optim.ObjectiveFunction;
 
-public class LogGaussianObjective implements ObjectiveFunction {
+class LogGaussianObjective implements ObjectiveFunction {
 
 	final private double[] mean;
 	final private double[] variances;
