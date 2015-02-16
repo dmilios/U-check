@@ -21,6 +21,15 @@ public class CTMCModel {
 				reactions);
 	}
 
+	/**
+	 * This method changes the value of a given parameter; this should affect
+	 * one or more rate expressions.
+	 */
+	final public void setParameterValue(final String name, final double value) {
+		// TODO: Implement this!
+		// Bio-PEPA compiled models do not contain parameter information
+	}
+
 	final static private int[][] constructStoichiometryMatrix(
 			Context stateVariables, CTMCReaction[] reactions) {
 		final int nVariables = stateVariables.getVariables().length;

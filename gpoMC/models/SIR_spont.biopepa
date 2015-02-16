@@ -1,0 +1,19 @@
+k_i = 1.0;
+k_s = 1.0;
+k_r = 1.0;
+k_v = 1.0;
+k_m = 1.0;
+
+kineticLawOf inf : k_i * I * S;
+kineticLawOf spont : k_s * S ;
+kineticLawOf vacc : k_v * S ;
+kineticLawOf rec : k_r * I;
+kineticLawOf mut : k_m * R;
+
+S = (inf,1) << + (spont,1) << + (vacc,1) << + (mut,1) >>;
+
+I = (inf,1) >> + (spont,1) >> + (rec,1) << ;
+
+R = (rec,1) >> + (vacc,1) >> + (mut,1) <<;
+
+I[10] <*> S[10] <*> R[10] 

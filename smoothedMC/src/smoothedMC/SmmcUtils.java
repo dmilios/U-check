@@ -16,7 +16,7 @@ public class SmmcUtils {
 			double lengthscale, boolean optimise, String[] parameter,
 			double[] lb, double[] ub) throws IOException {
 
-		final Options options = new Options();
+		final SmMCOptions options = new SmMCOptions();
 		options.setN(n);
 		options.setM(m);
 		options.setSimulationRuns(runs);
@@ -83,7 +83,7 @@ public class SmmcUtils {
 		final String modelFile = "models/SIR.biopepa";
 		final String mitlFile = "formulae/SIR.mtl";
 
-		final Options options = new Options();
+		final SmMCOptions options = new SmMCOptions();
 		options.setN(64);
 		options.setM(256);
 		options.setSimulationRuns(10);

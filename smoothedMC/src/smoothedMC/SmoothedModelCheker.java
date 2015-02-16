@@ -28,7 +28,7 @@ public final class SmoothedModelCheker {
 
 	public ClassificationPosterior performSmoothedModelChecking(
 			String modelFile, String mitlFile, Parameter[] parameters,
-			Options options) {
+			SmMCOptions options) {
 		long t0;
 		double elapsed;
 
@@ -44,7 +44,7 @@ public final class SmoothedModelCheker {
 	}
 
 	public ClassificationPosterior performSmoothedModelChecking(GpDataset data,
-			Parameter[] parameters, Options options) {
+			Parameter[] parameters, SmMCOptions options) {
 		GPEP gp = new GPEP(options.getKernelGP());
 		gp.setTrainingSet(data);
 		gp.setScale(options.getSimulationRuns());
@@ -89,7 +89,7 @@ public final class SmoothedModelCheker {
 	}
 
 	public GpDataset performStatisticalModelChecking(String modelFile,
-			String mitlFile, Parameter[] parameters, Options options) {
+			String mitlFile, Parameter[] parameters, SmMCOptions options) {
 
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 		final String mitlText = readFile(mitlFile);
@@ -137,7 +137,7 @@ public final class SmoothedModelCheker {
 		return new GpDataset(paramValueSet, paramValueOutputs);
 	}
 
-	private void optimiseGPHyperParameters(GPEP gp, Options options) {
+	private void optimiseGPHyperParameters(GPEP gp, SmMCOptions options) {
 		HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
 		LocalOptimisation alg = new PowellMethodApache();
 		final double init[] = gp.getKernel().getHyperarameters();

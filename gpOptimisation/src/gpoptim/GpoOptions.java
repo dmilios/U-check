@@ -29,6 +29,7 @@ public final class GpoOptions {
 	private boolean heteroskedastic = false;
 	private double beta = 2;
 	private KernelFunction kernelGP = new KernelRBF();
+	private boolean useDefaultHyperparams = false;
 	private boolean hyperparamOptimisation = false;
 	private int hyperparamOptimisationRestarts = 5;
 
@@ -68,6 +69,24 @@ public final class GpoOptions {
 			str += "Hyperparameters: "
 					+ Arrays.toString(getKernelGP().getHyperarameters()) + "\n";
 		return str;
+	}
+
+	/**
+	 * Whether the default hyperparameters are used by the GP (these depend on
+	 * the kernel and the data). If yes, then the kernel hyperparameters will be
+	 * overridden.
+	 */
+	public boolean useDefaultHyperparams() {
+		return useDefaultHyperparams;
+	}
+
+	/**
+	 * Whether the default hyperparameters are used by the GP (these depend on
+	 * the kernel and the data). If yes, then the kernel hyperparameters will be
+	 * overridden.
+	 */
+	public void setUseDefaultHyperparams(boolean useDefaultHyperparams) {
+		this.useDefaultHyperparams = useDefaultHyperparams;
 	}
 
 	/**

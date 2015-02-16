@@ -145,7 +145,7 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 		GpDataset xt = new GpDataset(1);
 		xt.set(Xt);
 
-		AbstractGP<RegressionPosterior> gp = new ApproximateGPR(new KernelRBF());
+		AbstractGP<RegressionPosterior> gp = new RegressionGP(new KernelRBF());
 		gp.setTrainingSet(xy);
 		long t0 = System.currentTimeMillis();
 		final double lik = gp.getMarginalLikelihood();

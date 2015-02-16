@@ -14,7 +14,6 @@ public abstract class KernelFunction {
 
 	abstract public double[] getHyperarameters();
 	
-	@Deprecated
 	abstract public double[] getDefaultHyperarameters(GpDataset data);
 
 	abstract public void setHyperarameters(double[] hyp);

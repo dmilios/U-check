@@ -6,6 +6,7 @@ import gp.AbstractGP;
 import gp.GpDataset;
 import gp.kernels.KernelFunction;
 
+/** WIP: do not use */
 public class ApproximateGPR extends AbstractGP<RegressionPosterior> {
 
 	private GpDataset inducingData;
@@ -32,14 +33,13 @@ public class ApproximateGPR extends AbstractGP<RegressionPosterior> {
 	private IMatrix Kun = null;
 
 	final private void setupPriorProcess() {
-		
+
 		if (inducingData == null) {
 			// final int n = getTrainingSet().getSize();
-			
+
 			// TODO: randomly choose an inducing set here!
 		}
-		
-		
+
 		final double[][] data = inducingData.calculateCovariances(getKernel());
 		final double[][] dataUN = inducingData.calculateCovariances(
 				getKernel(), trainingSet);

@@ -1,0 +1,29 @@
+ 
+// the SIR model as appeared in the first version of the smoothedMC paper
+
+n = 100;
+
+s0 = 0.95;
+initS = floor(s0 * n);
+initI = n-initS;
+initR = 0;
+
+
+ki = 0.12;
+kiN = ki / n;
+kr = 0.05;
+
+
+kineticLawOf infection : kiN * S * I;
+kineticLawOf recovery : kr * I;
+
+
+S = (infection,1) << ;
+
+I = (infection,1) >> + (recovery,1) << ;
+
+R = (recovery,1) >> ;
+
+
+S[initS] <*> I[initI] <*> R[initR]
+

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import parsers.MitlFactory;
-import smoothedMC.Options;
+import smoothedMC.SmMCOptions;
 import smoothedMC.Parameter;
 import smoothedMC.gridSampling.GridSampler;
 import ssa.CTMCModel;
@@ -55,7 +55,7 @@ public final class SMCExtra_OLD {
 	 * @param options
 	 */
 	public static GpDataset statisticalMCwithMeans(BiopepaFile biopepaFile,
-			String mitlText, Parameter[] parameters, Options options) {
+			String mitlText, Parameter[] parameters, SmMCOptions options) {
 
 		long t0 = System.currentTimeMillis();
 		double elapsed;
@@ -165,7 +165,7 @@ public final class SMCExtra_OLD {
 	 */
 	public static GpDataset statisticalMCwithDerivatives(
 			BiopepaFile biopepaFile, String mitlText, Parameter[] parameters,
-			Options options) {
+			SmMCOptions options) {
 
 		long t0 = System.currentTimeMillis();
 		double elapsed;
@@ -262,7 +262,7 @@ public final class SMCExtra_OLD {
 	 * @param options
 	 */
 	public static GpDataset statisticalMCwithMovingAvg(BiopepaFile biopepaFile,
-			String mitlText, Parameter[] parameters, Options options) {
+			String mitlText, Parameter[] parameters, SmMCOptions options) {
 
 		long t0 = System.currentTimeMillis();
 		double elapsed;
@@ -331,7 +331,7 @@ public final class SMCExtra_OLD {
 	}
 
 	public static GpDataset statisticalMCwithMovingVar(BiopepaFile biopepaFile,
-			String mitlText, Parameter[] parameters, Options options) {
+			String mitlText, Parameter[] parameters, SmMCOptions options) {
 
 		long t0 = System.currentTimeMillis();
 		double elapsed;

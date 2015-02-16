@@ -5,7 +5,7 @@ import gp.kernels.KernelRBF;
 import smoothedMC.gridSampling.GridSampler;
 import smoothedMC.gridSampling.UniformRndSampler;
 
-public final class Options {
+public final class SmMCOptions {
 
 	private double simulationEndTime = 0;
 	private int simulationRuns = 10;
@@ -23,10 +23,10 @@ public final class Options {
 
 	private boolean debugEnabled = false;
 
-	public Options() {
+	public SmMCOptions() {
 	}
 
-	public Options(Options copy) {
+	public SmMCOptions(SmMCOptions copy) {
 		this.simulationEndTime = copy.simulationEndTime;
 		this.simulationRuns = copy.simulationRuns;
 		this.simulationTimepoints = copy.simulationTimepoints;

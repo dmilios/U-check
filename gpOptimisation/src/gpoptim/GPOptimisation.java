@@ -10,7 +10,7 @@ import gp.regression.RegressionGP;
 
 public class GPOptimisation {
 
-	final private GpoOptions options = new GpoOptions();
+	private GpoOptions options = new GpoOptions();
 	private RegressionGP gp;
 	private double noiseTermUsed = 1;
 	private LogspaceConverter logspace = null;
@@ -21,6 +21,10 @@ public class GPOptimisation {
 
 	public GpoOptions getOptions() {
 		return options;
+	}
+
+	public void setOptions(GpoOptions options) {
+		this.options = options;
 	}
 
 	public GpoResult optimise(ObjectiveFunction objFunction, double[] lbounds,
@@ -57,6 +61,10 @@ public class GPOptimisation {
 			optimiseGPHyperParameters(options);
 			final long t1 = System.currentTimeMillis();
 			result.setHyperparamOptimTimeElapsed((t1 - t0) / 1000.0);
+		} else if (options.useDefaultHyperparams()) {
+			final double[] hyp = gp.getKernel().getDefaultHyperarameters(
+					gp.getTrainingSet());
+			gp.getKernel().setHyperarameters(hyp);
 		}
 		result.setHyperparamsUsed(gp.getKernel().getHyperarameters());
 
@@ -96,7 +104,7 @@ public class GPOptimisation {
 
 			double[] candidate = new double[dim];
 			System.arraycopy(gridVals[maxDecisionIndex], 0, candidate, 0, dim);
-			maxDecision = optimiseCandidate(candidate, beta);
+			maxDecision = optimiseCandidate(candidate, lbounds, ubounds, beta);
 
 			// found a new potential maximum
 			if (maxDecision >= maxObservation) {
@@ -176,11 +184,36 @@ public class GPOptimisation {
 		return observation;
 	}
 
-	protected double optimiseCandidate(double[] candidate, double beta) {
+	protected double optimiseCandidate(double[] candidate, double[] lbounds,
+			double[] ubounds, double beta) {
 		GPPosteriorQuantileFitness f = new GPPosteriorQuantileFitness(gp, beta);
 		PointValue optimal = options.getLocalOptimiser().optimise(f, candidate);
-		System.arraycopy(optimal.getPoint(), 0, candidate, 0, candidate.length);
-		return optimal.getValue();
+		double[] optimalPoint = optimal.getPoint();
+		double optimalValue = optimal.getValue();
+
+		// If optimal is out of the specified search bounds, then discard.
+		// (important, as a solution out-of-bounds could be nonsensical)
+		boolean outOfBounds = false;
+		for (int i = 0; i < lbounds.length; i++) {
+			if (optimalPoint[i] < lbounds[i]) {
+				optimalPoint[i] = lbounds[i];
+				outOfBounds = true;
+			} else if (optimalPoint[i] > ubounds[i]) {
+				optimalPoint[i] = ubounds[i];
+				outOfBounds = true;
+			}
+		}
+		if (outOfBounds) {
+			final double initialValue = f.getValueAt(candidate);
+			optimalValue = f.getValueAt(optimalPoint);
+			if (initialValue > optimalValue) {
+				optimalPoint = candidate;
+				optimalValue = initialValue;
+			}
+		}
+
+		System.arraycopy(optimalPoint, 0, candidate, 0, candidate.length);
+		return optimalValue;
 
 	}
 
