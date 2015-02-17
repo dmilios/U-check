@@ -9,7 +9,12 @@ public final class MitlTrue extends MiTL {
 		return true;
 	}
 
-	@Override
+    @Override
+    public double evaluateValue(Trajectory x, double t) {
+        return Double.MAX_VALUE;
+    }
+
+    @Override
 	public String toString() {
 		return "true";
 	}

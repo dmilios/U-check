@@ -15,6 +15,11 @@ public final class MitlNegation extends MiTL {
 		return !this.formula.evaluate(x, t);
 	}
 
+    @Override
+    public double evaluateValue(Trajectory x, double t) {
+        return -formula.evaluateValue(x, t);
+    }
+
 	@Override
 	public String toString() {
 		return "!(" + formula + ")";

@@ -17,7 +17,13 @@ public class MitlDisjunction extends MiTL {
 		return this.formula1.evaluate(x, t) || this.formula2.evaluate(x, t);
 	}
 
-	@Override
+    @Override
+    public double evaluateValue(Trajectory x, double t) {
+        return Math.max(formula1.evaluateValue(x,t),formula2.evaluateValue(x,t));
+
+    }
+
+    @Override
 	public String toString() {
 		return "(" + formula1 + ") | (" + formula2 + ")";
 	}

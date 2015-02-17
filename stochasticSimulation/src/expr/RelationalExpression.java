@@ -25,7 +25,14 @@ final public class RelationalExpression extends LogicalExpression {
 		return operator.evaluate(value1, value2);
 	}
 
-	@Override
+    @Override
+    public double evaluateValue() {
+        final double value1 = leftOperant.evaluate();
+        final double value2 = rightOperant.evaluate();
+        return operator.evaluateValue(value1, value2);
+    }
+
+    @Override
 	public String toString() {
 		final StringBuffer bf = new StringBuffer();
 		bf.append(leftOperant);

@@ -5,6 +5,7 @@ import ssa.Trajectory;
 public abstract class MiTL {
 
 	abstract public boolean evaluate(Trajectory x, double t);
+	abstract public double evaluateValue(Trajectory x, double t);
 
 	final protected int timeIndexAfter(final double[] times, final double t) {
 		for (int i = 0; i < times.length; i++)
