@@ -33,4 +33,8 @@ public enum RelationalOperator {
 		}
 	}
 
+    public double evaluateValue(double value1, double value2) {
+        double value = Math.abs(value2 - value1);
+       return evaluate(value1,value2) ? value:-value;
+    }
 }

@@ -23,7 +23,18 @@ public final class MitlAtomic extends MiTL {
 		return expr.evaluate();
 	}
 
-	@Override
+    @Override
+    public double evaluateValue(Trajectory x, double t) {
+        final double[] times = x.getTimes();
+        final int index = timeIndexAfter_efficient(times, t);
+        final Context context = x.getContext();
+        int numberOfVariables = context.getVariables().length;
+        for (int var = 0; var < numberOfVariables; var++)
+            context.setValue(var, x.getValues(var)[index]);
+        return expr.evaluateValue();
+    }
+
+    @Override
 	public String toString() {
 		return expr.toString();
 	}

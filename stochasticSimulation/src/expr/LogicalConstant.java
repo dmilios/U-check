@@ -18,7 +18,12 @@ public final class LogicalConstant extends LogicalExpression {
 		return value;
 	}
 
-	@Override
+    @Override
+    public double evaluateValue() {
+        return value ? Double.MAX_VALUE:-Double.MAX_VALUE;
+    }
+
+    @Override
 	public String toString() {
 		return Boolean.toString(value);
 	}

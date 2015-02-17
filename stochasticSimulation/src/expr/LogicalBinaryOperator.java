@@ -31,4 +31,7 @@ public enum LogicalBinaryOperator {
 		return false;
 	}
 
+    public double evaluateValue(boolean lvalue, boolean rvalue) {
+        return evaluate(lvalue,rvalue) ? 1.0:0.0;
+    }
 }

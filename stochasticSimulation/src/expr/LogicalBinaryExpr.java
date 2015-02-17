@@ -25,7 +25,14 @@ final public class LogicalBinaryExpr extends LogicalExpression {
 		return operator.evaluate(lvalue, rvalue);
 	}
 
-	@Override
+    @Override
+    public double evaluateValue() {
+        final boolean lvalue = leftOperant.evaluate();
+        final boolean rvalue = rightOperant.evaluate();
+        return operator.evaluateValue(lvalue, rvalue);
+    }
+
+    @Override
 	public String toString() {
 		final StringBuffer bf = new StringBuffer();
 		if (leftOperant.getPriority() > getPriority()) {

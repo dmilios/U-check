@@ -18,7 +18,12 @@ public final class LogicalNegation extends LogicalExpression {
 		return !argument.evaluate();
 	}
 
-	@Override
+    @Override
+    public double evaluateValue() {
+        return -argument.evaluateValue();
+    }
+
+    @Override
 	public String toString() {
 		final StringBuffer bf = new StringBuffer();
 		bf.append("¬");
