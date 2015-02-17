@@ -46,10 +46,10 @@ public class TestLFF {
 
 		lff.getOptions().getGpoOptions()
 				.setInitialSampler(new LatinHypercubeSampler(4));
-		lff.getOptions().getGpoOptions().setInitialObservtions(32);
+		lff.getOptions().getGpoOptions().setInitialObservtions(100);
 		lff.getOptions().getGpoOptions().setGridSampleNumber(50);
 		lff.getOptions().getGpoOptions().setLogspace(false);
-		lff.getOptions().getGpoOptions().setMaxIterations(200);
+		lff.getOptions().getGpoOptions().setMaxIterations(800);
 		lff.getOptions().getGpoOptions().setMaxFailedAttempts(100);
 		lff.getOptions().getGpoOptions().setHeteroskedastic(true);
 		lff.getOptions().getGpoOptions().setHyperparamOptimisation(!true);
