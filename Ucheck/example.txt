@@ -1,0 +1,50 @@
+
+## experiment options
+
+model = "../gpoMC/models/rumour.biopepa"
+properties = "../gpoMC/formulae/rumour.mtl"
+observations = "../gpoMC/formulae/rumour.dat"
+
+mode = inference
+parameter k2 = [1.1, 2]
+parameter k7 = [0.8, 4]
+
+
+# prior k2 = normal(2, 0.4)
+
+
+
+## simulation options
+endTime = 5
+runs = 10
+timepoints = 200
+timeseriesEnabled = true
+
+
+
+## optimisation options
+
+initialObservtions = 100
+gridSampleNumber = 50
+logspace = false
+
+maxIterations = 500
+maxAddedPointsNoImprovement = 100
+improvementFactor = 1.01
+maxFailedAttempts = 200
+beta = 2
+
+
+## GP options
+
+kernel = rbfiso
+amplitude = 1
+lengthscale = 2, 0.4
+noiseTerm = 1
+noiseTermRatio = 0.1
+useNoiseTermRatio = false
+heteroskedastic = false
+useDefaultHyperparams = false
+hyperparamOptimisation = false
+hyperparamOptimisationRestarts = 5
+

@@ -15,7 +15,7 @@ import ssa.Trajectory;
 
 public class ParameterExploration {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		final Parameter k2 = new Parameter("k2", 10, 5000);
 		final Parameter k7 = new Parameter("k7", 0.45, 450);
@@ -28,7 +28,8 @@ public class ParameterExploration {
 	}
 
 	private static void performExploration(String file, Parameter[] parameters,
-			String variableName, int points, double stopTime) {
+			String variableName, int points, double stopTime)
+			throws IOException {
 		BiopepaFile biopepaFile = new BiopepaFile(file);
 		final String[] paramNames = new String[parameters.length];
 		for (int i = 0; i < paramNames.length; i++)
@@ -62,7 +63,7 @@ public class ParameterExploration {
 			final int runs = 3;
 			final int timepoints = 61;
 			final double[][] trajectories = new double[runs][];
-			
+
 			Trajectory x;
 			x = sim.generateTimeseries(0, stopTime, timepoints);
 			final double[] t = x.getTimes();

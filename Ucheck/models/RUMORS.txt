@@ -1,0 +1,18 @@
+model rumor_spreading {
+
+	param N = 15;
+	I = N-5;
+	S = 5;
+	R = 0;
+
+	param k_s = 0.5;
+	param k_r = 0.1;
+
+	spreading:     [  :-> I -= 1.0; S += 1.0 ]@{ k_s*I*S };
+	stop_spreading:[  :-> S -= 1.0; R += 1.0 ]@{ k_r*S*S }; 
+	stop_spreading:[  :-> S -= 1.0; R += 1.0 ]@{ k_r*S*R };
+
+	// stop_condition:[ S == 0 :-> stop ]@inf{1};
+
+	continuator:[ :-> ]@{0.001};
+}

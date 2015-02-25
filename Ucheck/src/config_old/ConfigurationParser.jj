@@ -1,0 +1,364 @@
+/**/
+
+PARSER_BEGIN(ConfigurationParser)
+
+package config;
+
+import config.Configuration.Mode;
+import java.util.ArrayList;
+import priors.*;
+import gp.kernels.*;
+
+public class ConfigurationParser {
+}
+
+PARSER_END(ConfigurationParser)
+
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+
+SPECIAL_TOKEN : /* COMMENTS */
+{
+  <COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+}
+
+
+TOKEN : /* RESERVED WORDS AND LITERALS */
+{
+  < MODEL: "model" >
+| < PROPERTIES: "properties" >
+| < PARAMETER: "parameter" >
+| < PRIOR: "prior" >
+| < UNIFORM: "uniform" >
+| < NORMAL: "normal" >
+| < OBSERVATIONS: "observations" >
+| < MODE: "mode" >
+| < KERNEL: "kernel" >
+| < RBFISO: "rbfiso" >
+| < RBFARD: "rbfard" >
+| < TRUE: "true" >
+| < FALSE: "false" >
+}
+
+
+
+TOKEN : /* LITERALS */
+{
+  < NUMBER_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+      | "." (["0"-"9"])+ (<EXPONENT>)?
+      | (["0"-"9"])+ <EXPONENT>
+      | (["0"-"9"])+ (<EXPONENT>)?
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+}
+
+
+
+
+TOKEN : /* IDENTIFIERS */
+{
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
+|
+  < #LETTER:
+      [
+       "A"-"Z",
+       "_",
+       "a"-"z"
+      ]
+  >
+|
+  < #DIGIT:
+      [
+       "0"-"9"
+      ]
+  >
+}
+
+TOKEN : /* SEPARATORS */
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+}
+
+
+TOKEN : /* OPERATORS */
+{
+  < ASSIGN: "=" >
+}
+
+
+
+
+/** Root production. */
+void Experiment(Configuration contents) :
+{}
+{
+	ModelStatement(contents)
+	PropertyFileStatement(contents)
+	( ObservationsFileStatement(contents) )?
+	( ParamStatement(contents) )+
+	( PriorStatement(contents) )*
+	( KernelStatement(contents) )?
+	( AssignmentStatement(contents) )*
+	<EOF>
+}
+
+
+void ModelStatement(Configuration contents) :
+{}
+{
+	<MODEL> 
+	<ASSIGN> 
+	<STRING_LITERAL> 
+	{ 
+		String filename = getToken(0).image;
+		filename = filename.substring(1, filename.length() - 1);
+		contents.setModelFile(filename);
+	}
+	<SEMICOLON>
+}
+
+void PropertyFileStatement(Configuration contents) :
+{}
+{
+	<PROPERTIES> 
+	<ASSIGN> 
+	<STRING_LITERAL> 
+	{ 
+		String filename = getToken(0).image;
+		filename = filename.substring(1, filename.length() - 1);
+		contents.setPropertiesFile(filename);
+	}
+	<SEMICOLON>
+}
+
+void ObservationsFileStatement(Configuration contents) :
+{}
+{
+	<OBSERVATIONS> 
+	<ASSIGN> 
+	<STRING_LITERAL> 
+	{ 
+		String filename = getToken(0).image;
+		filename = filename.substring(1, filename.length() - 1);
+		contents.setObservationsFile(filename);
+	}
+	<SEMICOLON>
+}
+
+void ParamStatement(Configuration contents) :
+{
+	String name;
+	double lb;
+	double ub;
+}
+{
+	<PARAMETER> 
+	<IDENTIFIER> 
+	{ 
+		name = getToken(0).image; 
+	}
+	<ASSIGN> 
+	<LBRACKET> 
+	lb = NumericalValue()
+	<COMMA> 
+	ub = NumericalValue()
+	{
+		contents.addParameter(name, lb, ub);
+	}
+	<RBRACKET> 
+	<SEMICOLON>
+}
+
+void PriorStatement(Configuration contents) :
+{
+	String name;
+	String distribution;
+	ArrayList<Double> values = new ArrayList<Double>();
+	double value;
+}
+{
+	<PRIOR> 
+	<IDENTIFIER> 
+	{ 
+		name = getToken(0).image; 
+	}
+	<ASSIGN> 
+	(
+		UniformDistribution(contents, name) 
+		| GaussianDistribution(contents, name)
+	)
+	<SEMICOLON>
+}
+
+
+void UniformDistribution(Configuration contents, String name) :
+{
+	double a, b;
+}
+{
+	<UNIFORM>
+	<LPAREN> 
+	a = NumericalValue()
+	<COMMA> 
+	b = NumericalValue()
+	<RPAREN>
+	{
+		contents.setPrior(name, new UniformPrior(a, b));
+	}
+}
+
+
+void GaussianDistribution(Configuration contents, String name) :
+{
+	double mu, s2;
+}
+{
+	<NORMAL>
+	<LPAREN> 
+	mu = NumericalValue()
+	<COMMA> 
+	s2 = NumericalValue()
+	<RPAREN>
+	{
+		contents.setPrior(name, new GaussianPrior(mu, s2));
+	}
+}
+
+
+double NumericalValue() :
+{}
+{
+	<NUMBER_LITERAL>
+	{ return Double.parseDouble(getToken(0).image); }
+}
+
+
+void ModeStatement(Configuration contents) :
+{}
+{
+	<MODE> 
+	<ASSIGN> 
+	<STRING_LITERAL> 
+	{ 
+		String mode = getToken(0).image;
+		if (mode.equals("inference"))
+			contents.setMode(Mode.inference);
+		else if (mode.equals("smoothedmc"))
+			contents.setMode(Mode.smoothedmc);
+		else 
+			contents.setMode(Mode.none);
+	}
+	<SEMICOLON>
+}
+
+
+void KernelStatement(Configuration contents) :
+{}
+{
+	<KERNEL> 
+	<ASSIGN> 
+	( KernelRBFiso(contents) 
+	| KernelRBFard(contents) )
+	<SEMICOLON>
+}
+
+void KernelRBFiso(Configuration contents) :
+{
+	double a;
+	double l;
+}
+{ 
+	<RBFISO> { contents.setKernel(new KernelRBF()); }
+	(
+		<LPAREN> 
+		a = NumericalValue() 
+		<COMMA>  
+		l = NumericalValue()
+		<RPAREN> 
+		{ contents.setKernel(new KernelRBF(a, l)); }
+	)?
+}
+
+void KernelRBFard(Configuration contents) :
+{
+	double a, l;
+	int dimension;
+	ArrayList<Double> lscales = new ArrayList<Double>();
+}
+{ 
+	<RBFARD> 
+	{
+		dimension = contents.getParameters().size();
+		contents.setKernel(new KernelRbfARD(dimension)); 
+	}
+	(
+		<LPAREN> 
+		a = NumericalValue() 
+		( 
+			<COMMA>  
+			l = NumericalValue() { lscales.add(l); } 
+		)+
+		<RPAREN>
+		{
+			dimension = lscales.size();
+			final double[] hyp = new double[1 + dimension];
+			hyp[0] = a;
+			for (int i = 1; i < hyp.length; i++)
+				hyp[i] = lscales.get(i - 1);
+			contents.setKernel(new KernelRbfARD(hyp));
+		}
+	)?
+}
+
+void AssignmentStatement(Configuration contents) :
+{
+	String option;
+	double value;
+}
+{
+	<IDENTIFIER>
+	{
+		option = getToken(0).image;
+	}
+	<ASSIGN> 
+	(
+		value = NumericalValue()
+		| <TRUE> 
+		{ value = 1; }
+		| <FALSE> 
+		{ value = 0; }
+		
+	) <SEMICOLON>
+	{ contents.getOptionMap().put(option, value); }
+}
+

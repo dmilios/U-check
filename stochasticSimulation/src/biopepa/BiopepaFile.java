@@ -1,22 +1,10 @@
 package biopepa;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import expr.ArithmeticBinaryExpr;
-import expr.ArithmeticBinaryOperator;
-import expr.ArithmeticConstant;
-import expr.ArithmeticExpression;
-import expr.ArithmeticFunction;
-import expr.ArithmeticFunctionType;
-import expr.Context;
-import expr.Variable;
 
 import ssa.CTMCModel;
 import ssa.CTMCReaction;
@@ -35,22 +23,34 @@ import uk.ac.ed.inf.biopepa.core.dom.DoNothingVisitor;
 import uk.ac.ed.inf.biopepa.core.dom.Model;
 import uk.ac.ed.inf.biopepa.core.dom.Statement;
 import uk.ac.ed.inf.biopepa.core.dom.VariableDeclaration;
+import uk.ac.ed.inf.biopepa.core.dom.internal.ParserException;
 import uk.ac.ed.inf.biopepa.core.sba.ExperimentLine;
 import uk.ac.ed.inf.biopepa.core.sba.SBAComponentBehaviour;
 import uk.ac.ed.inf.biopepa.core.sba.SBAModel;
 import uk.ac.ed.inf.biopepa.core.sba.SBAReaction;
+import expr.ArithmeticBinaryExpr;
+import expr.ArithmeticBinaryOperator;
+import expr.ArithmeticConstant;
+import expr.ArithmeticExpression;
+import expr.ArithmeticFunction;
+import expr.ArithmeticFunctionType;
+import expr.Context;
+import expr.Variable;
 
 final public class BiopepaFile {
 
 	private Model astModel;
 
-	public BiopepaFile(String filename) {
+	public BiopepaFile(String filename) throws IOException {
 		String source = readFile(filename);
 		try {
 			astModel = BioPEPA.parse(source);
+		} catch (ParserException e) {
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public final boolean containsVariable(String var) {
@@ -299,27 +299,11 @@ final public class BiopepaFile {
 
 	}
 
-	public final static String readFile(final String filename) {
-		byte[] input = null;
-		BufferedInputStream is = null;
-		try {
-			File f = new File(filename);
-			input = new byte[(int) f.length()];
-			is = new BufferedInputStream(new FileInputStream(f));
-			is.read(input);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		final String contents = new String(input);
-		return contents;
+	private static final String readFile(String filename) throws IOException {
+		final FileInputStream input = new FileInputStream(filename);
+		final byte[] fileData = new byte[input.available()];
+		input.read(fileData);
+		input.close();
+		return new String(fileData);
 	}
-
 }

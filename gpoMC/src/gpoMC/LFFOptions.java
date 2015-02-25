@@ -10,10 +10,23 @@ public final class LFFOptions {
 	private boolean timeseriesEnabled = true;
 	private GpoOptions gpoOptions = new GpoOptions();
 
+	@Override
+	public String toString() {
+		String str = "";
+		str += "# Stochastic Simulation --- Setup\n";
+		str += "End time: " + simulationEndTime + "\n";
+		str += "Runs: " + simulationRuns + "\n";
+		str += "Timepoints: " + simulationTimepoints + "\n";
+		str += "Timeseries enabled: " + timeseriesEnabled + "\n";
+		str += "\n";
+		str += gpoOptions.toString();
+		return str;
+	}
+
 	public GpoOptions getGpoOptions() {
 		return gpoOptions;
 	}
-	
+
 	public double getSimulationEndTime() {
 		return simulationEndTime;
 	}

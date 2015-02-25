@@ -127,11 +127,14 @@ public class GPOptimisation {
 
 		final int bestIndex = maxarg(gp.getTrainingSet().getTargets());
 		double[] point = gp.getTrainingSet().getInstance(bestIndex);
+		double fitness = gp.getTrainingSet().getTargets()[bestIndex];
+		
+		// fitness = optimiseCandidate(point, lbounds, ubounds, 0);
 		if (options.getLogspace())
 			point = logspace.convertfromLogspace(point);
 
 		result.setSolution(point);
-		result.setFitness(gp.getTrainingSet().getTargets()[bestIndex]);
+		result.setFitness(fitness);
 		return result;
 	}
 

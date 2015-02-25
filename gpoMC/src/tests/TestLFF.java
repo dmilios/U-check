@@ -18,7 +18,7 @@ import biopepa.BiopepaFile;
 public class TestLFF {
 
 	@SuppressWarnings("deprecation")
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		final String modelFile = "models/rumour.biopepa";
 		BiopepaFile biopepa = new BiopepaFile(modelFile);
 
@@ -48,8 +48,8 @@ public class TestLFF {
 				.setInitialSampler(new LatinHypercubeSampler(4));
 		lff.getOptions().getGpoOptions().setInitialObservtions(100);
 		lff.getOptions().getGpoOptions().setGridSampleNumber(50);
-		lff.getOptions().getGpoOptions().setLogspace(false);
-		lff.getOptions().getGpoOptions().setMaxIterations(800);
+		lff.getOptions().getGpoOptions().setLogspace(!false);
+		lff.getOptions().getGpoOptions().setMaxIterations(600);
 		lff.getOptions().getGpoOptions().setMaxFailedAttempts(100);
 		lff.getOptions().getGpoOptions().setHeteroskedastic(true);
 		lff.getOptions().getGpoOptions().setHyperparamOptimisation(!true);
@@ -61,8 +61,7 @@ public class TestLFF {
 
 		ObservationsGenerator gen = new ObservationsGenerator();
 		final boolean[][] observations = gen.generate(model, formulae, lff
-				.getOptions().getSimulationEndTime(), lff.getOptions()
-				.getSimulationRuns());
+				.getOptions().getSimulationEndTime());
 
 		GpoResult result = lff.performInference(formulae, observations);
 		System.out.println(result);

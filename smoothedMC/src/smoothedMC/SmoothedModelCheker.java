@@ -28,7 +28,7 @@ public final class SmoothedModelCheker {
 
 	public ClassificationPosterior performSmoothedModelChecking(
 			String modelFile, String mitlFile, Parameter[] parameters,
-			SmMCOptions options) {
+			SmMCOptions options) throws IOException {
 		long t0;
 		double elapsed;
 
@@ -89,7 +89,7 @@ public final class SmoothedModelCheker {
 	}
 
 	public GpDataset performStatisticalModelChecking(String modelFile,
-			String mitlFile, Parameter[] parameters, SmMCOptions options) {
+			String mitlFile, Parameter[] parameters, SmMCOptions options) throws IOException {
 
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 		final String mitlText = readFile(mitlFile);
