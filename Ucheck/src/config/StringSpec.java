@@ -16,4 +16,9 @@ public class StringSpec extends PropertySpec {
 		return "";
 	}
 
+	@Override
+	public Object getValueOf(String str) {
+		return str;
+	}
+	
 }

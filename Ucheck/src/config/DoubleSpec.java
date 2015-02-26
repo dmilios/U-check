@@ -63,4 +63,9 @@ public class DoubleSpec extends PropertySpec {
 		return str;
 	}
 
+	@Override
+	public Object getValueOf(String str) {
+		return Double.parseDouble(str);
+	}
+	
 }

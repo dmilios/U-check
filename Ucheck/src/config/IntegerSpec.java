@@ -46,4 +46,9 @@ public class IntegerSpec extends PropertySpec {
 		return str;
 	}
 
+	@Override
+	public Object getValueOf(String str) {
+		return Integer.parseInt(str);
+	}
+	
 }

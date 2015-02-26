@@ -15,12 +15,12 @@ public abstract class Log {
 
 	final public void printWarning(String s) {
 		warnings++;
-		this.println(s);
+		this.println("Warning: " + s);
 	}
 
 	final public void printError(String s) {
 		errors++;
-		this.println(s);
+		this.println("Error: " + s);
 	}
 
 	abstract public void print(String s);

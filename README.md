@@ -35,3 +35,9 @@ Depends on:
 - gpOptimisation
 - stochasticSimulation
 
+### Ucheck
+Command-line tool for model checking and parameter synthesis under uncertainty
+Depends on:
+- gpoMC
+- smoothedMC
+

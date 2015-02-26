@@ -3,7 +3,6 @@ package cli;
 import gpoMC.LFFOptions;
 import gpoMC.LearnFromFormulae;
 import gpoMC.ObservationsFile;
-import gpoMC.Parameter;
 import gpoptim.GpoResult;
 
 import java.io.FileInputStream;
@@ -75,7 +74,7 @@ public class UcheckCLI {
 			final String mitlFile = contents.getProperties();
 			final String observationsFile = contents.getObservations();
 			final LFFOptions lffOptions = contents.getLFFOptions();
-			final Parameter[] params = contents.getLFFParameters();
+			final gpoMC.Parameter[] params = contents.getLFFParameters();
 			
 			if (log.getErrors() > 0)
 				return;

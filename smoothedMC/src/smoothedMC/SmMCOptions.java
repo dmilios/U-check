@@ -3,7 +3,7 @@ package smoothedMC;
 import gp.kernels.KernelFunction;
 import gp.kernels.KernelRBF;
 import smoothedMC.gridSampling.GridSampler;
-import smoothedMC.gridSampling.UniformRndSampler;
+import smoothedMC.gridSampling.RegularSampler;
 
 public final class SmMCOptions {
 
@@ -14,7 +14,7 @@ public final class SmMCOptions {
 
 	private int inputDatapoints = 20;
 	private int outputDatapoints = 100;
-	private GridSampler sampler = new UniformRndSampler();
+	private GridSampler sampler = new RegularSampler();
 
 	private KernelFunction kernelGP = new KernelRBF();
 	private boolean hyperparamOptimisation = false;

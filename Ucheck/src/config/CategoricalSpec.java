@@ -26,4 +26,9 @@ public final class CategoricalSpec extends PropertySpec {
 		return str;
 	}
 
+	@Override
+	public Object getValueOf(String str) {
+		return str;
+	}
+	
 }

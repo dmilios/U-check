@@ -17,4 +17,9 @@ public class BooleanSpec extends PropertySpec {
 		return "[true | false]";
 	}
 
+	@Override
+	public Object getValueOf(String str) {
+		return Boolean.parseBoolean(str);
+	}
+
 }

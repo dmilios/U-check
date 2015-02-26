@@ -20,6 +20,8 @@ public abstract class PropertySpec {
 
 	public abstract boolean isValid(String value);
 
+	public abstract Object getValueOf(String str);
+
 	public abstract String getValidValues();
-	
+
 }
