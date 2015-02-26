@@ -38,11 +38,7 @@ public final class MitlUntil extends MiTL {
 		if (!f2true)
 			return false;
 
-		// FIXME: Not sure if 't' or 'this.t1 + t'
-		// In the CAV paper, it is 't'
-		// but I think 'this.t1 + t' is correct instead
-		index1 = timeIndexAfter(times, t);
-				
+		index1 = timeIndexAfter(times, t);				
 		index2 = timeIndexAfter(times, tprime);
 		for (int i = index1; i <= index2; i++)
 			if (!formula1.evaluate(x, times[i]))

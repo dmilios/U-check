@@ -71,6 +71,32 @@ public class Configuration {
 							+ "\" is undefined at line " + lineCounter);
 		}
 		scanner.close();
+		verifyLoadedInformation();
+	}
+
+	private void verifyLoadedInformation() {
+
+		// verify that one or more parameters have been defined
+		if (parameterNames.size() == 0)
+			log.printError("At least one parameter has to be specified!");
+		
+		// verify that the parameter defined are included in the model
+		for (final String parameterName : parameterNames) {
+		 
+		}
+
+		// verify that the kernel hyperparameters are valid
+		Object kerneltype = properties.get("kernel");
+		Object[] lengthscales = (Object[]) properties.get("lengthscale");
+		if (kerneltype.equals("rbfiso"))
+			if (lengthscales.length > 1)
+				log.printWarning("Redundant lenghtscales for "
+						+ "isometric RBF kernel; "
+						+ "only the first one will be used");
+		if (kerneltype.equals("rbfard"))
+			if (lengthscales.length > 1)
+				log.printError("Automatic Relevance Determination requires "
+						+ "lengthscales to be specified for all parameters!");
 	}
 
 	private void readProperty(String property, String value, int line) {
@@ -91,57 +117,26 @@ public class Configuration {
 					+ spec.getValidValues() + "; default value \""
 					+ spec.getDefaultValue() + "\" is used.");
 			final String defaultVal = spec.getDefaultValue();
+			
+			// FIXME: in case of CollectionSpec, default value is invalid
+			
 			properties.put(property, spec.getValueOf(defaultVal));
 		}
 	}
 
 	private void readParameter(String name, String value) {
-		final RangeSpec spec = new RangeSpec(name, "[0, 1]");
-		final double[] range;
+		final PropertySpec spec = new RangeSpec(name, "[0, 1]");
+		final String errormsg = "Invalid bounds for \"" + name + "\"; "
+				+ "should be of the form: " + spec.getValidValues();
+
 		if (spec.isValid(value))
-			range = (double[]) spec.getValueOf(value);
-		else
-			range = null;
-		parameters.put(name, range);
-		parameterNames.add(name);
-	}
-
-	/**
-	 * @param value
-	 *            can be ["rbfiso" | "rbfard"]
-	 */
-	private KernelFunction readKernel(String value) {
-		if (value.equals("rbfiso")) {
-			return new KernelRBF();
-		} else
-
-		if (value.equals("rbfard")) {
-			final int dim = parameterNames.size();
-			return new KernelRbfARD(dim);
+			parameters.put(name, (double[]) spec.getValueOf(value));
+		else {
+			parameters.put(name,
+					(double[]) spec.getValueOf(spec.getDefaultValue()));
+			log.printError(errormsg);
 		}
-
-		else
-			throw new IllegalStateException("This should not happen!");
-	}
-
-	private double[] parseDoubles(String string) {
-		string = string.trim();
-		if (string.startsWith("("))
-			string = string.substring(1);
-		if (string.endsWith(")"))
-			string = string.substring(0, string.length() - 1);
-
-		if (string.startsWith("\\W"))
-			throw new IllegalAccessError();
-		if (string.endsWith("\\W"))
-			throw new IllegalAccessError();
-
-		final String[] strValues = string.split(",");
-		final double[] values = new double[strValues.length];
-		for (int i = 0; i < values.length; i++)
-			values[i] = Double.parseDouble(strValues[i]);
-
-		return values;
+		parameterNames.add(name);
 	}
 
 	final private void addProperty(PropertySpec spec) {
@@ -217,45 +212,8 @@ public class Configuration {
 				.size()];
 		for (int i = 0; i < params.length; i++) {
 			final String name = parameterNames.get(i);
-			final String errormsg = "Invalid bounds for \"" + name + "\"; "
-					+ "should be of the form: \"[number1, number2]\", "
-					+ "where number1 < number2";
-
-			String valueString = parameters.get(name).toString();
-			if (valueString.startsWith("["))
-				valueString = valueString.substring(1);
-			else {
-				log.printError(errormsg);
-				continue;
-			}
-			if (valueString.endsWith("]"))
-				valueString = valueString
-						.substring(0, valueString.length() - 1);
-			else {
-				log.printError(errormsg);
-				continue;
-			}
-
-			double[] vals = null;
-			try {
-				vals = parseDoubles(valueString);
-			} catch (NumberFormatException e) {
-				log.printError(errormsg);
-				continue;
-			}
-			if (vals.length == 2) {
-				final double lb = vals[0];
-				final double ub = vals[1];
-
-				try {
-					params[i] = new smoothedMC.Parameter(name, lb, ub);
-				} catch (IllegalArgumentException e) {
-					log.printError(errormsg);
-				}
-			} else {
-				log.printError(errormsg);
-				continue;
-			}
+			double[] value = parameters.get(name);
+			params[i] = new smoothedMC.Parameter(name, value[0], value[1]);
 		}
 		return params;
 	}
@@ -264,45 +222,8 @@ public class Configuration {
 		gpoMC.Parameter[] params = new gpoMC.Parameter[parameterNames.size()];
 		for (int i = 0; i < params.length; i++) {
 			final String name = parameterNames.get(i);
-			final String errormsg = "Invalid bounds for \"" + name + "\"; "
-					+ "should be of the form: \"[number1, number2]\", "
-					+ "where number1 < number2";
-
-			String valueString = parameters.get(name).toString();
-			if (valueString.startsWith("["))
-				valueString = valueString.substring(1);
-			else {
-				log.printError(errormsg);
-				continue;
-			}
-			if (valueString.endsWith("]"))
-				valueString = valueString
-						.substring(0, valueString.length() - 1);
-			else {
-				log.printError(errormsg);
-				continue;
-			}
-
-			double[] vals = null;
-			try {
-				vals = parseDoubles(valueString);
-			} catch (NumberFormatException e) {
-				log.printError(errormsg);
-				continue;
-			}
-			if (vals.length == 2) {
-				final double lb = vals[0];
-				final double ub = vals[1];
-
-				try {
-					params[i] = new gpoMC.Parameter(name, lb, ub);
-				} catch (IllegalArgumentException e) {
-					log.printError(errormsg);
-				}
-			} else {
-				log.printError(errormsg);
-				continue;
-			}
+			double[] value = parameters.get(name);
+			params[i] = new gpoMC.Parameter(name, value[0], value[1]);
 		}
 		return params;
 	}
@@ -336,7 +257,7 @@ public class Configuration {
 				options.setCovarianceCorrection((double) value);
 
 			else if (key.equals("kernel"))
-				;// options.setKernelGP(readKernel(value));
+				options.setKernelGP(getKernel());
 
 			else
 				;
@@ -398,12 +319,38 @@ public class Configuration {
 						(int) value);
 
 			else if (key.equals("kernel"))
-				; // options.getGpoOptions().setKernelGP(readKernel(value));
+				options.getGpoOptions().setKernelGP(getKernel());
 
 			else
 				;
 		}
 		return options;
+	}
+
+	public KernelFunction getKernel() {
+		// load hyperparameters, if exist
+		Double a = (Double) properties.get("amplitude");
+		if (a == null) {
+			final PropertySpec spec = propertySpecs.get("amplitude");
+			a = (Double) spec.getValueOf(spec.getDefaultValue());
+		}
+		Object[] l = (Object[]) properties.get("lengthscale");
+		if (l == null) {
+			final PropertySpec spec = propertySpecs.get("lengthscale");
+			l = (Object[]) spec.getValueOf(spec.getDefaultValue());
+		}
+
+		final Object value = properties.get("kernel");
+		if (value.equals("rbfiso"))
+			return new KernelRBF(a, (double) l[0]);
+		if (value.equals("rbfard")) {
+			final double[] hyp = new double[l.length + 1];
+			hyp[0] = a;
+			for (int i = 1; i < hyp.length; i++)
+				hyp[i] = (double) l[i - 1];
+			return new KernelRbfARD(hyp);
+		}
+		throw new IllegalStateException("This sould not happen!");
 	}
 
 	public static void main(String[] args) throws FileNotFoundException,
