@@ -29,7 +29,7 @@ public final class ObservationsFile {
 				continue;
 			final String[] words = line.trim().split("\\W+");
 			if (words.length != n) {
-				throw new IllegalArgumentException();
+				return null;
 			}
 
 			final boolean[] obs = new boolean[n];
@@ -40,7 +40,7 @@ public final class ObservationsFile {
 				else if (word.equals("0") || word.equalsIgnoreCase("false"))
 					obs[i] = false;
 				else {
-					throw new IllegalArgumentException();
+					return null;
 				}
 			}
 			observationsList.add(obs);
