@@ -21,13 +21,23 @@ timepoints = 200
 timeseriesEnabled = true
 
 
+## GP Kernel options
+kernel = rbfard
+amplitude = 1
+lengthscale = 2, 0.4
 
-## optimisation options
+## GP hypeparameters options
+hyperparamOptimisation = true
+hyperparamOptimisationRestarts = 2
 
-initialObservtions = 100
-gridSampleNumber = 50
+
+## GP data options
+initialObservtions = 64
+numberOfTestPoints = 100
+
+
+## GP optimisation options
 logspace = false
-
 maxIterations = 500
 maxAddedPointsNoImprovement = 100
 improvementFactor = 1.01
@@ -35,16 +45,14 @@ maxFailedAttempts = 200
 beta = 2
 
 
-## GP options
-
-kernel = rbfard
-amplitude = 1
-lengthscale = 2, 0.4
+## GP Regression options
 noiseTerm = 1
 noiseTermRatio = 0.1
 useNoiseTermRatio = false
 heteroskedastic = false
 useDefaultHyperparams = false
-hyperparamOptimisation = false
-hyperparamOptimisationRestarts = 5
+
+
+## GP Classification options
+covarianceCorrection = 1e-4
 

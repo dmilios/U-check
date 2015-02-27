@@ -6,7 +6,7 @@ import gp.classification.ClassificationPosterior;
 import java.io.File;
 import java.io.IOException;
 
-import smoothedMC.SmMCOptions;
+import smoothedMC.SmmcOptions;
 import smoothedMC.Parameter;
 import smoothedMC.SmmcUtils;
 import smoothedMC.SmoothedModelCheker;
@@ -82,7 +82,7 @@ public class Lacz_debug {
 			throws IOException {
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 
-		final SmMCOptions options = new SmMCOptions();
+		final SmmcOptions options = new SmmcOptions();
 		options.setN(POINTS_IN_SMMC_GRID);
 		options.setM(POINTS_SAMPLED);
 		options.setSimulationRuns(SIMULATION_RUNS);
@@ -160,7 +160,7 @@ public class Lacz_debug {
 			throws IOException {
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 
-		final SmMCOptions options = new SmMCOptions();
+		final SmmcOptions options = new SmmcOptions();
 		options.setN(POINTS_SAMPLED);
 		options.setSimulationRuns(SIMULATION_RUNS);
 		options.setSimulationEndTime(tFinal);

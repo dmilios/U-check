@@ -1,19 +1,23 @@
 package cli;
 
+import gp.classification.ClassificationPosterior;
 import gpoMC.LFFOptions;
 import gpoMC.LearnFromFormulae;
 import gpoptim.GpoResult;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import config.Configuration;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import biopepa.BiopepaFile;
 import parsers.MitlFactory;
+import smoothedMC.SmmcOptions;
+import smoothedMC.SmmcUtils;
+import smoothedMC.SmoothedModelCheker;
 import ssa.CTMCModel;
 
 public class UcheckCLI {
@@ -38,22 +42,27 @@ public class UcheckCLI {
 		}
 
 		final String optionfile = args[0];
-
+		FileInputStream fstream = null;
+		Configuration config = null;
 		try {
-
-			final Configuration contents = new Configuration(log);
-			contents.load(new FileInputStream(optionfile));
-
-			final String mode = contents.getMode();
-			if (mode.equals("inference"))
-				performInference(contents, log);
-			if (mode.equals("smoothedmc"))
-				performSmoothedMC(contents, log);
-
-		} catch (FileNotFoundException e) {
-			log.printError(e.getMessage());
+			fstream = new FileInputStream(optionfile);
+			config = new Configuration(log);
+			config.load(fstream);
+			fstream.close();
 		} catch (IOException e) {
 			log.printError(e.getMessage());
+		}
+
+		if (config != null) {
+			// all errors should be caught by this point
+			if (log.getErrors() > 0)
+				return;
+
+			final String mode = config.getMode();
+			if (mode.equals("inference"))
+				performInference(config, log);
+			if (mode.equals("smoothedmc"))
+				performSmoothedMC(config, log);
 		}
 
 		if (log.getWarnings() > 0)
@@ -65,17 +74,13 @@ public class UcheckCLI {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void performInference(Configuration contents, Log log)
-			throws IOException {
+	public static void performInference(Configuration config, Log log) {
 
-		if (log.getErrors() > 0)
-			return;
-
-		final BiopepaFile biopepa = contents.getBiopepaModel();
-		final String mitlText = contents.getMitlText();
-		final boolean[][] observations = contents.getObservations();
-		final LFFOptions lffOptions = contents.getLFFOptions();
-		final gpoMC.Parameter[] params = contents.getLFFParameters();
+		final BiopepaFile biopepa = config.getBiopepaModel();
+		final String mitlText = config.getMitlText();
+		final boolean[][] observations = config.getObservations();
+		final LFFOptions lffOptions = config.getLFFOptions();
+		final gpoMC.Parameter[] params = config.getLFFParameters();
 
 		final CTMCModel model = biopepa.getModel();
 
@@ -94,10 +99,30 @@ public class UcheckCLI {
 
 		GpoResult result = lff.performInference(formulae, observations);
 		log.println(result.toString());
-
 	}
 
-	public static void performSmoothedMC(Configuration contents, Log log) {
+	public static void performSmoothedMC(Configuration config, Log log) {
+		final BiopepaFile biopepa = config.getBiopepaModel();
+		final String mitlText = config.getMitlText();
+		final SmmcOptions options = config.getSmMCOptions();
+		final smoothedMC.Parameter[] params = config.getSmMCParameters();
+
+		final SmoothedModelCheker smmc = new SmoothedModelCheker();
+		final ClassificationPosterior result = smmc
+				.performSmoothedModelChecking(biopepa, mitlText, params,
+						options);
+
+		log.println("# Smoothed Model Checking --- Results");
+		log.println("Time for Statistical MC: "
+				+ smmc.getStatisticalMCTimeElapsed() + " sec");
+		log.println("Time for hyperparam opt: "
+				+ smmc.getHyperparamOptimTimeElapsed() + " sec");
+		log.println("Time for Smoothed MC: " + smmc.getSmoothedMCTimeElapsed()
+				+ " sec");
+		log.println("Hyperparams used: "
+				+ Arrays.toString(smmc.getHyperparamsUsed()));
+
+		// System.out.println("\n" + SmmcUtils.results2csv(result, 2));
 	}
 
 }

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import parsers.MitlFactory;
-import smoothedMC.SmMCOptions;
+import smoothedMC.SmmcOptions;
 import smoothedMC.Parameter;
 import smoothedMC.gridSampling.GridSampler;
 import ssa.CTMCModel;
@@ -53,7 +53,7 @@ public final class SMCExtra {
 	 * @param options
 	 */
 	public static GpDataset enhancedStatisticalMC(BiopepaFile biopepaFile,
-			String mitlText, Parameter[] parameters, SmMCOptions options) {
+			String mitlText, Parameter[] parameters, SmmcOptions options) {
 
 		long t0 = System.currentTimeMillis();
 		double elapsed;

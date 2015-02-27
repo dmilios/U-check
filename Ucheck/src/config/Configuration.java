@@ -7,7 +7,6 @@ import gpoMC.LFFOptions;
 import gpoMC.ObservationsFile;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import parsers.MitlFactory;
 import biopepa.BiopepaFile;
-import smoothedMC.SmMCOptions;
+import smoothedMC.SmmcOptions;
 import ssa.CTMCModel;
 import cli.Log;
 import cli.PrintStreamLog;
@@ -48,6 +47,10 @@ public class Configuration {
 		defineConfigurationOptions();
 	}
 
+	/**
+	 * Loads all the configurations options from the specified InputStream.<br>
+	 * Any errors or warnings will be reported in the log.
+	 */
 	synchronized public void load(InputStream istream) {
 		Scanner scanner = new Scanner(istream);
 		int lineCounter = 0;
@@ -84,6 +87,10 @@ public class Configuration {
 		verifyLoadedInformation();
 	}
 
+	/**
+	 * Verified that the information loaded is valid. Any errors or warnings
+	 * will be reported in the log.
+	 */
 	private void verifyLoadedInformation() {
 
 		// verify model
@@ -213,7 +220,7 @@ public class Configuration {
 
 	final private void defineConfigurationOptions() {
 
-		// main options
+		// main experiment options
 		addProperty(new StringSpec("model", ""));
 		addProperty(new StringSpec("properties", ""));
 		addProperty(new StringSpec("observations", ""));
@@ -231,13 +238,15 @@ public class Configuration {
 		addProperty(new CollectionSpec("lengthscale", new Object[] { 1.0 },
 				new DoubleSpec("lengthscale", 1, 0, false)));
 
-		// common options (GP parameters)
+		// common options (GP hyperparameters)
 		addProperty(new BooleanSpec("hyperparamOptimisation", false));
 		addProperty(new IntegerSpec("hyperparamOptimisationRestarts", 5, 0));
 
-		// inference options (GP optimisation parameters)
+		// common options (GP data)
 		addProperty(new IntegerSpec("initialObservtions", 100, 1));
-		addProperty(new IntegerSpec("gridSampleNumber", 50, 1));
+		addProperty(new IntegerSpec("numberOfTestPoints", 50, 1));
+		
+		// inference options (GP optimisation parameters)
 		addProperty(new BooleanSpec("logspace", false));
 		addProperty(new IntegerSpec("maxIterations", 500, 1));
 		addProperty(new IntegerSpec("maxAddedPointsNoImprovement", 100, 1));
@@ -311,8 +320,8 @@ public class Configuration {
 		return params;
 	}
 
-	public SmMCOptions getSmMCOptions() {
-		final SmMCOptions options = new SmMCOptions();
+	public SmmcOptions getSmMCOptions() {
+		final SmmcOptions options = new SmmcOptions();
 
 		Set<String> keys = properties.keySet();
 		for (final String key : keys) {
@@ -327,9 +336,9 @@ public class Configuration {
 			else if (key.equals("timeseriesEnabled"))
 				options.setTimeseriesEnabled((boolean) value);
 
-			else if (key.equals("inputDatapoints"))
+			else if (key.equals("initialObservtions"))
 				options.setN((int) value);
-			else if (key.equals("outputDatapoints"))
+			else if (key.equals("numberOfTestPoints"))
 				options.setM((int) value);
 
 			else if (key.equals("hyperparamOptimisation"))
@@ -366,7 +375,7 @@ public class Configuration {
 
 			else if (key.equals("initialObservtions"))
 				options.getGpoOptions().setInitialObservtions((int) value);
-			else if (key.equals("gridSampleNumber"))
+			else if (key.equals("numberOfTestPoints"))
 				options.getGpoOptions().setGridSampleNumber((int) value);
 			else if (key.equals("logspace"))
 				options.getGpoOptions().setLogspace((boolean) value);
@@ -448,14 +457,6 @@ public class Configuration {
 		input.read(fileData);
 		input.close();
 		return new String(fileData);
-	}
-
-	public static void main(String[] args) throws FileNotFoundException,
-			IOException {
-
-		Configuration config = new Configuration();
-		FileInputStream file = new FileInputStream("example.txt");
-		config.load(file);
 	}
 
 }

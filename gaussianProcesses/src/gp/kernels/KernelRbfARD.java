@@ -85,8 +85,9 @@ public class KernelRbfARD extends KernelFunction {
 
 	@Override
 	public double calculateDerivative(double[] x1, double[] x2, int i) {
+		// dfxdx = -(x / l^2) * fx(x);
 		final double k0 = calculate(x1, x2);
-		final double ki = -2 * invLengthscale2[i] * (x1[i] - x2[i]);
+		final double ki = -invLengthscale2[i] * (x1[i] - x2[i]);
 		return k0 * ki;
 	}
 

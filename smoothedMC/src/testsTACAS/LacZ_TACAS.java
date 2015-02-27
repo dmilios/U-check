@@ -6,7 +6,7 @@ import gp.classification.ClassificationPosterior;
 import java.io.File;
 import java.io.IOException;
 
-import smoothedMC.SmMCOptions;
+import smoothedMC.SmmcOptions;
 import smoothedMC.Parameter;
 import smoothedMC.SmmcUtils;
 import smoothedMC.SmoothedModelCheker;
@@ -75,7 +75,7 @@ public class LacZ_TACAS {
 			boolean withMeans) throws IOException {
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 
-		final SmMCOptions options = new SmMCOptions();
+		final SmmcOptions options = new SmmcOptions();
 		options.setN(25 * parameters.length * parameters.length);
 		options.setM(100 * parameters.length * parameters.length);
 		options.setSimulationRuns(10);
@@ -151,7 +151,7 @@ public class LacZ_TACAS {
 			boolean withMeans) throws IOException {
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 
-		final SmMCOptions options = new SmMCOptions();
+		final SmmcOptions options = new SmmcOptions();
 		options.setN(25 * parameters.length * parameters.length);
 		options.setSimulationRuns(100);
 		options.setSimulationEndTime(tFinal);

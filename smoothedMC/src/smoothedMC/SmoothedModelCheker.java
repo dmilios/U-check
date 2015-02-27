@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import optim.LocalOptimisation;
 import optim.PointValue;
 import optim.methods.PowellMethodApache;
-
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import parsers.MitlFactory;
@@ -26,16 +25,46 @@ import biopepa.BiopepaFile;
 
 public final class SmoothedModelCheker {
 
+	private double hyperparamOptimTimeElapsed;
+	private double statisticalMCTimeElapsed;
+	private double smoothedMCTimeElapsed;
+	private double[] hyperparamsUsed;
+
+	public double getHyperparamOptimTimeElapsed() {
+		return hyperparamOptimTimeElapsed;
+	}
+
+	public double getStatisticalMCTimeElapsed() {
+		return statisticalMCTimeElapsed;
+	}
+
+	public double getSmoothedMCTimeElapsed() {
+		return smoothedMCTimeElapsed;
+	}
+
+	public double[] getHyperparamsUsed() {
+		return hyperparamsUsed;
+	}
+
 	public ClassificationPosterior performSmoothedModelChecking(
 			String modelFile, String mitlFile, Parameter[] parameters,
-			SmMCOptions options) throws IOException {
+			SmmcOptions options) throws IOException {
+		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
+		final String mitlText = readFile(mitlFile);
+		return performSmoothedModelChecking(biopepaFile, mitlText, parameters,
+				options);
+	}
+
+	public ClassificationPosterior performSmoothedModelChecking(
+			BiopepaFile biopepaFile, String mitlText, Parameter[] parameters,
+			SmmcOptions options) {
 		long t0;
 		double elapsed;
-
 		t0 = System.currentTimeMillis();
-		final GpDataset data = performStatisticalModelChecking(modelFile,
-				mitlFile, parameters, options);
+		final GpDataset data = performStatisticalModelChecking(biopepaFile,
+				mitlText, parameters, options);
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
+		statisticalMCTimeElapsed = elapsed;
 		if (options.isDebugEnabled())
 			System.out.println("Statistical Model Checking:  " + elapsed
 					+ " sec");
@@ -44,7 +73,7 @@ public final class SmoothedModelCheker {
 	}
 
 	public ClassificationPosterior performSmoothedModelChecking(GpDataset data,
-			Parameter[] parameters, SmMCOptions options) {
+			Parameter[] parameters, SmmcOptions options) {
 		GPEP gp = new GPEP(options.getKernelGP());
 		gp.setTrainingSet(data);
 		gp.setScale(options.getSimulationRuns());
@@ -56,10 +85,13 @@ public final class SmoothedModelCheker {
 			t0 = System.currentTimeMillis();
 			optimiseGPHyperParameters(gp, options);
 			elapsed = (System.currentTimeMillis() - t0) / 1000d;
+			hyperparamOptimTimeElapsed = elapsed;
 			if (options.isDebugEnabled())
 				System.out.println("Hyperparameter optimisation: " + elapsed
 						+ " sec");
 		}
+
+		hyperparamsUsed = options.getKernelGP().getHyperarameters();
 		if (options.isDebugEnabled()) {
 			System.out.println("amplitude:   "
 					+ options.getKernelGP().getHyperarameters()[0]);
@@ -79,6 +111,7 @@ public final class SmoothedModelCheker {
 		final GpDataset testSet = new GpDataset(paramValueSet);
 		final ClassificationPosterior post = gp.getGpPosterior(testSet);
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
+		smoothedMCTimeElapsed = elapsed;
 		if (options.isDebugEnabled()) {
 			System.out.println("Smoothed Model Checking:     " + elapsed
 					+ " sec");
@@ -89,10 +122,16 @@ public final class SmoothedModelCheker {
 	}
 
 	public GpDataset performStatisticalModelChecking(String modelFile,
-			String mitlFile, Parameter[] parameters, SmMCOptions options) throws IOException {
-
+			String mitlFile, Parameter[] parameters, SmmcOptions options)
+			throws IOException {
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 		final String mitlText = readFile(mitlFile);
+		return performStatisticalModelChecking(biopepaFile, mitlText,
+				parameters, options);
+	}
+
+	public GpDataset performStatisticalModelChecking(BiopepaFile biopepaFile,
+			String mitlText, Parameter[] parameters, SmmcOptions options) {
 		for (final Parameter param : parameters)
 			if (!biopepaFile.containsVariable(param.getName()))
 				throw new IllegalArgumentException("The is no variable \""
@@ -137,7 +176,7 @@ public final class SmoothedModelCheker {
 		return new GpDataset(paramValueSet, paramValueOutputs);
 	}
 
-	private void optimiseGPHyperParameters(GPEP gp, SmMCOptions options) {
+	private void optimiseGPHyperParameters(GPEP gp, SmmcOptions options) {
 		HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
 		LocalOptimisation alg = new PowellMethodApache();
 		final double init[] = gp.getKernel().getHyperarameters();

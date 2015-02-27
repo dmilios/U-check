@@ -190,7 +190,7 @@ public class GPOptimisation {
 	protected double optimiseCandidate(double[] candidate, double[] lbounds,
 			double[] ubounds, double beta) {
 		GPPosteriorQuantileFitness f = new GPPosteriorQuantileFitness(gp, beta);
-		PointValue optimal = options.getLocalOptimiser().optimise(f, candidate);
+		PointValue optimal = options.getLocalOptimiser().optimise(f, candidate);	
 		double[] optimalPoint = optimal.getPoint();
 		double optimalValue = optimal.getValue();
 
