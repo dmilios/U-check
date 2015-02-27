@@ -4,6 +4,7 @@ import gp.kernels.KernelFunction;
 import gp.kernels.KernelRBF;
 import gp.kernels.KernelRbfARD;
 import gpoMC.LFFOptions;
+import gpoMC.ObservationsFile;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,7 +16,12 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import mitl.MiTL;
+import mitl.MitlPropertiesList;
+import parsers.MitlFactory;
+import biopepa.BiopepaFile;
 import smoothedMC.SmMCOptions;
+import ssa.CTMCModel;
 import cli.Log;
 import cli.PrintStreamLog;
 
@@ -28,6 +34,10 @@ public class Configuration {
 	private Map<String, double[]> parameters = new HashMap<String, double[]>();
 
 	private Log log;
+
+	private BiopepaFile biopepaModel;
+	private String mitlText;
+	private boolean[][] observations;
 
 	public Configuration() {
 		this(new PrintStreamLog(System.out));
@@ -76,14 +86,76 @@ public class Configuration {
 
 	private void verifyLoadedInformation() {
 
+		// verify model
+		String modelFile = (String) properties.get("model");
+		if (modelFile.startsWith("\""))
+			modelFile = modelFile.substring(1);
+		if (modelFile.endsWith("\""))
+			modelFile = modelFile.substring(0, modelFile.length() - 1);
+		if (modelFile.endsWith(".biopepa")) {
+			biopepaModel = null;
+			try {
+				biopepaModel = new BiopepaFile(modelFile);
+			} catch (IOException e) {
+				log.printError(e.getMessage());
+				return;
+			}
+		}
+
+		// verify MiTL file
+		String mitlFile = (String) properties.get("properties");
+		if (mitlFile.startsWith("\""))
+			mitlFile = mitlFile.substring(1);
+		if (mitlFile.endsWith("\""))
+			mitlFile = mitlFile.substring(0, mitlFile.length() - 1);
+		mitlText = null;
+		try {
+			mitlText = readFile(mitlFile);
+		} catch (IOException e) {
+			log.printError(e.getMessage());
+			return;
+		}
+
+		// verify MiTL file
+		final CTMCModel model = biopepaModel.getModel();
+		MitlFactory factory = new MitlFactory(model.getStateVariables());
+		MitlPropertiesList l = factory.constructProperties(mitlText);
+		ArrayList<MiTL> list = l.getProperties();
+		MiTL[] formulae = new MiTL[list.size()];
+		list.toArray(formulae);
+		// FIXME: verify mitl properties
+
+		//
+
+		// verify observations
+		if (properties.get("mode").equals("inference")) {
+			String obsFile = (String) properties.get("observations");
+			if (obsFile.startsWith("\""))
+				obsFile = obsFile.substring(1);
+			if (obsFile.endsWith("\""))
+				obsFile = obsFile.substring(0, obsFile.length() - 1);
+			String obsText = "";
+			try {
+				obsText = readFile(obsFile);
+			} catch (IOException e) {
+				log.printError("Observations file " + e.getMessage());
+				return;
+			}
+			ObservationsFile obs = new ObservationsFile();
+			observations = obs.load(obsText, formulae.length);
+			if (observations == null)
+				log.printError("Invalid observations file");
+		}
+
 		// verify that one or more parameters have been defined
 		if (parameterNames.size() == 0)
 			log.printError("At least one parameter has to be specified!");
-		
+
 		// verify that the parameter defined are included in the model
-		for (final String parameterName : parameterNames) {
-		 
-		}
+		for (final String parameterName : parameterNames)
+			if (!biopepaModel.containsVariable(parameterName))
+				log.printError("Parameter \"" + parameterName
+						+ "\" does not exist in the model!");
 
 		// verify that the kernel hyperparameters are valid
 		Object kerneltype = properties.get("kernel");
@@ -94,7 +166,7 @@ public class Configuration {
 						+ "isometric RBF kernel; "
 						+ "only the first one will be used");
 		if (kerneltype.equals("rbfard"))
-			if (lengthscales.length > 1)
+			if (lengthscales.length != parameterNames.size())
 				log.printError("Automatic Relevance Determination requires "
 						+ "lengthscales to be specified for all parameters!");
 	}
@@ -115,25 +187,21 @@ public class Configuration {
 			log.printWarning("Invalid assignment for \"" + property
 					+ "\" at line " + line + "; it should be "
 					+ spec.getValidValues() + "; default value \""
-					+ spec.getDefaultValue() + "\" is used.");
-			final String defaultVal = spec.getDefaultValue();
-			
-			// FIXME: in case of CollectionSpec, default value is invalid
-			
-			properties.put(property, spec.getValueOf(defaultVal));
+					+ spec.getDefaultValueString() + "\" is used.");
+			final Object defaultVal = spec.getDefaultValue();
+			properties.put(property, defaultVal);
 		}
 	}
 
 	private void readParameter(String name, String value) {
-		final PropertySpec spec = new RangeSpec(name, "[0, 1]");
+		final PropertySpec spec = new RangeSpec(name, new double[] { 0, 1 });
 		final String errormsg = "Invalid bounds for \"" + name + "\"; "
 				+ "should be of the form: " + spec.getValidValues();
 
 		if (spec.isValid(value))
 			parameters.put(name, (double[]) spec.getValueOf(value));
 		else {
-			parameters.put(name,
-					(double[]) spec.getValueOf(spec.getDefaultValue()));
+			parameters.put(name, (double[]) spec.getDefaultValue());
 			log.printError(errormsg);
 		}
 		parameterNames.add(name);
@@ -152,40 +220,40 @@ public class Configuration {
 		addProperty(new CategoricalSpec("mode", "", "inference", "smoothedmc"));
 
 		// common simulation options
-		addProperty(new DoubleSpec("endTime", "0", 0, false));
-		addProperty(new IntegerSpec("runs", "100", 1));
-		addProperty(new IntegerSpec("timepoints", "200", 2));
-		addProperty(new BooleanSpec("timeseriesEnabled", "false"));
+		addProperty(new DoubleSpec("endTime", 0, 0, false));
+		addProperty(new IntegerSpec("runs", 100, 1));
+		addProperty(new IntegerSpec("timepoints", 200, 2));
+		addProperty(new BooleanSpec("timeseriesEnabled", false));
 
 		// common kernel options
 		addProperty(new CategoricalSpec("kernel", "rbfiso", "rbfiso", "rbfard"));
-		addProperty(new DoubleSpec("amplitude", "1", 0, false));
-		addProperty(new CollectionSpec("lengthscale", new DoubleSpec(
-				"lengthscale", "1", 0, false)));
+		addProperty(new DoubleSpec("amplitude", 1, 0, false));
+		addProperty(new CollectionSpec("lengthscale", new Object[] { 1.0 },
+				new DoubleSpec("lengthscale", 1, 0, false)));
 
 		// common options (GP parameters)
-		addProperty(new BooleanSpec("hyperparamOptimisation", "false"));
-		addProperty(new IntegerSpec("hyperparamOptimisationRestarts", "5", 0));
+		addProperty(new BooleanSpec("hyperparamOptimisation", false));
+		addProperty(new IntegerSpec("hyperparamOptimisationRestarts", 5, 0));
 
 		// inference options (GP optimisation parameters)
-		addProperty(new IntegerSpec("initialObservtions", "100", 1));
-		addProperty(new IntegerSpec("gridSampleNumber", "50", 1));
-		addProperty(new BooleanSpec("logspace", "false"));
-		addProperty(new IntegerSpec("maxIterations", "500", 1));
-		addProperty(new IntegerSpec("maxAddedPointsNoImprovement", "100", 1));
-		addProperty(new DoubleSpec("improvementFactor", "1.01", 0, false));
-		addProperty(new IntegerSpec("maxFailedAttempts", "200", 1));
-		addProperty(new DoubleSpec("beta", "2", 0, true));
+		addProperty(new IntegerSpec("initialObservtions", 100, 1));
+		addProperty(new IntegerSpec("gridSampleNumber", 50, 1));
+		addProperty(new BooleanSpec("logspace", false));
+		addProperty(new IntegerSpec("maxIterations", 500, 1));
+		addProperty(new IntegerSpec("maxAddedPointsNoImprovement", 100, 1));
+		addProperty(new DoubleSpec("improvementFactor", 1.01, 0, false));
+		addProperty(new IntegerSpec("maxFailedAttempts", 200, 1));
+		addProperty(new DoubleSpec("beta", 2, 0, true));
 
 		// inference options (GP regression parameters)
-		addProperty(new DoubleSpec("noiseTerm", "1", 0, false));
-		addProperty(new DoubleSpec("noiseTermRatio", "0.1", 0, false));
-		addProperty(new BooleanSpec("useNoiseTermRatio", "false"));
-		addProperty(new BooleanSpec("heteroskedastic", "false"));
-		addProperty(new BooleanSpec("useDefaultHyperparams", "true"));
+		addProperty(new DoubleSpec("noiseTerm", 1, 0, false));
+		addProperty(new DoubleSpec("noiseTermRatio", 0.1, 0, false));
+		addProperty(new BooleanSpec("useNoiseTermRatio", false));
+		addProperty(new BooleanSpec("heteroskedastic", false));
+		addProperty(new BooleanSpec("useDefaultHyperparams", true));
 
 		// smoothedmc options (GP classification parameters)
-		addProperty(new DoubleSpec("covarianceCorrection", "1e-4", 0, false));
+		addProperty(new DoubleSpec("covarianceCorrection", 1e-4, 0, false));
 	}
 
 	public String getMode() {
@@ -195,15 +263,30 @@ public class Configuration {
 		return "";
 	}
 
+	public BiopepaFile getBiopepaModel() {
+		return biopepaModel;
+	}
+
+	public String getMitlText() {
+		return mitlText;
+	}
+
+	public boolean[][] getObservations() {
+		return observations;
+	}
+
+	@Deprecated
 	public String getModel() {
 		return (String) properties.get("model");
 	}
 
+	@Deprecated
 	public String getProperties() {
 		return (String) properties.get("properties");
 	}
 
-	public String getObservations() {
+	@Deprecated
+	public String getObservations_() {
 		return (String) properties.get("observations");
 	}
 
@@ -332,25 +415,39 @@ public class Configuration {
 		Double a = (Double) properties.get("amplitude");
 		if (a == null) {
 			final PropertySpec spec = propertySpecs.get("amplitude");
-			a = (Double) spec.getValueOf(spec.getDefaultValue());
+			a = (Double) spec.getDefaultValue();
 		}
 		Object[] l = (Object[]) properties.get("lengthscale");
 		if (l == null) {
 			final PropertySpec spec = propertySpecs.get("lengthscale");
-			l = (Object[]) spec.getValueOf(spec.getDefaultValue());
+			l = (Object[]) spec.getDefaultValue();
 		}
 
 		final Object value = properties.get("kernel");
-		if (value.equals("rbfiso"))
+		if (value.equals("rbfiso")) {
 			return new KernelRBF(a, (double) l[0]);
+		}
 		if (value.equals("rbfard")) {
-			final double[] hyp = new double[l.length + 1];
+			final int dim = parameterNames.size();
+			final double[] hyp = new double[dim + 1];
 			hyp[0] = a;
-			for (int i = 1; i < hyp.length; i++)
-				hyp[i] = (double) l[i - 1];
+			if (dim == l.length)
+				for (int i = 1; i < hyp.length; i++)
+					hyp[i] = (double) l[i - 1];
+			else
+				for (int i = 1; i < hyp.length; i++)
+					hyp[i] = (double) l[0];
 			return new KernelRbfARD(hyp);
 		}
 		throw new IllegalStateException("This sould not happen!");
+	}
+
+	private static final String readFile(String filename) throws IOException {
+		final FileInputStream input = new FileInputStream(filename);
+		final byte[] fileData = new byte[input.available()];
+		input.read(fileData);
+		input.close();
+		return new String(fileData);
 	}
 
 	public static void main(String[] args) throws FileNotFoundException,

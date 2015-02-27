@@ -4,8 +4,8 @@ public class CollectionSpec extends PropertySpec {
 
 	private PropertySpec spec;
 
-	public CollectionSpec(String name, PropertySpec spec) {
-		super(name, "");
+	public CollectionSpec(String name, Object[] defaultValue, PropertySpec spec) {
+		super(name, defaultValue);
 		this.spec = spec;
 	}
 

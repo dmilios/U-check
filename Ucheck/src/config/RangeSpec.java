@@ -2,9 +2,9 @@ package config;
 
 public class RangeSpec extends PropertySpec {
 
-	private DoubleSpec spec = new DoubleSpec("", "0");
+	private DoubleSpec spec = new DoubleSpec("", 0);
 
-	public RangeSpec(String name, String defaultValue) {
+	public RangeSpec(String name, double[] defaultValue) {
 		super(name, defaultValue);
 	}
 

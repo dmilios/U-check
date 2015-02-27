@@ -1,6 +1,5 @@
 package config;
 
-
 public class DoubleSpec extends PropertySpec {
 
 	final private double min;
@@ -8,16 +7,16 @@ public class DoubleSpec extends PropertySpec {
 	final private boolean minInclusive;
 	final private boolean maxInclusive;
 
-	public DoubleSpec(String name, String defaultValue) {
+	public DoubleSpec(String name, double defaultValue) {
 		this(name, defaultValue, Double.MIN_VALUE, true);
 	}
 
-	public DoubleSpec(String name, String defaultValue, double min,
+	public DoubleSpec(String name, double defaultValue, double min,
 			boolean minInclusive) {
 		this(name, defaultValue, min, minInclusive, Double.MAX_VALUE, true);
 	}
 
-	public DoubleSpec(String name, String defaultValue, double min,
+	public DoubleSpec(String name, double defaultValue, double min,
 			boolean minInclusive, double max, boolean maxInclusive) {
 		super(name, defaultValue);
 		this.min = min;
@@ -67,5 +66,5 @@ public class DoubleSpec extends PropertySpec {
 	public Object getValueOf(String str) {
 		return Double.parseDouble(str);
 	}
-	
+
 }

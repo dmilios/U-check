@@ -1,0 +1,21 @@
+
+// ss at t=5;
+k_s = 0.5;
+k_r = 0.1;
+
+// ss at t=0.05;
+// k_s = 50;
+// k_r = 10;
+
+
+kineticLawOf spread : k_s * I * S;
+kineticLawOf stop1 : k_r * S * S;
+kineticLawOf stop2 : k_r * S * R;
+
+I = (spread,1) << ;
+
+S = (spread,1) >> + (stop1,1) << + (stop2,1) << ;
+
+R = (stop1,1) >> + (stop2,1) >> ;
+
+I[10] <*> S[5] <*> R[0]

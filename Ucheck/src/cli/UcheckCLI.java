@@ -2,7 +2,6 @@ package cli;
 
 import gpoMC.LFFOptions;
 import gpoMC.LearnFromFormulae;
-import gpoMC.ObservationsFile;
 import gpoptim.GpoResult;
 
 import java.io.FileInputStream;
@@ -68,55 +67,37 @@ public class UcheckCLI {
 	@SuppressWarnings("deprecation")
 	public static void performInference(Configuration contents, Log log)
 			throws IOException {
-		try {
 
-			final String modelFile = contents.getModel();
-			final String mitlFile = contents.getProperties();
-			final String observationsFile = contents.getObservations();
-			final LFFOptions lffOptions = contents.getLFFOptions();
-			final gpoMC.Parameter[] params = contents.getLFFParameters();
-			
-			if (log.getErrors() > 0)
-				return;
+		if (log.getErrors() > 0)
+			return;
 
-			final BiopepaFile biopepa = new BiopepaFile(modelFile);
-			final String mitlText = readFile(mitlFile);
-			final String obsText = readFile(observationsFile);
-			final CTMCModel model = biopepa.getModel();
+		final BiopepaFile biopepa = contents.getBiopepaModel();
+		final String mitlText = contents.getMitlText();
+		final boolean[][] observations = contents.getObservations();
+		final LFFOptions lffOptions = contents.getLFFOptions();
+		final gpoMC.Parameter[] params = contents.getLFFParameters();
 
-			MitlFactory factory = new MitlFactory(model.getStateVariables());
-			MitlPropertiesList l = factory.constructProperties(mitlText);
-			ArrayList<MiTL> list = l.getProperties();
-			MiTL[] formulae = new MiTL[list.size()];
-			list.toArray(formulae);
+		final CTMCModel model = biopepa.getModel();
 
-			ObservationsFile obs = new ObservationsFile();
-			final boolean[][] observations = obs.load(obsText, formulae.length);
+		MitlFactory factory = new MitlFactory(model.getStateVariables());
+		MitlPropertiesList l = factory.constructProperties(mitlText);
+		ArrayList<MiTL> list = l.getProperties();
+		MiTL[] formulae = new MiTL[list.size()];
+		list.toArray(formulae);
 
-			LearnFromFormulae lff = new LearnFromFormulae();
-			lff.setModel(model);
-			lff.setParams(params);
-			lff.setOptions(lffOptions);
-			lff.setBiopepa(biopepa);
-			lff.setMitlText(mitlText);
+		LearnFromFormulae lff = new LearnFromFormulae();
+		lff.setModel(model);
+		lff.setParams(params);
+		lff.setOptions(lffOptions);
+		lff.setBiopepa(biopepa);
+		lff.setMitlText(mitlText);
 
-			GpoResult result = lff.performInference(formulae, observations);
-			log.println(result.toString());
+		GpoResult result = lff.performInference(formulae, observations);
+		log.println(result.toString());
 
-		} catch (FileNotFoundException e) {
-			log.printError(e.getMessage());
-		}
 	}
 
 	public static void performSmoothedMC(Configuration contents, Log log) {
-	}
-
-	private static final String readFile(String filename) throws IOException {
-		final FileInputStream input = new FileInputStream(filename);
-		final byte[] fileData = new byte[input.available()];
-		input.read(fileData);
-		input.close();
-		return new String(fileData);
 	}
 
 }

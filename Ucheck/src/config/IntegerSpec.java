@@ -6,15 +6,15 @@ public class IntegerSpec extends PropertySpec {
 	final private int min;
 	final private int max;
 
-	public IntegerSpec(String name, String defaultValue) {
+	public IntegerSpec(String name, int defaultValue) {
 		this(name, defaultValue, Integer.MIN_VALUE);
 	}
 
-	public IntegerSpec(String name, String defaultValue, int min) {
+	public IntegerSpec(String name, int defaultValue, int min) {
 		this(name, defaultValue, min, Integer.MAX_VALUE);
 	}
 
-	public IntegerSpec(String name, String defaultValue, int min, int max) {
+	public IntegerSpec(String name, int defaultValue, int min, int max) {
 		super(name, defaultValue);
 		this.min = min;
 		this.max = max;

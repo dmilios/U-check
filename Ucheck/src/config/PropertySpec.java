@@ -1,11 +1,13 @@
 package config;
 
+import java.util.Arrays;
+
 public abstract class PropertySpec {
 
 	final private String name;
-	final private String defaultValue;
+	final private Object defaultValue;
 
-	public PropertySpec(String name, String defaultValue) {
+	public PropertySpec(String name, Object defaultValue) {
 		this.name = name;
 		this.defaultValue = defaultValue;
 	}
@@ -14,8 +16,14 @@ public abstract class PropertySpec {
 		return name;
 	}
 
-	final public String getDefaultValue() {
+	final public Object getDefaultValue() {
 		return defaultValue;
+	}
+
+	final public String getDefaultValueString() {
+		if (defaultValue instanceof Object[])
+			return Arrays.toString((Object[]) defaultValue);
+		return defaultValue.toString();
 	}
 
 	public abstract boolean isValid(String value);

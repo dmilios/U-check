@@ -1,13 +1,13 @@
 
 ## experiment options
 
-model = "../gpoMC/models/rumour.biopepa"
-properties = "../gpoMC/formulae/rumour.mtl"
-observations = "../gpoMC/formulae/rumour.dat"
+model = "models/rumour.biopepa"
+properties = "formulae/rumour.mtl"
+observations = "formulae/rumour.dat"
 
 mode = inference
-parameter k2 = [1.1, 2]
-parameter k7 = [0.8, 4]
+parameter k_s = [1.1, 2]
+parameter k_r = [0.8, 4]
 
 
 # prior k2 = normal(2, 0.4)
@@ -37,7 +37,7 @@ beta = 2
 
 ## GP options
 
-kernel = rbfiso
+kernel = rbfard
 amplitude = 1
 lengthscale = 2, 0.4
 noiseTerm = 1

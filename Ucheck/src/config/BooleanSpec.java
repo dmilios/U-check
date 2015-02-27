@@ -1,9 +1,8 @@
 package config;
 
-
 public class BooleanSpec extends PropertySpec {
 
-	public BooleanSpec(String name, String defaultValue) {
+	public BooleanSpec(String name, boolean defaultValue) {
 		super(name, defaultValue);
 	}
 
