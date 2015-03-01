@@ -15,6 +15,7 @@ import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import biopepa.BiopepaFile;
 import parsers.MitlFactory;
+import priors.Prior;
 import smoothedMC.SmmcOptions;
 import smoothedMC.SmmcUtils;
 import smoothedMC.SmoothedModelCheker;
@@ -81,6 +82,7 @@ public class UcheckCLI {
 		final boolean[][] observations = config.getObservations();
 		final LFFOptions lffOptions = config.getLFFOptions();
 		final gpoMC.Parameter[] params = config.getLFFParameters();
+		final Prior[] priors = config.getLFFPriors();
 
 		final CTMCModel model = biopepa.getModel();
 
@@ -93,9 +95,12 @@ public class UcheckCLI {
 		LearnFromFormulae lff = new LearnFromFormulae();
 		lff.setModel(model);
 		lff.setParams(params);
+		lff.setPriors(priors);
 		lff.setOptions(lffOptions);
 		lff.setBiopepa(biopepa);
 		lff.setMitlText(mitlText);
+		
+		// lff.setPriors(null);
 
 		GpoResult result = lff.performInference(formulae, observations);
 		log.println(result.toString());

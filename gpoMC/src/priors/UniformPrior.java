@@ -19,4 +19,9 @@ public final class UniformPrior extends Prior {
 		return Math.log(1 / (b - a));
 	}
 
+	@Override
+	public String toString() {
+		return "Uniform(" + a + ", " + b + ")";
+	}
+
 }

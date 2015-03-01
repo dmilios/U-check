@@ -18,6 +18,11 @@ import java.util.Set;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import parsers.MitlFactory;
+import priors.ExponentialPrior;
+import priors.GammaPrior;
+import priors.GaussianPrior;
+import priors.Prior;
+import priors.UniformPrior;
 import biopepa.BiopepaFile;
 import smoothedMC.SmmcOptions;
 import ssa.CTMCModel;
@@ -31,6 +36,7 @@ public class Configuration {
 
 	private ArrayList<String> parameterNames = new ArrayList<String>();
 	private Map<String, double[]> parameters = new HashMap<String, double[]>();
+	private Map<String, Prior> priors = new HashMap<String, Prior>();
 
 	private Log log;
 
@@ -79,6 +85,8 @@ public class Configuration {
 			if (propertySplit.length == 2)
 				if (propertySplit[0].equals("parameter"))
 					readParameter(propertySplit[1], value);
+				else if (propertySplit[0].equals("prior"))
+					readPrior(propertySplit[1], value);
 				else
 					log.printWarning("Congifuration option \"" + property
 							+ "\" is undefined at line " + lineCounter);
@@ -214,6 +222,69 @@ public class Configuration {
 		parameterNames.add(name);
 	}
 
+	// ugly for now, but it works
+	private void readPrior(String name, String value) {
+		final PropertySpec argSpec = new CollectionSpec("", null,
+				new DoubleSpec("", 1));
+		String[] splitValue = value.trim().split("\\(");
+		splitValue[1] = "(" + splitValue[1].trim(); // put "(" back
+
+		final String errmsg = "Invalid prior for \"" + name
+				+ "\"; prior will be ignored!";
+
+		if (splitValue.length == 2) {
+			final String distribution = splitValue[0].trim();
+			final String arguments = splitValue[1].trim();
+			Object[] args = new Object[0];
+			if (argSpec.isValid(arguments))
+				args = (Object[]) argSpec.getValueOf(arguments);
+
+			if (distribution.equals("unifrom")) {
+				if (args.length == 2) {
+					final double a = (double) args[0];
+					final double b = (double) args[1];
+					if (a >= b)
+						log.printWarning(errmsg);
+					else
+						priors.put(name, new UniformPrior(a, b));
+				} else
+					log.printWarning(errmsg);
+			} else if (distribution.equals("normal")) {
+				if (args.length == 2) {
+					final double mu = (double) args[0];
+					final double s2 = (double) args[1];
+					if (s2 <= 0)
+						log.printWarning(errmsg);
+					else
+						priors.put(name, new GaussianPrior(mu, s2));
+				} else
+					log.printWarning(errmsg);
+			} else if (distribution.equals("exponential")) {
+				if (args.length == 1) {
+					final double mu = (double) args[0];
+					if (mu <= 0)
+						log.printWarning(errmsg);
+					else
+						priors.put(name, new ExponentialPrior(mu));
+				} else
+					log.printWarning(errmsg);
+			} else if (distribution.equals("gamma")) {
+				if (args.length == 2) {
+					final double k = (double) args[0];
+					final double theta = (double) args[1];
+					if (k <= 0 || theta <= 0)
+						log.printWarning(errmsg);
+					else
+						priors.put(name, new GammaPrior(k, theta));
+				} else
+					log.printWarning(errmsg);
+			} else
+				log.printWarning(errmsg);
+
+		} else
+			log.printWarning(errmsg);
+	}
+
 	final private void addProperty(PropertySpec spec) {
 		propertySpecs.put(spec.getName(), spec);
 	}
@@ -245,7 +316,7 @@ public class Configuration {
 		// common options (GP data)
 		addProperty(new IntegerSpec("initialObservtions", 100, 1));
 		addProperty(new IntegerSpec("numberOfTestPoints", 50, 1));
-		
+
 		// inference options (GP optimisation parameters)
 		addProperty(new BooleanSpec("logspace", false));
 		addProperty(new IntegerSpec("maxIterations", 500, 1));
@@ -318,6 +389,21 @@ public class Configuration {
 			params[i] = new gpoMC.Parameter(name, value[0], value[1]);
 		}
 		return params;
+	}
+
+	public Prior[] getLFFPriors() {
+		final Prior[] priors = new Prior[parameterNames.size()];
+		for (int i = 0; i < parameterNames.size(); i++) {
+			String name = parameterNames.get(i);
+			final Prior prior = this.priors.get(name);
+			if (prior != null)
+				priors[i] = prior;
+			else {
+				double[] value = parameters.get(name);
+				priors[i] = new UniformPrior(value[0], value[1]);
+			}
+		}
+		return priors;
 	}
 
 	public SmmcOptions getSmMCOptions() {

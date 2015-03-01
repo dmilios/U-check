@@ -10,7 +10,7 @@ parameter k_s = [1.1, 2]
 parameter k_r = [0.8, 4]
 
 
-# prior k2 = normal(2, 0.4)
+prior k_s = gamma(2, 1)
 
 
 

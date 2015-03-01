@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import parsers.MitlFactory;
+import priors.Prior;
 import biopepa.BiopepaFile;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
@@ -18,6 +19,7 @@ public class LFFLogPosterior implements NoisyObjectiveFunction {
 
 	private CTMCModel model;
 	final private Parameter[] params;
+	final private Prior[] priors;
 
 	private MiTL[] formulae;
 	final private boolean[][] observations;
@@ -46,11 +48,12 @@ public class LFFLogPosterior implements NoisyObjectiveFunction {
 	}
 
 	public LFFLogPosterior(CTMCModel astModel, Parameter[] params,
-			MiTL[] formulae, boolean[][] observations) {
+			Prior[] priors, MiTL[] formulae, boolean[][] observations) {
 		this.model = astModel;
 		this.params = params;
 		this.formulae = formulae;
 		this.observations = observations;
+		this.priors = priors;
 	}
 
 	public void setOptions(LFFOptions options) {
@@ -98,17 +101,10 @@ public class LFFLogPosterior implements NoisyObjectiveFunction {
 	}
 
 	public double logPriorAt(double[] point) {
-		final int dim = point.length;
-		double probability = 1;
-		for (int i = 0; i < dim; i++) {
-			final double a = params[i].getLowerBound();
-			final double b = params[i].getUpperBound();
-			if (point[i] < a || point[i] > b)
-				return 0;
-			probability *= 1 / (b - a);
-			// probability *= 5 * (b - a) * Math.exp(-5 * (b - a) * point[i]);
-		}
-		return Math.log(probability);
+		double logProbability = 0;
+		for (int i = 0; i < point.length; i++)
+			logProbability += priors[i].logProbability(point[i]);
+		return logProbability;
 	}
 
 	final private boolean[][] createStatisticalModelCheckingData(
