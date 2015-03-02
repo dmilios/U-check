@@ -28,7 +28,7 @@ lengthscale = 2, 0.4
 
 ## GP hypeparameters options
 hyperparamOptimisation = true
-hyperparamOptimisationRestarts = 2
+hyperparamOptimisationRestarts = 0
 
 
 ## GP data options

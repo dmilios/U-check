@@ -21,7 +21,7 @@ public class KernelRbfARD extends KernelFunction {
 	}
 
 	@Override
-	public double[] getHyperarameters() {
+	public double[] getHypeparameters() {
 		return hyp;
 	}
 
@@ -86,9 +86,7 @@ public class KernelRbfARD extends KernelFunction {
 	@Override
 	public double calculateDerivative(double[] x1, double[] x2, int i) {
 		// dfxdx = -(x / l^2) * fx(x);
-		final double k0 = calculate(x1, x2);
-		final double ki = -invLengthscale2[i] * (x1[i] - x2[i]);
-		return k0 * ki;
+		return -invLengthscale2[i] * (x1[i] - x2[i]) * calculate(x1, x2);
 	}
 
 	@Override
@@ -102,6 +100,31 @@ public class KernelRbfARD extends KernelFunction {
 			k = k - 2 * invLengthscale2[i] * k0;
 
 		return k;
+	}
+
+	@Override
+	public double calculateHyperparamDerivative(double[] x1, double[] x2,
+			int hyperparamIndex) {
+		if (hyperparamIndex < 0 || hyperparamIndex >= hyp.length)
+			throw new IllegalStateException();
+
+		// df(a)/da = 2 * a * exp(-0.5 * x^2 / l^2);
+		if (hyperparamIndex == 0) {
+			final int n = x1.length;
+			double sum = 0;
+			for (int i = 0; i < n; i++) {
+				final double v = x1[i] - x2[i];
+				sum += v * v * invLengthscale2[i];
+			}
+			return 2 * hyp[0] * Math.exp(-0.5 * sum);
+		}
+
+		// df(l)dli = (xi^2 / li^3) * f(li);
+		double r2 = x1[hyperparamIndex] - x2[hyperparamIndex];
+		r2 *= r2;
+		return calculate(x1, x2) * r2 * invLengthscale2[hyperparamIndex]
+				/ hyp[hyperparamIndex];
+
 	}
 
 }

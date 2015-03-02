@@ -1,5 +1,7 @@
 package gpoptim;
 
+import linalg.IAlgebra;
+import linalg.JblasAlgebra;
 import optim.LocalOptimisation;
 import optim.ObjectiveFunction;
 import optim.PointValue;
@@ -14,9 +16,14 @@ public class GPOptimisation {
 	private RegressionGP gp;
 	private double noiseTermUsed = 1;
 	private LogspaceConverter logspace = null;
+	final private IAlgebra algebra;
 
 	public GPOptimisation() {
+		this(new JblasAlgebra());
+	}
 
+	public GPOptimisation(IAlgebra algebra) {
+		this.algebra = algebra;
 	}
 
 	public GpoOptions getOptions() {
@@ -44,7 +51,7 @@ public class GPOptimisation {
 			if (lbounds[i] >= ubounds[i])
 				throw new IllegalArgumentException("lbound >= ubound");
 
-		gp = new RegressionGP(options.getKernelGP());
+		gp = new RegressionGP(algebra, options.getKernelGP());
 		gp.setPreferInversion(true);
 
 		logspace = new LogspaceConverter(lbounds, ubounds);
@@ -66,7 +73,7 @@ public class GPOptimisation {
 					gp.getTrainingSet());
 			gp.getKernel().setHyperarameters(hyp);
 		}
-		result.setHyperparamsUsed(gp.getKernel().getHyperarameters());
+		result.setHyperparamsUsed(gp.getKernel().getHypeparameters());
 
 		final int m = options.getGridSampleNumber();
 		final int dim = lbounds.length;
@@ -128,12 +135,14 @@ public class GPOptimisation {
 		final int bestIndex = maxarg(gp.getTrainingSet().getTargets());
 		double[] point = gp.getTrainingSet().getInstance(bestIndex);
 		double fitness = gp.getTrainingSet().getTargets()[bestIndex];
-		
+
 		// fitness = optimiseCandidate(point, lbounds, ubounds, 0);
 		if (options.getLogspace())
 			point = logspace.convertfromLogspace(point);
 
+		final double[][] cov = estimateCovariance(point, gp);
 		result.setSolution(point);
+		result.setCovariance(cov);
 		result.setFitness(fitness);
 		return result;
 	}
@@ -187,10 +196,10 @@ public class GPOptimisation {
 		return observation;
 	}
 
-	protected double optimiseCandidate(double[] candidate, double[] lbounds,
+	private double optimiseCandidate(double[] candidate, double[] lbounds,
 			double[] ubounds, double beta) {
 		GPPosteriorQuantileFitness f = new GPPosteriorQuantileFitness(gp, beta);
-		PointValue optimal = options.getLocalOptimiser().optimise(f, candidate);	
+		PointValue optimal = options.getLocalOptimiser().optimise(f, candidate);
 		double[] optimalPoint = optimal.getPoint();
 		double optimalValue = optimal.getValue();
 
@@ -223,7 +232,7 @@ public class GPOptimisation {
 	private void optimiseGPHyperParameters(GpoOptions options) {
 		final HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
 		final LocalOptimisation alg = options.getLocalOptimiser();
-		final double init[] = gp.getKernel().getHyperarameters();
+		final double init[] = gp.getKernel().getHypeparameters();
 		PointValue best = alg.optimise(func, init);
 
 		for (int r = 0; r < options.getHyperparamOptimisationRestarts(); r++) {
@@ -235,6 +244,26 @@ public class GPOptimisation {
 				best = curr;
 		}
 		gp.getKernel().setHyperarameters(best.getPoint());
+	}
+
+	/**
+	 * Estimates the covariance structure at a given point, via a variational
+	 * approach; it exploits the functional form of GP regression posterior
+	 * using a RBF kernel.
+	 */
+	private double[][] estimateCovariance(double[] point, RegressionGP gp) {
+		final int dim = gp.getTrainingSet().getDimension();
+
+		// init is in upper triangular form
+		final int half = ((dim * dim - dim) / 2) + dim;
+		final double[] init = new double[half];
+		for (int i = 0; i < dim; i++)
+			init[i] = 0.1;
+
+		NegativeFreeEnergy negfe = new NegativeFreeEnergy(algebra, point, gp);
+		final LocalOptimisation alg = options.getLocalOptimiser();
+		final double[] vectorForm = alg.optimise(negfe, init).getPoint();
+		return NegativeFreeEnergy.vector2symmetricMatrix(vectorForm, dim);
 	}
 
 	static final private double max(final double[] vector) {

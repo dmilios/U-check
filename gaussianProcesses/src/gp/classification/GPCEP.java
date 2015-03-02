@@ -27,6 +27,11 @@ public class GPCEP extends AbstractGP<ClassificationPosterior> {
 		return gauss.logZ;
 	}
 
+	@Override
+	public double[] getMarginalLikelihoodGradient() {
+		throw new IllegalAccessError("Not supported yet!");
+	}
+
 	double logdet_LC = 0;
 
 	private Gauss calculatePosterior(GpDataset testSet) {

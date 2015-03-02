@@ -99,8 +99,6 @@ public class UcheckCLI {
 		lff.setOptions(lffOptions);
 		lff.setBiopepa(biopepa);
 		lff.setMitlText(mitlText);
-		
-		// lff.setPriors(null);
 
 		GpoResult result = lff.performInference(formulae, observations);
 		log.println(result.toString());

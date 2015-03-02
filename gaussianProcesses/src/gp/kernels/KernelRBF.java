@@ -26,7 +26,7 @@ public class KernelRBF extends KernelFunction {
 	}
 
 	@Override
-	public double[] getHyperarameters() {
+	public double[] getHypeparameters() {
 		return hyp;
 	}
 
@@ -81,9 +81,7 @@ public class KernelRBF extends KernelFunction {
 	@Override
 	public double calculateDerivative(double[] x1, double[] x2, int i) {
 		// dfxdx = -(x / l^2) * fx(x);
-		final double k0 = calculate(x1, x2);
-		final double ki = -invLengthscale2 * (x1[i] - x2[i]);
-		return k0 * ki;
+		return -invLengthscale2 * (x1[i] - x2[i]) * calculate(x1, x2);
 	}
 
 	@Override
@@ -96,6 +94,27 @@ public class KernelRBF extends KernelFunction {
 		if (i == j)
 			k = k - 2 * invLengthscale2 * k0;
 		return k;
+	}
+
+	@Override
+	public double calculateHyperparamDerivative(double[] x1, double[] x2,
+			int hyperparamIndex) {
+		final int n = x1.length;
+		double sum = 0;
+		for (int i = 0; i < n; i++) {
+			final double v = x1[i] - x2[i];
+			sum += v * v;
+		}
+
+		// df(a)/da = 2 * a * exp(-0.5 * x^2 / l^2);
+		if (hyperparamIndex == 0)
+			return 2 * hyp[0] * Math.exp(-0.5 * sum * invLengthscale2);
+
+		// df(l)/dl = (x^2 / l^3) * f(l);
+		if (hyperparamIndex == 1)
+			return calculate(x1, x2) * sum * invLengthscale2 / hyp[1];
+
+		throw new IllegalStateException();
 	}
 
 }

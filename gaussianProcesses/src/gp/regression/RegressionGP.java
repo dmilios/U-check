@@ -2,6 +2,7 @@ package gp.regression;
 
 import java.util.Arrays;
 
+import linalg.IAlgebra;
 import linalg.IMatrix;
 import gp.AbstractGP;
 import gp.GpDataset;
@@ -16,6 +17,10 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 
 	public RegressionGP(KernelFunction kernel) {
 		super(kernel);
+	}
+
+	public RegressionGP(IAlgebra algebra, KernelFunction kernelFunction) {
+		super(algebra, kernelFunction);
 	}
 
 	public void setSigma2(double sigma2) {
@@ -59,6 +64,14 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 		invC_y = y.duplicate();
 		algebra.solvePositiveInPlace(U, invC_y);
 		invC = null;
+	}
+
+	/**
+	 * The procuct {@code C^(-1) * y} is often reported as auxiliary in the
+	 * literature.
+	 */
+	public double[] getAux() {
+		return invC_y.getData();
 	}
 
 	@Override
@@ -115,11 +128,35 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 		return term1 + term2 + term3;
 	}
 
+	@Override
+	public double[] getMarginalLikelihoodGradient() {
+		setupPriorProcess();
+		final int hyperparams = getKernel().getHypeparameters().length;
+		final double[] gradient = new double[hyperparams];
+		if (invC == null)
+			invC = algebra.invert(C);
+		if (invC_y == null)
+			invC_y = invC.mmul(y);
+
+		for (int h = 0; h < hyperparams; h++) {
+			final double[][] data = trainingSet.calculateCovarianceDerivatives(
+					getKernel(), 0);
+			final IMatrix gramDeriv = algebra.createMatrix(data);
+			final IMatrix arg = invC_y.mmul(invC_y.transpose()).sub(invC)
+					.mmul(gramDeriv);
+			double trace = 0;
+			for (int i = 0; i < arg.getRows(); i++)
+				trace += arg.get(i, i);
+			gradient[h] = 0.5 * trace;
+		}
+		return gradient;
+	}
+
 	@Deprecated
 	public static void main(String[] args) {
 
-		final int n = 1400;
-		final int m = 1400;
+		final int n = 1000;
+		final int m = 1000;
 
 		final double a = -2;
 		final double b = 9;

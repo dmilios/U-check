@@ -30,9 +30,11 @@ public abstract class AbstractGP<PosteriorType extends GpPosterior> {
 	public void setTrainingSet(GpDataset trainingSet) {
 		this.trainingSet = trainingSet;
 	}
-	
+
 	abstract public PosteriorType getGpPosterior(GpDataset testSet);
 
 	abstract public double getMarginalLikelihood();
+
+	abstract public double[] getMarginalLikelihoodGradient();
 
 }

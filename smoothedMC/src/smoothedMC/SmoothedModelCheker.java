@@ -91,17 +91,17 @@ public final class SmoothedModelCheker {
 						+ " sec");
 		}
 
-		hyperparamsUsed = options.getKernelGP().getHyperarameters();
+		hyperparamsUsed = options.getKernelGP().getHypeparameters();
 		if (options.isDebugEnabled()) {
 			System.out.println("amplitude:   "
-					+ options.getKernelGP().getHyperarameters()[0]);
+					+ options.getKernelGP().getHypeparameters()[0]);
 			System.out.println("lengthscale: "
-					+ options.getKernelGP().getHyperarameters()[1]);
+					+ options.getKernelGP().getHypeparameters()[1]);
 			if (options.getKernelGP() instanceof KernelRbfARD) {
-				int dim = options.getKernelGP().getHyperarameters().length - 1;
+				int dim = options.getKernelGP().getHypeparameters().length - 1;
 				for (int i = 1; i < dim; i++)
 					System.out.println("lengthscale: "
-							+ options.getKernelGP().getHyperarameters()[i + 1]);
+							+ options.getKernelGP().getHypeparameters()[i + 1]);
 			}
 		}
 
@@ -179,7 +179,7 @@ public final class SmoothedModelCheker {
 	private void optimiseGPHyperParameters(GPEP gp, SmmcOptions options) {
 		HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
 		LocalOptimisation alg = new PowellMethodApache();
-		final double init[] = gp.getKernel().getHyperarameters();
+		final double init[] = gp.getKernel().getHypeparameters();
 		PointValue best = alg.optimise(func, init);
 
 		for (int r = 0; r < options.getHyperparamOptimisationRestarts(); r++) {

@@ -67,7 +67,7 @@ public final class GpoOptions {
 					+ "\n";
 		else
 			str += "Hyperparameters: "
-					+ Arrays.toString(getKernelGP().getHyperarameters()) + "\n";
+					+ Arrays.toString(getKernelGP().getHypeparameters()) + "\n";
 		return str;
 	}
 

@@ -1,6 +1,7 @@
 package linalg;
 
 import org.jblas.Decompose;
+import org.jblas.Decompose.LUDecomposition;
 import org.jblas.DoubleMatrix;
 import org.jblas.NativeBlas;
 import org.jblas.Solve;
@@ -84,6 +85,14 @@ public class JblasAlgebra implements IAlgebra {
 	public IMatrix cholesky(IMatrix arg) {
 		final DoubleMatrix mat = ((MatrixJBLAS) arg).getMatrixObject();
 		return new MatrixJBLAS(Decompose.cholesky(mat));
+	}
+
+	@Override
+	public double determinant(IMatrix A) {
+		final DoubleMatrix a = ((MatrixJBLAS) A).getMatrixObject();
+		LUDecomposition<DoubleMatrix> lu = Decompose.lu(a);
+		// det(A) = det(L) * det(U) * det(P)
+		return lu.l.diag().prod() * lu.u.diag().prod() * lu.p.diag().prod();
 	}
 
 }

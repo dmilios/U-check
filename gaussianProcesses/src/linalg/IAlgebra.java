@@ -21,9 +21,11 @@ public interface IAlgebra {
 	public IMatrix solve(IMatrix A, IMatrix B);
 
 	public IMatrix solvePositive(IMatrix A, IMatrix B);
-	
+
 	public void solvePositiveInPlace(IMatrix A, IMatrix B);
 
 	public IMatrix cholesky(IMatrix arg);
+
+	public double determinant(IMatrix A);
 
 }

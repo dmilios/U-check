@@ -92,4 +92,9 @@ public class ApproximateGPR extends AbstractGP<RegressionPosterior> {
 		return term1 + term2 + term3;
 	}
 
+	@Override
+	public double[] getMarginalLikelihoodGradient() {
+		throw new IllegalAccessError("Not supported yet!");
+	}
+	
 }

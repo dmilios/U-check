@@ -1,9 +1,9 @@
 package gp;
 
 import gp.AbstractGP;
-import optim.ObjectiveFunction;
+import optim.DifferentiableObjective;
 
-final public class HyperparamLogLikelihood implements ObjectiveFunction {
+final public class HyperparamLogLikelihood implements DifferentiableObjective {
 
 	final private AbstractGP<?> gp;
 
@@ -21,6 +21,13 @@ final public class HyperparamLogLikelihood implements ObjectiveFunction {
 			System.out.println(e.getMessage());
 		}
 		return lik;
+	}
+
+	@Override
+	public double[] getGradientAt(double... point) {
+		gp.getKernel().setHyperarameters(point);
+		final double[] grad = gp.getMarginalLikelihoodGradient();
+		return grad;
 	}
 
 }

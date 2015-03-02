@@ -7,7 +7,7 @@ import gp.GpDataset;
 public class KernelIMC extends KernelFunction {
 
 	final private int tasks;
-	
+
 	final private KernelFunction localKernel;
 	private double[] hyp;
 	private double[][] taskCovariances;
@@ -20,7 +20,7 @@ public class KernelIMC extends KernelFunction {
 		for (int i = 1; i <= tasks; i++)
 			corrParams += i;
 
-		final int localParams = localKernel.getHyperarameters().length;
+		final int localParams = localKernel.getHypeparameters().length;
 		final double[] hyp = new double[corrParams + localParams];
 		for (int i = 0; i < tasks; i++) {
 			for (int j = 0; j < i; j++)
@@ -30,7 +30,7 @@ public class KernelIMC extends KernelFunction {
 					hyp[i + j] = 0;
 		}
 		for (int i = corrParams; i < hyp.length; i++)
-			hyp[i] = localKernel.getHyperarameters()[i - corrParams];
+			hyp[i] = localKernel.getHypeparameters()[i - corrParams];
 		setHyperarameters(hyp);
 	}
 
@@ -51,7 +51,7 @@ public class KernelIMC extends KernelFunction {
 	}
 
 	@Override
-	public double[] getHyperarameters() {
+	public double[] getHypeparameters() {
 		return null;
 	}
 
@@ -66,8 +66,13 @@ public class KernelIMC extends KernelFunction {
 		int corrParams = 0;
 		for (int i = 1; i <= tasks; i++)
 			corrParams += i;
-		
-		
+
+	}
+
+	@Override
+	public double calculateHyperparamDerivative(double[] x1, double[] x2,
+			int hyperparamIndex) {
+		return 0;
 	}
 
 }

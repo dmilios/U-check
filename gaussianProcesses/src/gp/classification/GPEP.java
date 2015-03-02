@@ -70,6 +70,11 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 		return gauss.logZ;
 	}
 
+	@Override
+	public double[] getMarginalLikelihoodGradient() {
+		throw new IllegalAccessError("Not supported yet!");
+	}
+	
 	double logdet_LC = 0;
 
 	private Gauss calculatePosterior(GpDataset testSet, final double tolerance) {
@@ -619,7 +624,7 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 		if (optimise) {
 			HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
 			LocalOptimisation alg = new PowellMethodApache();
-			final double init[] = gp.getKernel().getHyperarameters();
+			final double init[] = gp.getKernel().getHypeparameters();
 			PointValue best = alg.optimise(func, init);
 			gp.getKernel().setHyperarameters(best.getPoint());
 			System.out.println(best);

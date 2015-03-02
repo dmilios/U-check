@@ -197,7 +197,7 @@ final public class GpDataset {
 
 	private boolean canUsedCachedResults(final KernelFunction func) {
 		return cachedKernel == func.getClass()
-				&& Arrays.equals(cachedHyperparams, func.getHyperarameters());
+				&& Arrays.equals(cachedHyperparams, func.getHypeparameters());
 	}
 
 	public final double[] calculateVariances(final KernelFunction func) {
@@ -245,7 +245,7 @@ final public class GpDataset {
 
 		cachedGramMatrix = result;
 		cachedKernel = func.getClass();
-		cachedHyperparams = func.getHyperarameters();
+		cachedHyperparams = func.getHypeparameters();
 		cachedHyperparams = Arrays.copyOf(cachedHyperparams,
 				cachedHyperparams.length);
 		return result;
@@ -261,6 +261,22 @@ final public class GpDataset {
 		for (int i = 0; i < n1; i++)
 			for (int j = 0; j < n2; j++)
 				result[i][j] = func.calculate(x1[i], x2[j]);
+		return result;
+	}
+
+	public final double[][] calculateCovarianceDerivatives(
+			final KernelFunction func, final int hyperparamIndex) {
+		final double[][] x = this.dataX;
+		final int n = this.getSize();
+		final double[][] result = new double[n][n];
+		for (int i = 0; i < n; i++) {
+			result[i][i] = func.calculateHyperparamDerivative(x[i], x[i],
+					hyperparamIndex);
+			for (int j = i + 1; j < n; j++)
+				result[j][i] = result[i][j] = func
+						.calculateHyperparamDerivative(x[i], x[j],
+								hyperparamIndex);
+		}
 		return result;
 	}
 
