@@ -1,4 +1,4 @@
-package config;
+package ucheck.config;
 
 import gp.kernels.KernelFunction;
 import gp.kernels.KernelRBF;
@@ -15,24 +15,22 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import mitl.MiTL;
-import mitl.MitlPropertiesList;
-import parsers.MitlFactory;
 import priors.ExponentialPrior;
 import priors.GammaPrior;
 import priors.GaussianPrior;
 import priors.Prior;
 import priors.UniformPrior;
-import biopepa.BiopepaFile;
+import ucheck.methods.UcheckModel;
+import simhya.model.flat.parser.FlatParser;
+import simhya.model.flat.parser.ParseException;
 import smoothedMC.SmmcOptions;
-import ssa.CTMCModel;
-import cli.Log;
-import cli.PrintStreamLog;
+import ucheck.cli.Log;
+import ucheck.cli.PrintStreamLog;
 
-public class Configuration {
+public class Config_SimHyA {
 
-	private Map<String, PropertySpec> propertySpecs = new HashMap<String, PropertySpec>();
-	private Map<String, Object> properties = new HashMap<String, Object>();
+	private Map<String, PropertySpec> optionSpecs = new HashMap<String, PropertySpec>();
+	private Map<String, Object> configOptions = new HashMap<String, Object>();
 
 	private ArrayList<String> parameterNames = new ArrayList<String>();
 	private Map<String, double[]> parameters = new HashMap<String, double[]>();
@@ -40,15 +38,15 @@ public class Configuration {
 
 	private Log log;
 
-	private BiopepaFile biopepaModel;
-	private String mitlText;
+	private UcheckModel model = new UcheckModel();
+	private String[] formulae;
 	private boolean[][] observations;
 
-	public Configuration() {
+	public Config_SimHyA() {
 		this(new PrintStreamLog(System.out));
 	}
 
-	public Configuration(Log log) {
+	public Config_SimHyA(Log log) {
 		this.log = log;
 		defineConfigurationOptions();
 	}
@@ -76,19 +74,19 @@ public class Configuration {
 				continue;
 			}
 
-			final String property = split[0].trim();
+			final String option = split[0].trim();
 			final String value = split[1].trim();
 
-			final String[] propertySplit = property.split("\\s+");
-			if (propertySplit.length == 1)
-				readProperty(property, value, lineCounter);
-			if (propertySplit.length == 2)
-				if (propertySplit[0].equals("parameter"))
-					readParameter(propertySplit[1], value);
-				else if (propertySplit[0].equals("prior"))
-					readPrior(propertySplit[1], value);
+			final String[] optionSplit = option.split("\\s+");
+			if (optionSplit.length == 1)
+				readOption(option, value, lineCounter);
+			if (optionSplit.length == 2)
+				if (optionSplit[0].equals("parameter"))
+					readParameter(optionSplit[1], value);
+				else if (optionSplit[0].equals("prior"))
+					readPrior(optionSplit[1], value);
 				else
-					log.printWarning("Congifuration option \"" + property
+					log.printWarning("Congifuration option \"" + option
 							+ "\" is undefined at line " + lineCounter);
 		}
 		scanner.close();
@@ -102,49 +100,56 @@ public class Configuration {
 	private void verifyLoadedInformation() {
 
 		// verify model
-		String modelFile = (String) properties.get("model");
+		String modelFile = (String) configOptions.get("model");
 		if (modelFile.startsWith("\""))
 			modelFile = modelFile.substring(1);
 		if (modelFile.endsWith("\""))
 			modelFile = modelFile.substring(0, modelFile.length() - 1);
-		if (modelFile.endsWith(".biopepa")) {
-			biopepaModel = null;
-			try {
-				biopepaModel = new BiopepaFile(modelFile);
-			} catch (IOException e) {
-				log.printError(e.getMessage());
-				return;
-			}
+
+		try {
+			FlatParser parser = new FlatParser();
+			parser.parseFromFile(modelFile);
+			model.loadModel(modelFile);
+		} catch (ParseException e) {
+			final String msg = e.getMessage();
+			if (msg.contains("java.io.FileNotFoundException"))
+				log.printError(modelFile + " (No such file or directory)");
+			else
+				log.printError(msg);
 		}
 
 		// verify MiTL file
-		String mitlFile = (String) properties.get("properties");
+		String mitlFile = (String) configOptions.get("propertyFile");
 		if (mitlFile.startsWith("\""))
 			mitlFile = mitlFile.substring(1);
 		if (mitlFile.endsWith("\""))
 			mitlFile = mitlFile.substring(0, mitlFile.length() - 1);
-		mitlText = null;
+
 		try {
-			mitlText = readFile(mitlFile);
-		} catch (IOException e) {
-			log.printError(e.getMessage());
-			return;
+			model.loadSMCformulae(mitlFile);
+		} catch (Exception e) {
+			log.printError("Could not load property file " + mitlFile);
 		}
 
-		// verify MiTL file
-		final CTMCModel model = biopepaModel.getModel();
-		MitlFactory factory = new MitlFactory(model.getStateVariables());
-		MitlPropertiesList l = factory.constructProperties(mitlText);
-		ArrayList<MiTL> list = l.getProperties();
-		MiTL[] formulae = new MiTL[list.size()];
-		list.toArray(formulae);
-		// FIXME: verify mitl properties
+		// verify property names
+		final Object[] buffer = (Object[]) configOptions.get("properties");
+		formulae = new String[buffer != null ? buffer.length : 0];
+		if (buffer != null)
+			System.arraycopy(buffer, 0, formulae, 0, buffer.length);
+		if (formulae.length == 0)
+			log.printError("Properties have not been properly defined!");
 
-		//
+		else
+			try {
+				final double tfinal = 1e-8;
+				model.smc_set(formulae, tfinal, 0);
+			} catch (Exception e) {
+				log.printError(e.getMessage());
+			}
 
 		// verify observations
-		if (properties.get("mode").equals("inference")) {
-			String obsFile = (String) properties.get("observations");
+		if (configOptions.get("mode").equals("inference")) {
+			String obsFile = (String) configOptions.get("observations");
 			if (obsFile.startsWith("\""))
 				obsFile = obsFile.substring(1);
 			if (obsFile.endsWith("\""))
@@ -168,13 +173,17 @@ public class Configuration {
 
 		// verify that the parameter defined are included in the model
 		for (final String parameterName : parameterNames)
-			if (!biopepaModel.containsVariable(parameterName))
+			try {
+				model.setParameters(new String[] { parameterName },
+						new double[] { 1 });
+			} catch (Exception e) {
 				log.printError("Parameter \"" + parameterName
 						+ "\" does not exist in the model!");
+			}
 
 		// verify that the kernel hyperparameters are valid
-		Object kerneltype = properties.get("kernel");
-		Object[] lengthscales = (Object[]) properties.get("lengthscale");
+		Object kerneltype = configOptions.get("kernel");
+		Object[] lengthscales = (Object[]) configOptions.get("lengthscale");
 		if (kerneltype.equals("rbfiso"))
 			if (lengthscales.length > 1)
 				log.printWarning("Redundant lenghtscales for "
@@ -186,8 +195,8 @@ public class Configuration {
 						+ "lengthscales to be specified for all parameters!");
 	}
 
-	private void readProperty(String property, String value, int line) {
-		final PropertySpec spec = propertySpecs.get(property);
+	private void readOption(String property, String value, int line) {
+		final PropertySpec spec = optionSpecs.get(property);
 
 		if (spec == null) {
 			log.printWarning("Congifuration option \"" + property
@@ -196,7 +205,7 @@ public class Configuration {
 		}
 
 		if (spec.isValid(value))
-			properties.put(property, spec.getValueOf(value));
+			configOptions.put(property, spec.getValueOf(value));
 
 		else {
 			log.printWarning("Invalid assignment for \"" + property
@@ -204,7 +213,7 @@ public class Configuration {
 					+ spec.getValidValues() + "; default value \""
 					+ spec.getDefaultValueString() + "\" is used.");
 			final Object defaultVal = spec.getDefaultValue();
-			properties.put(property, defaultVal);
+			configOptions.put(property, defaultVal);
 		}
 	}
 
@@ -286,14 +295,16 @@ public class Configuration {
 	}
 
 	final private void addProperty(PropertySpec spec) {
-		propertySpecs.put(spec.getName(), spec);
+		optionSpecs.put(spec.getName(), spec);
 	}
 
 	final private void defineConfigurationOptions() {
 
 		// main experiment options
 		addProperty(new StringSpec("model", ""));
-		addProperty(new StringSpec("properties", ""));
+		addProperty(new StringSpec("propertyFile", ""));
+		addProperty(new CollectionSpec("properties", new String[] {},
+				new IDSpec("propertyName", "")));
 		addProperty(new StringSpec("observations", ""));
 		addProperty(new CategoricalSpec("mode", "", "inference", "smoothedmc"));
 
@@ -337,37 +348,22 @@ public class Configuration {
 	}
 
 	public String getMode() {
-		final String mode = (String) properties.get("mode");
+		final String mode = (String) configOptions.get("mode");
 		if (mode != null)
 			return mode;
 		return "";
 	}
 
-	public BiopepaFile getBiopepaModel() {
-		return biopepaModel;
+	public UcheckModel getModel() {
+		return model;
 	}
 
-	public String getMitlText() {
-		return mitlText;
+	public String[] getFormnulae() {
+		return formulae;
 	}
 
 	public boolean[][] getObservations() {
 		return observations;
-	}
-
-	@Deprecated
-	public String getModel() {
-		return (String) properties.get("model");
-	}
-
-	@Deprecated
-	public String getProperties() {
-		return (String) properties.get("properties");
-	}
-
-	@Deprecated
-	public String getObservations_() {
-		return (String) properties.get("observations");
 	}
 
 	public smoothedMC.Parameter[] getSmMCParameters() {
@@ -409,9 +405,9 @@ public class Configuration {
 	public SmmcOptions getSmMCOptions() {
 		final SmmcOptions options = new SmmcOptions();
 
-		Set<String> keys = properties.keySet();
+		Set<String> keys = configOptions.keySet();
 		for (final String key : keys) {
-			final Object value = properties.get(key);
+			final Object value = configOptions.get(key);
 
 			if (key.equals("endTime"))
 				options.setSimulationEndTime((double) value);
@@ -446,9 +442,9 @@ public class Configuration {
 	public LFFOptions getLFFOptions() {
 		final LFFOptions options = new LFFOptions();
 
-		Set<String> keys = properties.keySet();
+		Set<String> keys = configOptions.keySet();
 		for (final String key : keys) {
-			final Object value = properties.get(key);
+			final Object value = configOptions.get(key);
 
 			if (key.equals("endTime"))
 				options.setSimulationEndTime((double) value);
@@ -507,18 +503,18 @@ public class Configuration {
 
 	public KernelFunction getKernel() {
 		// load hyperparameters, if exist
-		Double a = (Double) properties.get("amplitude");
+		Double a = (Double) configOptions.get("amplitude");
 		if (a == null) {
-			final PropertySpec spec = propertySpecs.get("amplitude");
+			final PropertySpec spec = optionSpecs.get("amplitude");
 			a = (Double) spec.getDefaultValue();
 		}
-		Object[] l = (Object[]) properties.get("lengthscale");
+		Object[] l = (Object[]) configOptions.get("lengthscale");
 		if (l == null) {
-			final PropertySpec spec = propertySpecs.get("lengthscale");
+			final PropertySpec spec = optionSpecs.get("lengthscale");
 			l = (Object[]) spec.getDefaultValue();
 		}
 
-		final Object value = properties.get("kernel");
+		final Object value = configOptions.get("kernel");
 		if (value.equals("rbfiso")) {
 			return new KernelRBF(a, (double) l[0]);
 		}

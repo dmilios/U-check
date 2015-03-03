@@ -1,27 +1,22 @@
-package cli;
+package ucheck.cli;
 
 import gp.classification.ClassificationPosterior;
 import gpoMC.LFFOptions;
-import gpoMC.LearnFromFormulae;
 import gpoptim.GpoResult;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import config.Configuration;
-import mitl.MiTL;
-import mitl.MitlPropertiesList;
-import biopepa.BiopepaFile;
-import parsers.MitlFactory;
 import priors.Prior;
+import ucheck.methods.UcheckModel;
 import smoothedMC.SmmcOptions;
 import smoothedMC.SmmcUtils;
-import smoothedMC.SmoothedModelCheker;
-import ssa.CTMCModel;
+import ucheck.config.Config_SimHyA;
+import ucheck.methods.LFF;
+import ucheck.methods.SmoothedMC;
 
-public class UcheckCLI {
+public class UcheckCLI_SimHyA {
 
 	public static void main(String[] args) {
 
@@ -44,10 +39,10 @@ public class UcheckCLI {
 
 		final String optionfile = args[0];
 		FileInputStream fstream = null;
-		Configuration config = null;
+		Config_SimHyA config = null;
 		try {
 			fstream = new FileInputStream(optionfile);
-			config = new Configuration(log);
+			config = new Config_SimHyA(log);
 			config.load(fstream);
 			fstream.close();
 		} catch (IOException e) {
@@ -74,46 +69,34 @@ public class UcheckCLI {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public static void performInference(Configuration config, Log log) {
+	public static void performInference(Config_SimHyA config, Log log) {
 
-		final BiopepaFile biopepa = config.getBiopepaModel();
-		final String mitlText = config.getMitlText();
+		final UcheckModel model = config.getModel();
+		final String[] formulae = config.getFormnulae();
 		final boolean[][] observations = config.getObservations();
 		final LFFOptions lffOptions = config.getLFFOptions();
 		final gpoMC.Parameter[] params = config.getLFFParameters();
 		final Prior[] priors = config.getLFFPriors();
 
-		final CTMCModel model = biopepa.getModel();
-
-		MitlFactory factory = new MitlFactory(model.getStateVariables());
-		MitlPropertiesList l = factory.constructProperties(mitlText);
-		ArrayList<MiTL> list = l.getProperties();
-		MiTL[] formulae = new MiTL[list.size()];
-		list.toArray(formulae);
-
-		LearnFromFormulae lff = new LearnFromFormulae();
+		LFF lff = new LFF();
 		lff.setModel(model);
 		lff.setParams(params);
 		lff.setPriors(priors);
 		lff.setOptions(lffOptions);
-		lff.setBiopepa(biopepa);
-		lff.setMitlText(mitlText);
 
 		GpoResult result = lff.performInference(formulae, observations);
 		log.println(result.toString());
 	}
 
-	public static void performSmoothedMC(Configuration config, Log log) {
-		final BiopepaFile biopepa = config.getBiopepaModel();
-		final String mitlText = config.getMitlText();
+	public static void performSmoothedMC(Config_SimHyA config, Log log) {
+		final UcheckModel model = config.getModel();
+		final String formula = config.getFormnulae()[0];
 		final SmmcOptions options = config.getSmMCOptions();
 		final smoothedMC.Parameter[] params = config.getSmMCParameters();
 
-		final SmoothedModelCheker smmc = new SmoothedModelCheker();
+		final SmoothedMC smmc = new SmoothedMC();
 		final ClassificationPosterior result = smmc
-				.performSmoothedModelChecking(biopepa, mitlText, params,
-						options);
+				.performSmoothedModelChecking(model, formula, params, options);
 
 		log.println("# Smoothed Model Checking --- Results");
 		log.println("Time for Statistical MC: "
@@ -125,7 +108,7 @@ public class UcheckCLI {
 		log.println("Hyperparams used: "
 				+ Arrays.toString(smmc.getHyperparamsUsed()));
 
-		// System.out.println("\n" + SmmcUtils.results2csv(result, 2));
+		System.out.println("\n" + SmmcUtils.results2csv(result, 2));
 	}
 
 }

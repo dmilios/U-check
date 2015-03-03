@@ -1,4 +1,4 @@
-package cli;
+package ucheck.cli;
 
 import java.io.PrintStream;
 

@@ -1,4 +1,4 @@
-package config;
+package ucheck.config;
 
 public final class CategoricalSpec extends PropertySpec {
 

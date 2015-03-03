@@ -1,4 +1,4 @@
-package cli;
+package ucheck.cli;
 
 public abstract class Log {
 

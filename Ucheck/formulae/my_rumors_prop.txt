@@ -1,0 +1,10 @@
+notzero := I > 0;
+rAndS := R >= S;
+peak := S >= 0.5*N;
+low := S <= 0.25*N;
+
+
+#MTL
+:ignorants: P=?[ G[3,5] notzero ];
+:rGreaterThanS: P=?[ G[0.5,1.0] rAndS ];
+:peakAndLow: P=?[ (F[0.0, 1.0] peak) &&( G[1.0,2.0] low ) ];

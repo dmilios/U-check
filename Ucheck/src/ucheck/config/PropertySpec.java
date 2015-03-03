@@ -1,4 +1,4 @@
-package config;
+package ucheck.config;
 
 import java.util.Arrays;
 

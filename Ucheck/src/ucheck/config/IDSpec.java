@@ -1,14 +1,14 @@
-package config;
+package ucheck.config;
 
-public class StringSpec extends PropertySpec {
+public class IDSpec extends PropertySpec {
 
-	public StringSpec(String name, String defaultValue) {
+	public IDSpec(String name, String defaultValue) {
 		super(name, defaultValue);
 	}
 
 	@Override
 	public boolean isValid(String value) {
-		return value.startsWith("\"") && value.endsWith("\"");
+		return value.matches("[a-zA-Z_][a-zA-Z_0-9]*");
 	}
 
 	@Override
@@ -18,7 +18,7 @@ public class StringSpec extends PropertySpec {
 
 	@Override
 	public Object getValueOf(String str) {
-		return str;
+		return str.trim();
 	}
-	
+
 }

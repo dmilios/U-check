@@ -1,4 +1,4 @@
-package config;
+package ucheck.config;
 
 public class CollectionSpec extends PropertySpec {
 
@@ -23,7 +23,7 @@ public class CollectionSpec extends PropertySpec {
 
 		String[] values = value.split(",");
 		for (final String val : values) {
-			if (!spec.isValid(val))
+			if (!spec.isValid(val.trim()))
 				return false;
 		}
 		return true;

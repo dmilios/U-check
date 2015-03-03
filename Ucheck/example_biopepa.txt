@@ -1,9 +1,8 @@
 
 ## experiment options
 
-model = "models/RUMORS.txt"
+model = "models/rumour.biopepa"
 propertyFile = "formulae/rumour.mtl"
-properties = ignorants, rGreaterThanS, peakAndLow
 observations = "formulae/rumour.dat"
 
 mode = smoothedmc

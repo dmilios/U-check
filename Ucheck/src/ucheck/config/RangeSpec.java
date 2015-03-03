@@ -1,4 +1,4 @@
-package config;
+package ucheck.config;
 
 public class RangeSpec extends PropertySpec {
 
