@@ -8,6 +8,7 @@ import optim.PointValue;
 import gp.GpDataset;
 import gp.GpPosterior;
 import gp.HyperparamLogLikelihood;
+import gp.kernels.KernelFunction;
 import gp.regression.RegressionGP;
 
 public class GPOptimisation {
@@ -51,7 +52,8 @@ public class GPOptimisation {
 			if (lbounds[i] >= ubounds[i])
 				throw new IllegalArgumentException("lbound >= ubound");
 
-		gp = new RegressionGP(algebra, options.getKernelGP());
+		final KernelFunction kernel = options.getKernelGP();
+		gp = new RegressionGP(algebra, kernel);
 		gp.setPreferInversion(true);
 
 		logspace = new LogspaceConverter(lbounds, ubounds);
@@ -69,11 +71,11 @@ public class GPOptimisation {
 			final long t1 = System.currentTimeMillis();
 			result.setHyperparamOptimTimeElapsed((t1 - t0) / 1000.0);
 		} else if (options.useDefaultHyperparams()) {
-			final double[] hyp = gp.getKernel().getDefaultHyperarameters(
-					gp.getTrainingSet());
-			gp.getKernel().setHyperarameters(hyp);
+			final GpDataset dataset = gp.getTrainingSet();
+			final double[] hyp = kernel.getDefaultHyperarameters(dataset);
+			kernel.setHyperarameters(hyp);
 		}
-		result.setHyperparamsUsed(gp.getKernel().getHypeparameters());
+		result.setHyperparamsUsed(kernel.getHypeparameters());
 
 		final int m = options.getGridSampleNumber();
 		final int dim = lbounds.length;

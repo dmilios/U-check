@@ -48,7 +48,8 @@ public class LFFLogPosterior implements NoisyObjectiveFunction {
 		modelChecker.getModel().setParameters(names, point);
 		final double tf = options.getSimulationEndTime();
 		final int runs = options.getSimulationRuns();
-		final boolean[][] obs = modelChecker.performMC(tf, runs, 1000);
+		final int timepoints = options.getSimulationTimepoints();
+		final boolean[][] obs = modelChecker.performMC(tf, runs, timepoints);
 
 		cachedPoint = point.clone();
 		return logLikelihoodOfObservations(obs);

@@ -1,45 +1,20 @@
 package tests;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
-import parsers.MitlFactory;
-import biopepa.BiopepaFile;
-import ssa.CTMCModel;
-import ssa.GillespieSSA;
-import ssa.StochasticSimulationAlgorithm;
-import mitl.MiTL;
-import mitl.MitlPropertiesList;
-import model.Trajectory;
+import modelChecking.MitlModelChecker;
+import biopepa.BiopepaModel;
 
 public class ObservationsGenerator {
 
-	private int simulationRuns = 20;
+	public static void main(String[] args) throws Exception {
 
-	public void setSimulationRuns(int simulationRuns) {
-		this.simulationRuns = simulationRuns;
-	}
-
-	public boolean[][] generate(CTMCModel model, MiTL[] formulae, double tfinal) {
-		final boolean[][] data = new boolean[simulationRuns][formulae.length];
-		final StochasticSimulationAlgorithm ssa = new GillespieSSA(model);
-		for (int run = 0; run < simulationRuns; run++) {
-			final Trajectory x = ssa.generateTrajectory(0, tfinal);
-			for (int f = 0; f < formulae.length; f++)
-				data[run][f] = formulae[f].evaluate(x, 0);
-		}
-		return data;
-	}
-
-	public static void main(String[] args) throws IOException {
-
-		String model = "../gpoMC/models/rumour.biopepa";
-		String properties = "../gpoMC/formulae/rumour.mtl";
+		String model = "../learningFromFormulae/models/rumour.biopepa";
+		String properties = "../learningFromFormulae/formulae/rumour.mtl";
 		double tfinal = 5;
 		int runs = 100;
+		boolean robust = false;
 
 		if (args.length >= 1)
 			model = args[0];
@@ -49,22 +24,38 @@ public class ObservationsGenerator {
 			tfinal = Double.parseDouble(args[2]);
 		if (args.length >= 4)
 			runs = Integer.parseInt(args[3]);
+		if (args.length >= 5)
+			robust = Boolean.parseBoolean(args[4]);
 
-		ObservationsGenerator gen = new ObservationsGenerator();
-		gen.setSimulationRuns(runs);
-
-		final CTMCModel ctmc = (new BiopepaFile(model)).getModel();
-		final String mitlText = readFile(properties);
-		MitlFactory factory = new MitlFactory(ctmc.getStateVariables());
-		MitlPropertiesList l = factory.constructProperties(mitlText);
-		ArrayList<MiTL> list = l.getProperties();
-		MiTL[] formulae = new MiTL[list.size()];
-		list.toArray(formulae);
-
-		boolean[][] data = gen.generate(ctmc, formulae, tfinal);
 		final int idx = properties.indexOf(".mtl");
-		final String datfile = properties.substring(0, idx) + ".dat";
-		savetofile(datfile, data);
+		final String datfile;
+		if (!robust) {
+			datfile = properties.substring(0, idx) + ".dat";
+			boolean[][] data = generate(model, properties, tfinal, runs);
+			savetofile(datfile, data);
+		} else {
+			datfile = properties.substring(0, idx) + "_robust.dat";
+			double[][] data = generateRobust(model, properties, tfinal, runs);
+			savetofile(datfile, data);
+		}
+	}
+
+	public static boolean[][] generate(String model, String properties,
+			double stopTime, int runs) throws Exception {
+		BiopepaModel biopepa = new BiopepaModel();
+		biopepa.loadModel(model);
+		MitlModelChecker modelChecker = new MitlModelChecker(biopepa);
+		modelChecker.loadProperties(properties);
+		return modelChecker.performMC(stopTime, runs);
+	}
+
+	public static double[][] generateRobust(String model, String properties,
+			double stopTime, int runs) throws Exception {
+		BiopepaModel biopepa = new BiopepaModel();
+		biopepa.loadModel(model);
+		MitlModelChecker modelChecker = new MitlModelChecker(biopepa);
+		modelChecker.loadProperties(properties);
+		return modelChecker.performMCRobust(stopTime, runs);
 	}
 
 	private static void savetofile(String file, boolean[][] data)
@@ -82,13 +73,19 @@ public class ObservationsGenerator {
 		pw.close();
 	}
 
-	private static final String readFile(String filename) throws IOException {
-		final FileInputStream input = new FileInputStream(filename);
-		final byte[] fileData = new byte[input.available()];
-		input.read(fileData);
-		input.close();
-
-		return new String(fileData);
+	private static void savetofile(String file, double[][] data)
+			throws FileNotFoundException {
+		final PrintWriter pw = new PrintWriter(file);
+		for (int i = 0; i < data.length; i++) {
+			final int last_j = data[i].length - 1;
+			for (int j = 0; j < last_j; j++) {
+				pw.print(data[i][j]);
+				pw.print(", ");
+			}
+			pw.print(data[i][last_j]);
+			pw.println();
+		}
+		pw.close();
 	}
 
 }

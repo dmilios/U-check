@@ -15,6 +15,10 @@ public class LearnFromFormulae {
 	private Prior[] priors;
 	private LFFOptions options = new LFFOptions();
 
+	public LearnFromFormulae(MitlModelChecker modelChecker) {
+		this.modelChecker = modelChecker;
+	}
+
 	public void setModelChecker(MitlModelChecker modelChecker) {
 		this.modelChecker = modelChecker;
 	}

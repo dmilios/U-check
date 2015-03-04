@@ -26,7 +26,7 @@ public class MitlModelChecker {
 	public MiTL[] getProperties() {
 		return properties;
 	}
-	
+
 	public void loadProperties(String file) throws IOException {
 		setProperties(readFile(file));
 	}
@@ -40,6 +40,9 @@ public class MitlModelChecker {
 	}
 
 	public boolean[][] performMC(double tfinal, int runs, int timepoints) {
+		if (properties == null || properties.length == 0)
+			throw new IllegalStateException(
+					"No properties have been specified!");
 		final boolean[][] results = new boolean[runs][];
 		final Trajectory[] trajectories = model.generateTrajectories(tfinal,
 				runs, timepoints);
@@ -48,10 +51,37 @@ public class MitlModelChecker {
 		return results;
 	}
 
+	public boolean[][] performMC(double tfinal, int runs) {
+		if (properties == null || properties.length == 0)
+			throw new IllegalStateException(
+					"No properties have been specified!");
+		final boolean[][] results = new boolean[runs][];
+		final Trajectory[] trajectories = model.generateTrajectories(tfinal,
+				runs);
+		for (int run = 0; run < runs; run++)
+			results[run] = modelCheck(trajectories[run]);
+		return results;
+	}
+
 	public double[][] performMCRobust(double tfinal, int runs, int timepoints) {
+		if (properties == null || properties.length == 0)
+			throw new IllegalStateException(
+					"No properties have been specified!");
 		final double[][] results = new double[runs][];
 		final Trajectory[] trajectories = model.generateTrajectories(tfinal,
 				runs, timepoints);
+		for (int run = 0; run < runs; run++)
+			results[run] = modelCheckRobust(trajectories[run]);
+		return results;
+	}
+
+	public double[][] performMCRobust(double tfinal, int runs) {
+		if (properties == null || properties.length == 0)
+			throw new IllegalStateException(
+					"No properties have been specified!");
+		final double[][] results = new double[runs][];
+		final Trajectory[] trajectories = model.generateTrajectories(tfinal,
+				runs);
 		for (int run = 0; run < runs; run++)
 			results[run] = modelCheckRobust(trajectories[run]);
 		return results;

@@ -67,10 +67,12 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 	}
 
 	/**
-	 * The procuct {@code C^(-1) * y} is often reported as auxiliary in the
+	 * The product {@code C^(-1) * y} is often reported as auxiliary in the
 	 * literature.
 	 */
 	public double[] getAux() {
+		if (trainingSet.isModified())
+			setupPriorProcess();
 		return invC_y.getData();
 	}
 

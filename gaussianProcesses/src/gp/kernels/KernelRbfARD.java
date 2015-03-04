@@ -39,7 +39,7 @@ public class KernelRbfARD extends KernelFunction {
 			if (y[i] < min)
 				min = y[i];
 		}
-		defaultHyp[0] = max - min;
+		defaultHyp[0] = max - min + 1e-5;
 
 		final int n = data.getSize();
 		final int dim = data.getDimension();

@@ -76,8 +76,7 @@ public class UcheckCLI {
 		final lff.Parameter[] params = config.getLFFParameters();
 		final Prior[] priors = config.getLFFPriors();
 
-		LearnFromFormulae lff = new LearnFromFormulae();
-		lff.setModelChecker(modelChecker);
+		LearnFromFormulae lff = new LearnFromFormulae(modelChecker);
 		lff.setParams(params);
 		lff.setPriors(priors);
 		lff.setOptions(lffOptions);
@@ -95,15 +94,15 @@ public class UcheckCLI {
 		final ClassificationPosterior result = smmc
 				.performSmoothedModelChecking(check, params, options);
 
+		final double smcElapsed = smmc.getStatisticalMCTimeElapsed();
+		final double hypElapsed = smmc.getHyperparamOptimTimeElapsed();
+		final double smmcElapsed = smmc.getSmoothedMCTimeElapsed();
+		final double[] hyperparams = smmc.getHyperparamsUsed();
 		log.println("# Smoothed Model Checking --- Results");
-		log.println("Time for Statistical MC: "
-				+ smmc.getStatisticalMCTimeElapsed() + " sec");
-		log.println("Time for hyperparam opt: "
-				+ smmc.getHyperparamOptimTimeElapsed() + " sec");
-		log.println("Time for Smoothed MC: " + smmc.getSmoothedMCTimeElapsed()
-				+ " sec");
-		log.println("Hyperparams used: "
-				+ Arrays.toString(smmc.getHyperparamsUsed()));
+		log.println("Time for Statistical MC: " + smcElapsed + " sec");
+		log.println("Time for hyperparam opt: " + hypElapsed + " sec");
+		log.println("Time for Smoothed MC: " + smmcElapsed + " sec");
+		log.println("Hyperparams used: " + Arrays.toString(hyperparams));
 
 		System.out.println("\n" + SmmcUtils.results2csv(result, 2));
 	}

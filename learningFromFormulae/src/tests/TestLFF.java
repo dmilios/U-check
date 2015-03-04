@@ -1,41 +1,34 @@
 package tests;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import lff.LearnFromFormulae;
-import lff.Parameter;
-import mitl.MiTL;
-import mitl.MitlPropertiesList;
-import parsers.MitlFactory;
-import ssa.CTMCModel;
 import gp.kernels.KernelRBF;
 import gpoptim.GpoResult;
 import gridSampling.LatinHypercubeSampler;
-import biopepa.BiopepaFile;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import lff.LearnFromFormulae;
+import lff.Parameter;
+import modelChecking.MitlModelChecker;
+import biopepa.BiopepaModel;
 
 public class TestLFF {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
+
 		final String modelFile = "models/rumour.biopepa";
-		BiopepaFile biopepa = new BiopepaFile(modelFile);
-
 		final String mitlFile = "formulae/rumour.mtl";
-		final String mitlText = readFile(mitlFile);
 
-		CTMCModel model = biopepa.getModel();
+		BiopepaModel biopepa = new BiopepaModel();
+		biopepa.loadModel(modelFile);
+		MitlModelChecker modelChecker = new MitlModelChecker(biopepa);
+		modelChecker.loadProperties(mitlFile);
+
 		Parameter[] params = new Parameter[2];
 		params[0] = new Parameter("k_s", 0.001, 1);
 		params[1] = new Parameter("k_r", 0.001, 1);
 
-		MitlFactory factory = new MitlFactory(model.getStateVariables());
-		MitlPropertiesList l = factory.constructProperties(mitlText);
-		ArrayList<MiTL> list = l.getProperties();
-		MiTL[] formulae = new MiTL[list.size()];
-		list.toArray(formulae);
-
-		LearnFromFormulae lff = new LearnFromFormulae();
+		LearnFromFormulae lff = new LearnFromFormulae(modelChecker);
 		lff.setParams(params);
 
 		lff.getOptions().setSimulationEndTime(5);
@@ -46,7 +39,7 @@ public class TestLFF {
 				.setInitialSampler(new LatinHypercubeSampler(4));
 		lff.getOptions().getGpoOptions().setInitialObservtions(100);
 		lff.getOptions().getGpoOptions().setGridSampleNumber(50);
-		lff.getOptions().getGpoOptions().setLogspace(!false);
+		lff.getOptions().getGpoOptions().setLogspace(false);
 		lff.getOptions().getGpoOptions().setMaxIterations(600);
 		lff.getOptions().getGpoOptions().setMaxFailedAttempts(100);
 		lff.getOptions().getGpoOptions().setHeteroskedastic(true);
@@ -54,12 +47,11 @@ public class TestLFF {
 		lff.getOptions().getGpoOptions().setUseDefaultHyperparams(true);
 		lff.getOptions().getGpoOptions().setKernelGP(new KernelRBF());
 
-		ObservationsGenerator gen = new ObservationsGenerator();
-		final boolean[][] observations = gen.generate(model, formulae, lff
-				.getOptions().getSimulationEndTime());
-		observations.clone();
+		final boolean[][] observations = ObservationsGenerator.generate(
+				modelFile, mitlFile, lff.getOptions().getSimulationEndTime(),
+				lff.getOptions().getSimulationRuns());
 
-		GpoResult result = null;
+		GpoResult result = lff.performInference(observations);
 		System.out.println(result);
 	}
 
