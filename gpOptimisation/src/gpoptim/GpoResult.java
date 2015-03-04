@@ -17,9 +17,10 @@ public final class GpoResult {
 	@Override
 	public String toString() {
 		String str = "# Gaussian Process Optimisation --- Results\n";
-		str += "Solution:  " + Arrays.toString(solution) + "\n";
-		str += "Variances: " + Arrays.toString(getVariances()) + "\n";
-		str += "Covariances: " + getCovarianceStr() + "\n";
+		str += "Solution:     " + Arrays.toString(solution) + "\n";
+		str += "Standard Dev: " + Arrays.toString(getStandardDeviations());
+		str += "\n";
+		str += "Covariances:  " + getCovarianceStr() + "\n";
 		str += "Fitness:  " + fitness + "\n";
 		str += "Time for hyperparam opt: " + hyperparamOptimTimeElapsed
 				+ " sec\n";
@@ -39,6 +40,13 @@ public final class GpoResult {
 		for (int i = 0; i < var.length; i++)
 			var[i] = covariance[i][i];
 		return var;
+	}
+
+	public double[] getStandardDeviations() {
+		final double[] stdev = new double[covariance.length];
+		for (int i = 0; i < stdev.length; i++)
+			stdev[i] = Math.sqrt(covariance[i][i]);
+		return stdev;
 	}
 
 	public double[][] getCovariance() {

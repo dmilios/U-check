@@ -33,7 +33,7 @@ public class TestLFF {
 
 		lff.getOptions().setSimulationEndTime(5);
 		lff.getOptions().setSimulationRuns(100);
-		lff.getOptions().setSimulationTimepoints(200);
+		lff.getOptions().setSimulationTimepoints(1000);
 
 		lff.getOptions().getGpoOptions()
 				.setInitialSampler(new LatinHypercubeSampler(4));

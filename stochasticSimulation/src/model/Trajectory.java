@@ -17,6 +17,8 @@ public final class Trajectory {
 		this.values = values;
 	}
 
+	
+	
 	public Context getContext() {
 		return context;
 	}

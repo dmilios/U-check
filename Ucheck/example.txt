@@ -5,9 +5,9 @@ model = "models/RUMORS.txt"
 properties = "formulae/rumour.mtl"
 observations = "formulae/rumour.dat"
 
-mode = smoothedmc
-parameter k_s = [1.1, 2]
-parameter k_r = [0.8, 4]
+mode = inference
+parameter k_s = [0.0001, 1]
+parameter k_r = [0.0001, 1]
 
 
 prior k_s = gamma(2, 1)
@@ -29,11 +29,12 @@ lengthscale = 2, 0.4
 ## GP hypeparameters options
 hyperparamOptimisation = false
 hyperparamOptimisationRestarts = 0
+useDefaultHyperparams = true
 
 
 ## GP data options
-initialObservtions = 16
-numberOfTestPoints = 16
+initialObservtions = 100
+numberOfTestPoints = 50
 
 
 ## GP optimisation options
@@ -49,8 +50,7 @@ beta = 2
 noiseTerm = 1
 noiseTermRatio = 0.1
 useNoiseTermRatio = false
-heteroskedastic = false
-useDefaultHyperparams = false
+heteroskedastic = true
 
 
 ## GP Classification options

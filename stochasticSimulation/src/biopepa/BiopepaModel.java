@@ -37,18 +37,32 @@ public class BiopepaModel implements ModelInterface {
 	@Override
 	public Trajectory[] generateTrajectories(double stopTime, int runs,
 			int timepoints) {
-		final Trajectory[] traj = new Trajectory[runs];
-		for (int run = 0; run < runs; run++)
-			traj[run] = simulator.generateTimeseries(0, stopTime, timepoints);
-		return traj;
+		final Trajectory[] trajectories = new Trajectory[runs];
+		Trajectory x;
+		for (int run = 0; run < runs; run++) {
+			x = simulator.generateTimeseries(0, stopTime, timepoints);
+			trajectories[run] = new Trajectory(x.getTimes(), context,
+					x.getValues());
+		}
+		// NOTE: have to use the old context, because that only is
+		// compatible with the model checker.
+		// This is a deep bug; refactoring is required in the future
+		return trajectories;
 	}
 
 	@Override
 	public Trajectory[] generateTrajectories(double stopTime, int runs) {
-		final Trajectory[] traj = new Trajectory[runs];
-		for (int run = 0; run < runs; run++)
-			traj[run] = simulator.generateTrajectory(0, stopTime);
-		return traj;
+		final Trajectory[] trajectories = new Trajectory[runs];
+		Trajectory x;
+		for (int run = 0; run < runs; run++) {
+			x = simulator.generateTrajectory(0, stopTime);
+			trajectories[run] = new Trajectory(x.getTimes(), context,
+					x.getValues());
+		}
+		// NOTE: have to use the old context, because that only is
+		// compatible with the model checker.
+		// This is a deep bug; refactoring is required in the future
+		return trajectories;
 	}
 
 }
