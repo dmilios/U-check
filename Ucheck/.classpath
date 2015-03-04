@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gaussianProcesses"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/learningFromFormulae"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gpOptimisation"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/smoothedMC"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/stochasticSimulation"/>
+	<classpathentry kind="lib" path="lib/SimHyA.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
