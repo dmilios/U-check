@@ -2,7 +2,7 @@
 ## experiment options
 
 model = "models/rumour.biopepa"
-propertyFile = "formulae/rumour.mtl"
+properties = "formulae/rumour.mtl"
 observations = "formulae/rumour.dat"
 
 

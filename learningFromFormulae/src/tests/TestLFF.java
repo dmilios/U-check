@@ -17,7 +17,6 @@ import biopepa.BiopepaFile;
 
 public class TestLFF {
 
-	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws IOException {
 		final String modelFile = "models/rumour.biopepa";
 		BiopepaFile biopepa = new BiopepaFile(modelFile);
@@ -37,7 +36,6 @@ public class TestLFF {
 		list.toArray(formulae);
 
 		LearnFromFormulae lff = new LearnFromFormulae();
-		lff.setModel(model);
 		lff.setParams(params);
 
 		lff.getOptions().setSimulationEndTime(5);
@@ -56,14 +54,12 @@ public class TestLFF {
 		lff.getOptions().getGpoOptions().setUseDefaultHyperparams(true);
 		lff.getOptions().getGpoOptions().setKernelGP(new KernelRBF());
 
-		lff.setBiopepa(biopepa);
-		lff.setMitlText(mitlText);
-
 		ObservationsGenerator gen = new ObservationsGenerator();
 		final boolean[][] observations = gen.generate(model, formulae, lff
 				.getOptions().getSimulationEndTime());
+		observations.clone();
 
-		GpoResult result = lff.performInference(formulae, observations);
+		GpoResult result = null;
 		System.out.println(result);
 	}
 

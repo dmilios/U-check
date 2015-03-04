@@ -2,11 +2,10 @@
 ## experiment options
 
 model = "models/RUMORS.txt"
-propertyFile = "formulae/rumour.mtl"
-properties = ignorants, rGreaterThanS, peakAndLow
+properties = "formulae/rumour.mtl"
 observations = "formulae/rumour.dat"
 
-mode = inference
+mode = smoothedmc
 parameter k_s = [1.1, 2]
 parameter k_r = [0.8, 4]
 

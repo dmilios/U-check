@@ -16,7 +16,7 @@ import simhya.model.flat.parser.TokenMgrError;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ucheck.methods.UcheckModel;
+import ucheck.methods.SimhyaModel;
 
 public class TestMC {
 
@@ -40,7 +40,7 @@ public class TestMC {
 
 		String mitlText = readFile("formulae/rumour.mtl");
 
-		UcheckModel model1 = new UcheckModel();
+		SimhyaModel model1 = new SimhyaModel();
 		model1.loadModel("models/RUMORS.txt");
 		MitlModelChecker modelChecker = new MitlModelChecker(model1);
 		modelChecker.setProperties(mitlText);
@@ -84,14 +84,13 @@ public class TestMC {
 	}
 
 	public static void compare_row_sums() throws TokenMgrError, Exception {
-		String mitlText = readFile("formulae/rumour.mtl");
 		String[] mitl = new String[] { "ignorants", "rGreaterThanS",
 				"peakAndLow" };
 
-		UcheckModel model1 = new UcheckModel();
+		SimhyaModel model1 = new SimhyaModel();
 		model1.loadModel("models/RUMORS.txt");
 		MitlModelChecker modelChecker = new MitlModelChecker(model1);
-		modelChecker.setProperties(mitlText);
+		modelChecker.loadProperties("formulae/rumour.mtl");
 		model1.setSSA();
 
 		SimHyAModel model2 = new SimHyAModel();

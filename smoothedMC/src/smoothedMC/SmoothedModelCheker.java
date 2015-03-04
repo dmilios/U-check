@@ -1,29 +1,19 @@
 package smoothedMC;
 
-import gp.GpDataset;
-import gp.HyperparamLogLikelihood;
-import gp.classification.GPEP;
-import gp.classification.ClassificationPosterior;
-import gp.kernels.KernelRbfARD;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-
+import modelChecking.MitlModelChecker;
 import optim.LocalOptimisation;
 import optim.PointValue;
 import optim.methods.PowellMethodApache;
-import mitl.MiTL;
-import mitl.MitlPropertiesList;
-import model.Trajectory;
-import parsers.MitlFactory;
+import gp.GpDataset;
+import gp.HyperparamLogLikelihood;
+import gp.classification.ClassificationPosterior;
+import gp.classification.GPEP;
+import gp.kernels.KernelRbfARD;
+import smoothedMC.Parameter;
+import smoothedMC.SmmcOptions;
 import smoothedMC.gridSampling.GridSampler;
-import ssa.CTMCModel;
-import ssa.GillespieSSA;
-import ssa.StochasticSimulationAlgorithm;
-import biopepa.BiopepaFile;
 
-public final class SmoothedModelCheker {
+public class SmoothedModelCheker {
 
 	private double hyperparamOptimTimeElapsed;
 	private double statisticalMCTimeElapsed;
@@ -47,22 +37,21 @@ public final class SmoothedModelCheker {
 	}
 
 	public ClassificationPosterior performSmoothedModelChecking(
-			String modelFile, String mitlFile, Parameter[] parameters,
-			SmmcOptions options) throws IOException {
-		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
-		final String mitlText = readFile(mitlFile);
-		return performSmoothedModelChecking(biopepaFile, mitlText, parameters,
-				options);
+			String modelFile, String mitlFile, Parameter[] params,
+			SmmcOptions options) {
+
+		throw new IllegalAccessError("Implement this! "
+				+ " It is part of the old interface, but useful!");
 	}
 
 	public ClassificationPosterior performSmoothedModelChecking(
-			BiopepaFile biopepaFile, String mitlText, Parameter[] parameters,
+			MitlModelChecker modelChecker, Parameter[] parameters,
 			SmmcOptions options) {
 		long t0;
 		double elapsed;
 		t0 = System.currentTimeMillis();
-		final GpDataset data = performStatisticalModelChecking(biopepaFile,
-				mitlText, parameters, options);
+		final GpDataset data = performStatisticalModelChecking(modelChecker,
+				parameters, options);
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
 		statisticalMCTimeElapsed = elapsed;
 		if (options.isDebugEnabled())
@@ -121,57 +110,31 @@ public final class SmoothedModelCheker {
 		return post;
 	}
 
-	public GpDataset performStatisticalModelChecking(String modelFile,
-			String mitlFile, Parameter[] parameters, SmmcOptions options)
-			throws IOException {
-		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
-		final String mitlText = readFile(mitlFile);
-		return performStatisticalModelChecking(biopepaFile, mitlText,
-				parameters, options);
-	}
-
-	public GpDataset performStatisticalModelChecking(BiopepaFile biopepaFile,
-			String mitlText, Parameter[] parameters, SmmcOptions options) {
-		for (final Parameter param : parameters)
-			if (!biopepaFile.containsVariable(param.getName()))
-				throw new IllegalArgumentException("The is no variable \""
-						+ param + "\" in the model");
-
-		final GridSampler sampler = options.getSampler();
-		final double simulationEndTime = options.getSimulationEndTime();
+	public GpDataset performStatisticalModelChecking(
+			MitlModelChecker modelChecker, Parameter[] parameters,
+			SmmcOptions options) {
 
 		final String[] paramNames = new String[parameters.length];
 		for (int i = 0; i < paramNames.length; i++)
 			paramNames[i] = parameters[i].getName();
 
+		final GridSampler sampler = options.getSampler();
 		final double[][] paramValueSet = sampler.sample(options.getN(),
 				parameters);
 		final int datapoints = paramValueSet.length;
 		final double[] paramValueOutputs = new double[datapoints];
 
-		final boolean doTimeseries = options.isTimeseriesEnabled();
+		final double endTime = options.getSimulationEndTime();
+		final int runs = options.getSimulationRuns();
 		final int timepoints = options.getSimulationTimepoints();
 
 		for (int i = 0; i < datapoints; i++) {
-			CTMCModel model = biopepaFile
-					.getModel(paramNames, paramValueSet[i]);
-
-			MitlFactory factory = new MitlFactory(model.getStateVariables());
-			MitlPropertiesList l = factory.constructProperties(mitlText);
-			ArrayList<MiTL> list = l.getProperties();
-			final MiTL property = list.get(0);
-
-			StochasticSimulationAlgorithm ssa = new GillespieSSA(model);
-
-			for (int run = 0; run < options.getSimulationRuns(); run++) {
-				final Trajectory x;
-				if (doTimeseries)
-					x = ssa.generateTimeseries(0, simulationEndTime, timepoints);
-				else
-					x = ssa.generateTrajectory(0, simulationEndTime);
-				paramValueOutputs[i] += property.evaluate(x, 0) ? 1 : 0;
-			}
-			paramValueOutputs[i] /= options.getSimulationRuns();
+			modelChecker.getModel().setParameters(paramNames, paramValueSet[i]);
+			boolean[][] obs = modelChecker.performMC(endTime, runs, timepoints);
+			for (int run = 0; run < runs; run++)
+				if (obs[run][0])
+					paramValueOutputs[i]++;
+			paramValueOutputs[i] /= runs;
 		}
 		return new GpDataset(paramValueSet, paramValueOutputs);
 	}
@@ -191,20 +154,6 @@ public final class SmoothedModelCheker {
 				best = curr;
 		}
 		gp.getKernel().setHyperarameters(best.getPoint());
-	}
-
-	protected static final String readFile(String filename) {
-		FileInputStream input;
-		byte[] fileData;
-		try {
-			input = new FileInputStream(filename);
-			fileData = new byte[input.available()];
-			input.read(fileData);
-			input.close();
-		} catch (IOException e) {
-			fileData = new byte[0];
-		}
-		return new String(fileData);
 	}
 
 }

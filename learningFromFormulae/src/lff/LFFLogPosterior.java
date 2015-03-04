@@ -1,57 +1,31 @@
 package lff;
 
-import java.util.ArrayList;
+import gpoptim.NoisyObjectiveFunction;
+
 import java.util.Arrays;
 import java.util.Random;
 
-import parsers.MitlFactory;
+import lff.LFFOptions;
+import lff.Parameter;
+import modelChecking.MitlModelChecker;
 import priors.Prior;
-import biopepa.BiopepaFile;
-import mitl.MiTL;
-import mitl.MitlPropertiesList;
-import model.Trajectory;
-import ssa.CTMCModel;
-import ssa.GillespieSSA;
-import ssa.StochasticSimulationAlgorithm;
-import gpoptim.NoisyObjectiveFunction;
 
 public class LFFLogPosterior implements NoisyObjectiveFunction {
 
-	private CTMCModel model;
+	private MitlModelChecker modelChecker;
 	final private Parameter[] params;
 	final private Prior[] priors;
 
-	private MiTL[] formulae;
 	final private boolean[][] observations;
 	private LFFOptions options = new LFFOptions();
 
 	private double[] cachedPoint = new double[0];
 	private double cachedVariance = 0;
 
-	/** Need this for now... */
-	@Deprecated
-	BiopepaFile biopepa;
-	/** Need this for now... */
-	@Deprecated
-	String mitlText;
-
-	// Need this for now...
-	@Deprecated
-	public void setBiopepa(BiopepaFile biopepa) {
-		this.biopepa = biopepa;
-	}
-
-	/** Need this for now... */
-	@Deprecated
-	public void setMitlText(String mitlText) {
-		this.mitlText = mitlText;
-	}
-
-	public LFFLogPosterior(CTMCModel astModel, Parameter[] params,
-			Prior[] priors, MiTL[] formulae, boolean[][] observations) {
-		this.model = astModel;
+	public LFFLogPosterior(MitlModelChecker modelChecker, Parameter[] params,
+			Prior[] priors, boolean[][] observations) {
+		this.modelChecker = modelChecker;
 		this.params = params;
-		this.formulae = formulae;
 		this.observations = observations;
 		this.priors = priors;
 	}
@@ -61,43 +35,30 @@ public class LFFLogPosterior implements NoisyObjectiveFunction {
 	}
 
 	@Override
-	public double getVarianceAt(double... point) {
-		if (!Arrays.equals(cachedPoint, point))
-			getValueAt(point);
-		return cachedVariance;
-	}
-
-	@Override
 	public double getValueAt(double... point) {
 		for (final double p : point)
 			if (p < 0)
 				throw new IllegalArgumentException("Negative kinetic parameter");
 
 		final int dim = point.length;
-		for (int i = 0; i < dim; i++) {
-			String name = params[i].getName();
-			double value = point[i];
-			// This does nothing for now...
-			// PROBLEM:
-			// Bio-PEPA compiled models do not contain parameter information
-			model.setParameterValue(name, value);
-		}
-
-		// need this for now...
 		String[] names = new String[dim];
 		for (int i = 0; i < dim; i++)
 			names[i] = params[i].getName();
-		model = biopepa.getModel(names, point);
 
-		MitlFactory factory = new MitlFactory(model.getStateVariables());
-		MitlPropertiesList l = factory.constructProperties(mitlText);
-		ArrayList<MiTL> list = l.getProperties();
-		formulae = new MiTL[list.size()];
-		list.toArray(formulae);
-		//
+		modelChecker.getModel().setParameters(names, point);
+		final double tf = options.getSimulationEndTime();
+		final int runs = options.getSimulationRuns();
+		final boolean[][] obs = modelChecker.performMC(tf, runs, 1000);
 
 		cachedPoint = point.clone();
-		return logLikelihoodOfObservations(this.model) + logPriorAt(point);
+		return logLikelihoodOfObservations(obs);
+	}
+
+	@Override
+	public double getVarianceAt(double... point) {
+		if (!Arrays.equals(cachedPoint, point))
+			getValueAt(point);
+		return cachedVariance;
 	}
 
 	public double logPriorAt(double[] point) {
@@ -107,27 +68,8 @@ public class LFFLogPosterior implements NoisyObjectiveFunction {
 		return logProbability;
 	}
 
-	final private boolean[][] createStatisticalModelCheckingData(
-			StochasticSimulationAlgorithm ssa) {
-		final int numberOfFormulae = observations[0].length;
-		final int runs = options.getSimulationRuns();
-		final double stopTime = options.getSimulationEndTime();
-		final int timepoints = options.getSimulationTimepoints();
-		final boolean[][] smcData = new boolean[runs][numberOfFormulae];
-		for (int i = 0; i < runs; i++) {
-			final Trajectory x = ssa
-					.generateTimeseries(0, stopTime, timepoints);
-			for (int j = 0; j < numberOfFormulae; j++)
-				smcData[i][j] = formulae[j].evaluate(x, 0);
-		}
-		return smcData;
-	}
-
-	final private double logLikelihoodOfObservations(CTMCModel model) {
-		StochasticSimulationAlgorithm ssa = new GillespieSSA(model);
-		final boolean[][] smcData = createStatisticalModelCheckingData(ssa);
-		final double l = estimateLogLikelihood(observations, smcData, true);
-		return l;
+	final private double logLikelihoodOfObservations(boolean[][] smcData) {
+		return estimateLogLikelihood(observations, smcData, true);
 	}
 
 	private final double estimateLogLikelihood(boolean[][] data,

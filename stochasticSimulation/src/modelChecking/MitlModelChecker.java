@@ -1,5 +1,7 @@
 package modelChecking;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import parsers.MitlFactory;
@@ -16,9 +18,17 @@ public class MitlModelChecker {
 	public MitlModelChecker(ModelInterface model) {
 		this.model = model;
 	}
-	
+
 	public ModelInterface getModel() {
 		return model;
+	}
+
+	public MiTL[] getProperties() {
+		return properties;
+	}
+	
+	public void loadProperties(String file) throws IOException {
+		setProperties(readFile(file));
 	}
 
 	public void setProperties(String mitlText) {
@@ -61,6 +71,14 @@ public class MitlModelChecker {
 		for (int i = 0; i < m; i++)
 			result[i] = properties[i].evaluateValue(x, 0);
 		return result;
+	}
+
+	private static final String readFile(String filename) throws IOException {
+		final FileInputStream input = new FileInputStream(filename);
+		final byte[] fileData = new byte[input.available()];
+		input.read(fileData);
+		input.close();
+		return new String(fileData);
 	}
 
 }

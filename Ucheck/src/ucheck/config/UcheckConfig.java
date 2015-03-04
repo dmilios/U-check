@@ -15,20 +15,20 @@ import java.util.Set;
 
 import lff.LFFOptions;
 import lff.ObservationsFile;
+import model.ModelInterface;
 import modelChecking.MitlModelChecker;
 import priors.ExponentialPrior;
 import priors.GammaPrior;
 import priors.GaussianPrior;
 import priors.Prior;
 import priors.UniformPrior;
-import ucheck.methods.UcheckModel;
+import ucheck.methods.SimhyaModel;
 import simhya.model.flat.parser.FlatParser;
-import simhya.model.flat.parser.ParseException;
 import smoothedMC.SmmcOptions;
 import ucheck.cli.Log;
 import ucheck.cli.PrintStreamLog;
 
-public class Config_SimHyA {
+public class UcheckConfig {
 
 	private Map<String, PropertySpec> optionSpecs = new HashMap<String, PropertySpec>();
 	private Map<String, Object> configOptions = new HashMap<String, Object>();
@@ -38,18 +38,14 @@ public class Config_SimHyA {
 	private Map<String, Prior> priors = new HashMap<String, Prior>();
 
 	private Log log;
-
-	private UcheckModel model = new UcheckModel();
 	private MitlModelChecker modelChecker;
-
-	private String[] formulae;
 	private boolean[][] observations;
 
-	public Config_SimHyA() {
+	public UcheckConfig() {
 		this(new PrintStreamLog(System.out));
 	}
 
-	public Config_SimHyA(Log log) {
+	public UcheckConfig(Log log) {
 		this.log = log;
 		defineConfigurationOptions();
 	}
@@ -103,6 +99,7 @@ public class Config_SimHyA {
 	private void verifyLoadedInformation() {
 
 		// verify model
+		final ModelInterface model = new SimhyaModel();
 		String modelFile = (String) configOptions.get("model");
 		if (modelFile.startsWith("\""))
 			modelFile = modelFile.substring(1);
@@ -113,7 +110,7 @@ public class Config_SimHyA {
 			FlatParser parser = new FlatParser();
 			parser.parseFromFile(modelFile);
 			model.loadModel(modelFile);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			final String msg = e.getMessage();
 			if (msg.contains("java.io.FileNotFoundException"))
 				log.printError(modelFile + " (No such file or directory)");
@@ -122,35 +119,18 @@ public class Config_SimHyA {
 		}
 
 		// verify MiTL file
-		String mitlFile = (String) configOptions.get("propertyFile");
+		String mitlFile = (String) configOptions.get("properties");
 		if (mitlFile.startsWith("\""))
 			mitlFile = mitlFile.substring(1);
 		if (mitlFile.endsWith("\""))
 			mitlFile = mitlFile.substring(0, mitlFile.length() - 1);
 
 		try {
-			final String mitlText = readFile(mitlFile);
 			modelChecker = new MitlModelChecker(model);
-			modelChecker.setProperties(mitlText);
+			modelChecker.loadProperties(mitlFile);
 		} catch (Exception e) {
 			log.printError("Could not load property file " + mitlFile);
 		}
-
-		// verify property names
-		final Object[] buffer = (Object[]) configOptions.get("properties");
-		formulae = new String[buffer != null ? buffer.length : 0];
-		if (buffer != null)
-			System.arraycopy(buffer, 0, formulae, 0, buffer.length);
-		if (formulae.length == 0)
-			log.printError("Properties have not been properly defined!");
-
-		else
-			try {
-				final double tfinal = 1e-8;
-				modelChecker.performMC(tfinal, 0, 1);
-			} catch (Exception e) {
-				log.printError(e.getMessage());
-			}
 
 		// verify observations
 		if (configOptions.get("mode").equals("inference")) {
@@ -166,8 +146,9 @@ public class Config_SimHyA {
 				log.printError("Observations file " + e.getMessage());
 				return;
 			}
-			ObservationsFile obs = new ObservationsFile();
-			observations = obs.load(obsText, formulae.length);
+			final int formulae = modelChecker.getProperties().length;
+			final ObservationsFile obs = new ObservationsFile();
+			observations = obs.load(obsText, formulae);
 			if (observations == null)
 				log.printError("Invalid observations file");
 		}
@@ -307,9 +288,7 @@ public class Config_SimHyA {
 
 		// main experiment options
 		addProperty(new StringSpec("model", ""));
-		addProperty(new StringSpec("propertyFile", ""));
-		addProperty(new CollectionSpec("properties", new String[] {},
-				new IDSpec("propertyName", "")));
+		addProperty(new StringSpec("properties", ""));
 		addProperty(new StringSpec("observations", ""));
 		addProperty(new CategoricalSpec("mode", "", "inference", "smoothedmc"));
 
@@ -359,16 +338,8 @@ public class Config_SimHyA {
 		return "";
 	}
 
-	public UcheckModel getModel() {
-		return model;
-	}
-
 	public MitlModelChecker getModelChecker() {
 		return modelChecker;
-	}
-
-	public String[] getFormnulae() {
-		return formulae;
 	}
 
 	public boolean[][] getObservations() {

@@ -14,7 +14,7 @@ import simhya.simengine.utils.InactiveProgressMonitor;
 import expr.Context;
 import expr.Variable;
 
-public class UcheckModel implements ModelInterface {
+public class SimhyaModel implements ModelInterface {
 
 	private FlatModel flatModel;
 	private Simulator simulator;
