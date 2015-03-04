@@ -1,4 +1,4 @@
-package gpoMC;
+package lff;
 
 final public class Parameter {
 

@@ -19,7 +19,6 @@ public final class GaussianPrior extends Prior {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return "Normal(" + mu + ", " + s2 + ")";
 	}
 

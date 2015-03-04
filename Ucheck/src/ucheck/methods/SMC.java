@@ -32,10 +32,6 @@ public class SMC {
 		list.toArray(properties);
 	}
 
-	public boolean[] modelCheck(simhya.dataprocessing.Trajectory x) {
-		return modelCheck(conversion(x));
-	}
-
 	final private Trajectory conversion(
 			simhya.dataprocessing.Trajectory simhyaTrajectory) {
 		final double[][] allData = simhyaTrajectory.getAllData();
@@ -46,11 +42,27 @@ public class SMC {
 		return new Trajectory(times, context, values);
 	}
 
+	public boolean[] modelCheck(simhya.dataprocessing.Trajectory x) {
+		return modelCheck(conversion(x));
+	}
+
 	public boolean[] modelCheck(Trajectory x) {
 		final int m = properties.length;
 		final boolean[] result = new boolean[m];
 		for (int i = 0; i < m; i++)
 			result[i] = properties[i].evaluate(x, 0);
+		return result;
+	}
+
+	public double[] modelCheckRobust(simhya.dataprocessing.Trajectory x) {
+		return modelCheckRobust(conversion(x));
+	}
+
+	public double[] modelCheckRobust(Trajectory x) {
+		final int m = properties.length;
+		final double[] result = new double[m];
+		for (int i = 0; i < m; i++)
+			result[i] = properties[i].evaluateValue(x, 0);
 		return result;
 	}
 

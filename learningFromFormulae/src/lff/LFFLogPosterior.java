@@ -1,4 +1,4 @@
-package gpoMC;
+package lff;
 
 import java.util.ArrayList;
 import java.util.Arrays;

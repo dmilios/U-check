@@ -3,8 +3,6 @@ package ucheck.config;
 import gp.kernels.KernelFunction;
 import gp.kernels.KernelRBF;
 import gp.kernels.KernelRbfARD;
-import gpoMC.LFFOptions;
-import gpoMC.ObservationsFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,6 +13,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import lff.LFFOptions;
+import lff.ObservationsFile;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import parsers.MitlFactory;
@@ -379,12 +379,12 @@ public class Configuration {
 		return params;
 	}
 
-	public gpoMC.Parameter[] getLFFParameters() {
-		gpoMC.Parameter[] params = new gpoMC.Parameter[parameterNames.size()];
+	public lff.Parameter[] getLFFParameters() {
+		lff.Parameter[] params = new lff.Parameter[parameterNames.size()];
 		for (int i = 0; i < params.length; i++) {
 			final String name = parameterNames.get(i);
 			double[] value = parameters.get(name);
-			params[i] = new gpoMC.Parameter(name, value[0], value[1]);
+			params[i] = new lff.Parameter(name, value[0], value[1]);
 		}
 		return params;
 	}

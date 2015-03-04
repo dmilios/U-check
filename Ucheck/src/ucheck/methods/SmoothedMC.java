@@ -121,9 +121,10 @@ public class SmoothedMC {
 
 		for (int i = 0; i < datapoints; i++) {
 			model.setParameters(paramNames, paramValueSet[i]);
-			final boolean[][] obs = model.smc_set(phi, endTime, runs);
+			final boolean[][] obs = model.performSMC(phi, endTime, runs);
 			for (int run = 0; run < runs; run++)
-				paramValueOutputs[i] += obs[run][0] ? 1 : 0;
+				if (obs[run][0])
+					paramValueOutputs[i]++;
 			paramValueOutputs[i] /= runs;
 		}
 		return new GpDataset(paramValueSet, paramValueOutputs);

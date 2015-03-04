@@ -4,13 +4,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import lff.LearnFromFormulae;
+import lff.Parameter;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import parsers.MitlFactory;
 import ssa.CTMCModel;
 import gp.kernels.KernelRBF;
-import gpoMC.LearnFromFormulae;
-import gpoMC.Parameter;
 import gpoptim.GpoResult;
 import gridSampling.LatinHypercubeSampler;
 import biopepa.BiopepaFile;

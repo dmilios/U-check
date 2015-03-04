@@ -1,17 +1,13 @@
 package ucheck.methods;
 
-import gpoMC.LFFOptions;
-import gpoMC.Parameter;
 import gpoptim.NoisyObjectiveFunction;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
+import lff.LFFOptions;
+import lff.Parameter;
 import priors.Prior;
-import simhya.model.flat.parser.ParseException;
-import simhya.model.flat.parser.TokenMgrError;
-import ucheck.methods.UcheckModel;
 
 public class LFFLogPost implements NoisyObjectiveFunction {
 
@@ -53,7 +49,7 @@ public class LFFLogPost implements NoisyObjectiveFunction {
 		model.setParameters(names, point);
 		final double tf = options.getSimulationEndTime();
 		final int runs = options.getSimulationRuns();
-		final boolean[][] obs = model.smc_set(formulae, tf, runs);
+		final boolean[][] obs = model.performSMC(formulae, tf, runs);
 
 		cachedPoint = point.clone();
 		return logLikelihoodOfObservations(obs);
@@ -199,30 +195,6 @@ public class LFFLogPost implements NoisyObjectiveFunction {
 			System.arraycopy(data[j], 0, sample[i], 0, m);
 		}
 		return sample;
-	}
-
-	@Deprecated
-	public static void main(String[] args) throws TokenMgrError, Exception {
-		UcheckModel model = new UcheckModel();
-		model.loadModel("models/RUMORS.txt");
-		model.loadSMCformulae("formulae/my_rumors_prop.txt");
-		model.setSSA();
-
-		// model.setTrajectoryPoints(10);
-
-		String[] mitl = new String[] { "ignorants", "rGreaterThanS",
-				"peakAndLow" };
-		double tf = 5;
-		int runs = 1000;
-
-		final boolean[][] obs = model.smc_set(mitl, tf, runs);
-		final int m = mitl.length;
-		final int[] counts = new int[m];
-		for (int i = 0; i < runs; i++)
-			for (int j = 0; j < m; j++)
-				if (obs[i][j])
-					counts[j]++;
-		System.out.println(Arrays.toString(counts));
 	}
 
 }

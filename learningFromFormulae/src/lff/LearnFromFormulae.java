@@ -1,4 +1,4 @@
-package gpoMC;
+package lff;
 
 import priors.Prior;
 import priors.UniformPrior;

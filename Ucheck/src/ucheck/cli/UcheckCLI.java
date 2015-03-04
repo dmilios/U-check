@@ -1,8 +1,6 @@
 package ucheck.cli;
 
 import gp.classification.ClassificationPosterior;
-import gpoMC.LFFOptions;
-import gpoMC.LearnFromFormulae;
 import gpoptim.GpoResult;
 
 import java.io.FileInputStream;
@@ -10,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import lff.LFFOptions;
+import lff.LearnFromFormulae;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
 import biopepa.BiopepaFile;
@@ -81,7 +81,7 @@ public class UcheckCLI {
 		final String mitlText = config.getMitlText();
 		final boolean[][] observations = config.getObservations();
 		final LFFOptions lffOptions = config.getLFFOptions();
-		final gpoMC.Parameter[] params = config.getLFFParameters();
+		final lff.Parameter[] params = config.getLFFParameters();
 		final Prior[] priors = config.getLFFPriors();
 
 		final CTMCModel model = biopepa.getModel();

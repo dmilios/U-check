@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import simhya.dataprocessing.DataCollector;
+import simhya.dataprocessing.OdeDataCollector;
 import simhya.dataprocessing.StochasticDataCollector;
 import simhya.dataprocessing.Trajectory;
 import simhya.model.flat.FlatModel;
@@ -34,43 +35,75 @@ public class UcheckModel {
 		modelChecker.loadProperties(mitlText);
 	}
 
-	public boolean[][] smc_set(String[] formulae, double tfinal, int runs) {
-
+	public boolean[][] performSMC(String[] formulae, double tfinal, int runs) {
+		final int timepoints = 1000;
 		simulator.setInitialTime(0);
 		simulator.setFinalTime(tfinal);
-
-		final int timepoints = 1000;
 
 		collector.clearAll();
 		collector.storeWholeTrajectoryData(runs);
 		collector.setPrintConditionByTime(timepoints, tfinal);
 		simulator.initialize();
-
 		for (int run = 0; run < runs; run++) {
 			collector.newTrajectory();
 			simulator.resetModel(true);
 			simulator.reinitialize();
 			simulator.run();
 		}
-
+		final boolean[][] results = new boolean[runs][];
 		for (int run = 0; run < runs; run++) {
 			Trajectory x = collector.getTrajectory(run);
-			modelChecker.modelCheck(x);
+			results[run] = modelChecker.modelCheck(x);
 		}
-
-		return null;
+		return results;
 	}
 
+	public double[][] performRobustSMC(String[] formulae, double tfinal, int runs) {
+		final int timepoints = 1000;
+		simulator.setInitialTime(0);
+		simulator.setFinalTime(tfinal);
+
+		collector.clearAll();
+		collector.storeWholeTrajectoryData(runs);
+		collector.setPrintConditionByTime(timepoints, tfinal);
+		simulator.initialize();
+		for (int run = 0; run < runs; run++) {
+			collector.newTrajectory();
+			simulator.resetModel(true);
+			simulator.reinitialize();
+			simulator.run();
+		}
+		final double[][] results = new double[runs][];
+		for (int run = 0; run < runs; run++) {
+			Trajectory x = collector.getTrajectory(run);
+			results[run] = modelChecker.modelCheckRobust(x);
+		}
+		return results;
+	}
+	
 	public void setParameters(String[] names, double[] values) {
 		for (int i = 0; i < names.length; i++)
-			flatModel.setValueOfParameter(names[i], values[i]);
+			flatModel.changeInitialValueOfParameter(names[i], values[i]);
 	}
 
 	public void setSSA() {
 		collector = new StochasticDataCollector(flatModel);
 		collector.saveAllVariables();
 		simulator = SimulatorFactory.newSSAsimulator(flatModel, collector);
-		simulator.useChache(!true);
+		simulator.setProgressMonitor(new InactiveProgressMonitor());
+	}
+
+	public void setGB() {
+		collector = new StochasticDataCollector(flatModel);
+		collector.saveAllVariables();
+		simulator = SimulatorFactory.newGBsimulator(flatModel, collector);
+		simulator.setProgressMonitor(new InactiveProgressMonitor());
+	}
+
+	public void setODE() {
+		collector = new OdeDataCollector(flatModel);
+		collector.saveAllVariables();
+		simulator = SimulatorFactory.newODEsimulator(flatModel, collector);
 		simulator.setProgressMonitor(new InactiveProgressMonitor());
 	}
 

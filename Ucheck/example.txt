@@ -18,7 +18,7 @@ prior k_s = gamma(2, 1)
 ## simulation options
 endTime = 5
 runs = 10
-timepoints = 200
+timepoints = 1000
 timeseriesEnabled = true
 
 
@@ -33,8 +33,8 @@ hyperparamOptimisationRestarts = 0
 
 
 ## GP data options
-initialObservtions = 64
-numberOfTestPoints = 100
+initialObservtions = 16
+numberOfTestPoints = 16
 
 
 ## GP optimisation options

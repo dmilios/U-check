@@ -1,10 +1,10 @@
 package ucheck.methods;
 
+import lff.LFFOptions;
+import lff.Parameter;
 import priors.Prior;
 import priors.UniformPrior;
 import ucheck.methods.UcheckModel;
-import gpoMC.LFFOptions;
-import gpoMC.Parameter;
 import gpoptim.GPOptimisation;
 import gpoptim.GpoResult;
 

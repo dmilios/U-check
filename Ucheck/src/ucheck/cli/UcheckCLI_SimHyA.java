@@ -1,13 +1,13 @@
 package ucheck.cli;
 
 import gp.classification.ClassificationPosterior;
-import gpoMC.LFFOptions;
 import gpoptim.GpoResult;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+import lff.LFFOptions;
 import priors.Prior;
 import ucheck.methods.UcheckModel;
 import smoothedMC.SmmcOptions;
@@ -75,7 +75,7 @@ public class UcheckCLI_SimHyA {
 		final String[] formulae = config.getFormnulae();
 		final boolean[][] observations = config.getObservations();
 		final LFFOptions lffOptions = config.getLFFOptions();
-		final gpoMC.Parameter[] params = config.getLFFParameters();
+		final lff.Parameter[] params = config.getLFFParameters();
 		final Prior[] priors = config.getLFFPriors();
 
 		LFF lff = new LFF();
