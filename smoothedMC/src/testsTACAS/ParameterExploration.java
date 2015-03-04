@@ -3,6 +3,7 @@ package testsTACAS;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import model.Trajectory;
 import expr.Variable;
 import biopepa.BiopepaFile;
 import smoothedMC.Parameter;
@@ -11,7 +12,6 @@ import smoothedMC.gridSampling.RegularSampler;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ssa.Trajectory;
 
 public class ParameterExploration {
 

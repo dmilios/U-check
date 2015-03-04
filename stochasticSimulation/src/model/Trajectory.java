@@ -1,4 +1,4 @@
-package ssa;
+package model;
 
 import java.util.Arrays;
 

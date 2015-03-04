@@ -4,12 +4,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import mitl.MiTL;
+import model.Trajectory;
 import parsers.MitlFactory;
 import rand.ApacheMT;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ssa.Trajectory;
 import biopepa.BiopepaFile;
 
 public class TestSSA {

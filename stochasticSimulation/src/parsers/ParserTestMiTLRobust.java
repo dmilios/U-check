@@ -4,7 +4,7 @@ import expr.Context;
 import expr.Variable;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
-import ssa.Trajectory;
+import model.Trajectory;
 
 import java.io.FileInputStream;
 import java.io.IOException;

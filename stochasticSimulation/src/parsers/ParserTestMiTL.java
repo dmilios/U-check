@@ -3,9 +3,9 @@ package parsers;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import ssa.Trajectory;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import model.Trajectory;
 import expr.Context;
 import expr.Variable;
 

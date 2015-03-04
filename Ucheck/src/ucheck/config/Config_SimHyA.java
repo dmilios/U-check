@@ -15,6 +15,7 @@ import java.util.Set;
 
 import lff.LFFOptions;
 import lff.ObservationsFile;
+import modelChecking.MitlModelChecker;
 import priors.ExponentialPrior;
 import priors.GammaPrior;
 import priors.GaussianPrior;
@@ -39,6 +40,8 @@ public class Config_SimHyA {
 	private Log log;
 
 	private UcheckModel model = new UcheckModel();
+	private MitlModelChecker modelChecker;
+
 	private String[] formulae;
 	private boolean[][] observations;
 
@@ -126,7 +129,9 @@ public class Config_SimHyA {
 			mitlFile = mitlFile.substring(0, mitlFile.length() - 1);
 
 		try {
-			model.loadSMCformulae(mitlFile);
+			final String mitlText = readFile(mitlFile);
+			modelChecker = new MitlModelChecker(model);
+			modelChecker.setProperties(mitlText);
 		} catch (Exception e) {
 			log.printError("Could not load property file " + mitlFile);
 		}
@@ -142,7 +147,7 @@ public class Config_SimHyA {
 		else
 			try {
 				final double tfinal = 1e-8;
-				model.performSMC(formulae, tfinal, 0);
+				modelChecker.performMC(tfinal, 0, 1);
 			} catch (Exception e) {
 				log.printError(e.getMessage());
 			}
@@ -356,6 +361,10 @@ public class Config_SimHyA {
 
 	public UcheckModel getModel() {
 		return model;
+	}
+
+	public MitlModelChecker getModelChecker() {
+		return modelChecker;
 	}
 
 	public String[] getFormnulae() {

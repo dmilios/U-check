@@ -9,10 +9,10 @@ import priors.Prior;
 import biopepa.BiopepaFile;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import model.Trajectory;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ssa.Trajectory;
 import gpoptim.NoisyObjectiveFunction;
 
 public class LFFLogPosterior implements NoisyObjectiveFunction {

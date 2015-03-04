@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import model.Trajectory;
+import modelChecking.MitlModelChecker;
 import parsers.MitlFactory;
 import biopepa.BiopepaFile;
 import simhya.matlab.SimHyAModel;
@@ -14,7 +16,6 @@ import simhya.model.flat.parser.TokenMgrError;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ssa.Trajectory;
 import ucheck.methods.UcheckModel;
 
 public class TestMC {
@@ -37,9 +38,12 @@ public class TestMC {
 		double[] values = { 1.1, 0.8 };
 		// double[] values = { 0.5, 0.1 };
 
+		String mitlText = readFile("formulae/rumour.mtl");
+
 		UcheckModel model1 = new UcheckModel();
 		model1.loadModel("models/RUMORS.txt");
-		model1.loadSMCformulae("formulae/rumour.mtl");
+		MitlModelChecker modelChecker = new MitlModelChecker(model1);
+		modelChecker.setProperties(mitlText);
 		model1.setSSA();
 		model1.setParameters(params, values);
 
@@ -52,7 +56,6 @@ public class TestMC {
 		BiopepaFile bio = new BiopepaFile("models/rumour.biopepa");
 		CTMCModel model3 = bio.getModel();
 		model3 = bio.getModel(params, values);
-		String mitlText = readFile("formulae/rumour.mtl");
 		MitlFactory factory = new MitlFactory(model3.getStateVariables());
 		MitlPropertiesList l = factory.constructProperties(mitlText);
 		ArrayList<MiTL> list = l.getProperties();
@@ -61,7 +64,7 @@ public class TestMC {
 
 		boolean[][] obs;
 
-		obs = model1.performSMC(mitl, tf, runs);
+		obs = modelChecker.performMC(tf, runs, 1000);
 		System.out.println(model1.getClass().getSimpleName());
 		System.out.println(Arrays.toString(rowsums(obs)));
 
@@ -81,9 +84,14 @@ public class TestMC {
 	}
 
 	public static void compare_row_sums() throws TokenMgrError, Exception {
+		String mitlText = readFile("formulae/rumour.mtl");
+		String[] mitl = new String[] { "ignorants", "rGreaterThanS",
+				"peakAndLow" };
+
 		UcheckModel model1 = new UcheckModel();
 		model1.loadModel("models/RUMORS.txt");
-		model1.loadSMCformulae("formulae/rumour.mtl");
+		MitlModelChecker modelChecker = new MitlModelChecker(model1);
+		modelChecker.setProperties(mitlText);
 		model1.setSSA();
 
 		SimHyAModel model2 = new SimHyAModel();
@@ -91,13 +99,11 @@ public class TestMC {
 		model2.loadSMCformulae("formulae/my_rumors_prop.txt");
 		model2.setSSA();
 
-		String[] mitl = new String[] { "ignorants", "rGreaterThanS",
-				"peakAndLow" };
 		double tf = 5;
 		int runs = 1000;
 		boolean[][] obs;
 
-		obs = model1.performSMC(mitl, tf, runs);
+		obs = modelChecker.performMC(tf, runs, 1000);
 		System.out.println(model1.getClass().getSimpleName());
 		System.out.println(Arrays.toString(rowsums(obs)));
 

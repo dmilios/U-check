@@ -1,6 +1,6 @@
 package mitl;
 
-import ssa.Trajectory;
+import model.Trajectory;
 
 public final class MitlFinally extends MiTL {
 

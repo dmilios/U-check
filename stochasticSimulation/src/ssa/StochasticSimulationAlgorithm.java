@@ -2,9 +2,9 @@ package ssa;
 
 import java.util.ArrayList;
 
+import model.Trajectory;
 import rand.JavaRandomEngine;
 import rand.RandomEngine;
-
 import expr.ArithmeticExpression;
 import expr.Context;
 

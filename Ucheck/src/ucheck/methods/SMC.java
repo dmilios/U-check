@@ -6,9 +6,9 @@ import expr.Context;
 import expr.Variable;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import model.Trajectory;
 import parsers.MitlFactory;
 import simhya.model.flat.FlatModel;
-import ssa.Trajectory;
 
 public class SMC {
 

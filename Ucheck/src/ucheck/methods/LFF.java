@@ -2,21 +2,21 @@ package ucheck.methods;
 
 import lff.LFFOptions;
 import lff.Parameter;
+import modelChecking.MitlModelChecker;
 import priors.Prior;
 import priors.UniformPrior;
-import ucheck.methods.UcheckModel;
 import gpoptim.GPOptimisation;
 import gpoptim.GpoResult;
 
 public class LFF {
 
-	private UcheckModel model;
+	private MitlModelChecker modelChecker;
 	private Parameter[] params;
 	private Prior[] priors;
 	private LFFOptions options = new LFFOptions();
 
-	public void setModel(UcheckModel model) {
-		this.model = model;
+	public void setModelChecker(MitlModelChecker modelChecker) {
+		this.modelChecker = modelChecker;
 	}
 
 	public LFFOptions getOptions() {
@@ -43,11 +43,9 @@ public class LFF {
 		this.priors = priors;
 	}
 
-	public GpoResult performInference(String[] formulae,
-			boolean[][] observations) {
-
+	public GpoResult performInference(boolean[][] observations) {
 		final LFFLogPost post;
-		post = new LFFLogPost(model, params, priors, formulae, observations);
+		post = new LFFLogPost(modelChecker, params, priors, observations);
 		post.setOptions(options);
 
 		GPOptimisation gpo = new GPOptimisation();

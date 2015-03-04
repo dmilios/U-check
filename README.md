@@ -28,8 +28,8 @@ Depends on:
 - stochasticSimulation
 - commons.cli
 
-### gpoMC
-Library that uses GP optimisation as a mean to perform inference for uncertain CTMCs.
+### learningFromFormulae
+Library that uses GP optimisation to perform inference for uncertain CTMCs.
 Depends on:
 - gaussianProcesses
 - gpOptimisation

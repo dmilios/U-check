@@ -1,8 +1,8 @@
 package mitl;
 
+import model.Trajectory;
 import expr.LogicalExpression;
 import expr.Context;
-import ssa.Trajectory;
 
 public final class MitlAtomic extends MiTL {
 

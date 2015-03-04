@@ -1,5 +1,6 @@
 package ucheck.methods;
 
+import modelChecking.MitlModelChecker;
 import optim.LocalOptimisation;
 import optim.PointValue;
 import optim.methods.PowellMethodApache;
@@ -8,7 +9,6 @@ import gp.HyperparamLogLikelihood;
 import gp.classification.ClassificationPosterior;
 import gp.classification.GPEP;
 import gp.kernels.KernelRbfARD;
-import ucheck.methods.UcheckModel;
 import smoothedMC.Parameter;
 import smoothedMC.SmmcOptions;
 import smoothedMC.gridSampling.GridSampler;
@@ -37,13 +37,13 @@ public class SmoothedMC {
 	}
 
 	public ClassificationPosterior performSmoothedModelChecking(
-			UcheckModel model, String mitlText, Parameter[] parameters,
-			SmmcOptions options) {
+			MitlModelChecker modelChecker, String formula,
+			Parameter[] parameters, SmmcOptions options) {
 		long t0;
 		double elapsed;
 		t0 = System.currentTimeMillis();
-		final GpDataset data = performStatisticalModelChecking(model, mitlText,
-				parameters, options);
+		final GpDataset data = performStatisticalModelChecking(modelChecker,
+				formula, parameters, options);
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
 		statisticalMCTimeElapsed = elapsed;
 		if (options.isDebugEnabled())
@@ -102,8 +102,9 @@ public class SmoothedMC {
 		return post;
 	}
 
-	public GpDataset performStatisticalModelChecking(UcheckModel model,
-			String formula, Parameter[] parameters, SmmcOptions options) {
+	public GpDataset performStatisticalModelChecking(
+			MitlModelChecker modelChecker, String formula,
+			Parameter[] parameters, SmmcOptions options) {
 
 		final String[] paramNames = new String[parameters.length];
 		for (int i = 0; i < paramNames.length; i++)
@@ -117,11 +118,10 @@ public class SmoothedMC {
 
 		final double endTime = options.getSimulationEndTime();
 		final int runs = options.getSimulationRuns();
-		final String[] phi = new String[] { formula };
 
 		for (int i = 0; i < datapoints; i++) {
-			model.setParameters(paramNames, paramValueSet[i]);
-			final boolean[][] obs = model.performSMC(phi, endTime, runs);
+			modelChecker.getModel().setParameters(paramNames, paramValueSet[i]);
+			final boolean[][] obs = modelChecker.performMC(endTime, runs, 1000);
 			for (int run = 0; run < runs; run++)
 				if (obs[run][0])
 					paramValueOutputs[i]++;

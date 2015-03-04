@@ -7,26 +7,25 @@ import java.util.Random;
 
 import lff.LFFOptions;
 import lff.Parameter;
+import modelChecking.MitlModelChecker;
 import priors.Prior;
 
 public class LFFLogPost implements NoisyObjectiveFunction {
 
-	private UcheckModel model;
+	private MitlModelChecker modelChecker;
 	final private Parameter[] params;
 	final private Prior[] priors;
 
-	private String[] formulae;
 	final private boolean[][] observations;
 	private LFFOptions options = new LFFOptions();
 
 	private double[] cachedPoint = new double[0];
 	private double cachedVariance = 0;
 
-	public LFFLogPost(UcheckModel astModel, Parameter[] params, Prior[] priors,
-			String[] formulae, boolean[][] observations) {
-		this.model = astModel;
+	public LFFLogPost(MitlModelChecker modelChecker, Parameter[] params,
+			Prior[] priors, boolean[][] observations) {
+		this.modelChecker = modelChecker;
 		this.params = params;
-		this.formulae = formulae;
 		this.observations = observations;
 		this.priors = priors;
 	}
@@ -46,10 +45,10 @@ public class LFFLogPost implements NoisyObjectiveFunction {
 		for (int i = 0; i < dim; i++)
 			names[i] = params[i].getName();
 
-		model.setParameters(names, point);
+		modelChecker.getModel().setParameters(names, point);
 		final double tf = options.getSimulationEndTime();
 		final int runs = options.getSimulationRuns();
-		final boolean[][] obs = model.performSMC(formulae, tf, runs);
+		final boolean[][] obs = modelChecker.performMC(tf, runs, 1000);
 
 		cachedPoint = point.clone();
 		return logLikelihoodOfObservations(obs);

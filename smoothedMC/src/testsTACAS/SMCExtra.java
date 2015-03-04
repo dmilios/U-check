@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import model.Trajectory;
 import parsers.MitlFactory;
 import smoothedMC.SmmcOptions;
 import smoothedMC.Parameter;
@@ -15,7 +16,6 @@ import smoothedMC.gridSampling.GridSampler;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ssa.Trajectory;
 import biopepa.BiopepaFile;
 import expr.Context;
 import expr.Variable;

@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import lff.LFFOptions;
+import modelChecking.MitlModelChecker;
 import priors.Prior;
-import ucheck.methods.UcheckModel;
 import smoothedMC.SmmcOptions;
 import smoothedMC.SmmcUtils;
 import ucheck.config.Config_SimHyA;
@@ -70,33 +70,31 @@ public class UcheckCLI_SimHyA {
 	}
 
 	public static void performInference(Config_SimHyA config, Log log) {
-
-		final UcheckModel model = config.getModel();
-		final String[] formulae = config.getFormnulae();
+		final MitlModelChecker modelChecker = config.getModelChecker();
 		final boolean[][] observations = config.getObservations();
 		final LFFOptions lffOptions = config.getLFFOptions();
 		final lff.Parameter[] params = config.getLFFParameters();
 		final Prior[] priors = config.getLFFPriors();
 
 		LFF lff = new LFF();
-		lff.setModel(model);
+		lff.setModelChecker(modelChecker);
 		lff.setParams(params);
 		lff.setPriors(priors);
 		lff.setOptions(lffOptions);
 
-		GpoResult result = lff.performInference(formulae, observations);
+		GpoResult result = lff.performInference(observations);
 		log.println(result.toString());
 	}
 
 	public static void performSmoothedMC(Config_SimHyA config, Log log) {
-		final UcheckModel model = config.getModel();
+		final MitlModelChecker check = config.getModelChecker();
 		final String formula = config.getFormnulae()[0];
 		final SmmcOptions options = config.getSmMCOptions();
 		final smoothedMC.Parameter[] params = config.getSmMCParameters();
 
 		final SmoothedMC smmc = new SmoothedMC();
 		final ClassificationPosterior result = smmc
-				.performSmoothedModelChecking(model, formula, params, options);
+				.performSmoothedModelChecking(check, formula, params, options);
 
 		log.println("# Smoothed Model Checking --- Results");
 		log.println("Time for Statistical MC: "

@@ -15,12 +15,12 @@ import optim.PointValue;
 import optim.methods.PowellMethodApache;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import model.Trajectory;
 import parsers.MitlFactory;
 import smoothedMC.gridSampling.GridSampler;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ssa.Trajectory;
 import biopepa.BiopepaFile;
 
 public final class SmoothedModelCheker {

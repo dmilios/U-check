@@ -11,9 +11,9 @@ import biopepa.BiopepaFile;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ssa.Trajectory;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import model.Trajectory;
 
 public class ObservationsGenerator {
 
