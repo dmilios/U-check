@@ -1,4 +1,4 @@
-package ucheck.methods;
+package ucheck;
 
 import model.ModelInterface;
 import simhya.dataprocessing.DataCollector;
@@ -14,6 +14,7 @@ import simhya.simengine.utils.InactiveProgressMonitor;
 import expr.Context;
 import expr.Variable;
 
+/** Wrapper class for SimHyA */
 public class SimhyaModel implements ModelInterface {
 
 	private FlatModel flatModel;

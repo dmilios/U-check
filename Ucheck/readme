@@ -1,0 +1,253 @@
+
+# Experiment options
+# ==================
+
+model=MODEL
+# Required
+# "MODEL" is a file that contains the specification of a population CTMC 
+# described either in the SimHyA or the Bio-PEPA language. Bio-PEPA models 
+# must be of the form "*.biopepa".
+
+
+properties=PROPERTIES
+# Required
+# "PROPERTIES" is a file that contains the specification of one or more MiTL
+# properties.
+
+
+
+observations=OBSERVATIONS
+# Required (inference only)
+# "OBSERVATIONS" is a csv file that contains a NxM matrix, whose rows 
+# correspond to N independent observations of the system in question.
+# A row is a single observation and contains M values ('0' or '1'),
+# one for each one of the MiTL formulae specified in the properties file.
+# For example, given N=2 and M=3, the contents could be:
+# 	1, 0, 0
+# 	0, 1, 1
+# In the case that robustness of temporal properties is used, 
+# then the observations should be real-valued, rather than '0' or '1'.
+# For example, given N=2 and M=3, the contents could be:
+# 	-1.245,   3.453,  0.424
+# 	24.023, 234.322, -3.421
+# This option is only required for parameter synthesis.
+# In the case of smoothed MC, this option is just ignored.
+
+
+
+mode=MODE
+# Required
+# "MODE" can be one of the following:
+# 	inference   Perform parameter estimation for the model in MODEL,
+# 	            given the observations in the OBSERVATIONS file
+# 	            for the properties defined in the PROPERTIES file.
+# 	smoothedmc  Perform smoothed model checking for the model in MODEL,
+# 	            for the properties defined in the PROPERTIES file.
+
+
+
+parameter NAME=[A, B]
+# Required
+# "NAME" is the name of the parameter; it must be present in the model
+# for which uncertainty is expressed as a range over possible values.
+# 	"A" is the lower bound of the range defined. 
+# 	    Because the parameters are considered to be kinetic constants, 
+# 	    the lower bound must be larger than zero.
+# 	"B" is the upper bound of the range defined.
+# At least one parameter has to be defined.
+
+
+
+
+
+
+prior NAME=DISTRIBUTION
+# Optional
+# Optionally, a parameter NAME can be associated with a prior distribution.
+# "DISTRIBUTION" can be one of the following:
+# 	uniform(A, B)    Uniform distribution specified in the internal [A, B]
+# 	exponential(MU)  Exponential distribution with mean parameter MU
+# 	gamma(K, THETA)  Gamma distribution with shape parameter K 
+# 	                 and scale parameter THETA
+# 	normal(MU, S2)   Normal distribution with mean MU and variance S2
+# If no prior is explicitly declared, then a uniform prior will be assumed.
+
+
+
+
+# Simulation options
+# ==================
+
+endTime=NUMBER
+# Required
+# The time up to which the system will be simulated.
+
+
+runs=NUMBER
+# Optional (default value: 100)
+# The number of the independent simulations per parameter value.
+
+timeseriesEnabled=true|false
+# Optional (default value: true)
+# Indicates whether time-series will be used in model checking, 
+# instead of full trajectories.
+# For large models, the use of time-series is recommended.
+
+timepoints=NUMBER
+# Optional (default value: 1000)
+# The number of time-points for which the state is recorded in a time-series.
+
+
+
+# Kernel options
+# ==============
+
+kernel=KERNEL
+# Optional (default value: rbfiso)
+# "KERNEL" can be one of the following:
+# 	rbfiso  Isometric Radial Basis Function kernel.
+# 	        Its hyperparameters control the amplitude and the lengthscale.
+# 	rbfard  RBF kernel that supports Automatic Relevance Determination.
+# 	        Besides amplitude, its hyperparameters control the lengthscale 
+# 	        for each parameter independently.
+
+
+amplitude=NUMBER
+# Optional (default value: 1)
+# The value of the amplitude hyperparameter of the GP Kernel.
+# It will be overridden if HYPERPARAMOPTIMISATION is true.
+
+lengthscale=NUMBER
+# Optional (default value: 1)
+# The value of the lengthscale hyperparameter of the GP Kernel.
+# If the kernel is set to 'rbfard', then a list of values must to be defined,
+# one for each parameter of the model to be explored.
+# It will be overridden if 'hyperparamOptimisation' is true.
+
+
+hyperparamOptimisation=true|false
+# Optional (default value: false)
+# Whether hyperparameters will be optimised wrt the marginal likelihood
+# of the data under the GP.
+# If yes, any other option regarding hyperparameters will be overridden.
+
+hyperparamOptimisationRestarts=NUMBER
+# Optional (default value: 3)
+# The number of attempts to optimise hyperparameters via local optimisation.
+
+
+useDefaultHyperparams=true|false
+# Optional (default value: false)
+# Indicates whether a simple heuristic is used to adjust the hyperparameters.
+# If yes, the user-specified kernel hyperparameters will be overridden.
+
+
+
+
+
+# GP data options
+# ===============
+
+initialObservtions=NUMBER
+# Optional (default value: 50)
+# The size of the training set for the GP process.
+# The use of the training set depends on the mode:
+# 	inference   Initialisation of the GP optimisation algorithm.
+# 	smoothedmc  The initial evaluations of the satisfaction function.
+
+
+numberOfTestPoints=NUMBER
+# Optional (default value: 50)
+# The size of the test set for the GP process.
+# The use of the test set depends on the mode:
+# 	inference   Calculation the GP posterior at each step,
+# 	            in order to find a new potential global maximum.
+# 	smoothedmc  The points at which we explore the satisfaction function.
+
+
+
+# GP optimisation options
+# =======================
+
+logspace=true|false
+# Optional (default value: false)
+# Whether log-normalisation is performed; 
+# it should be true for non-negative search spaces only.
+
+
+maxIterations=NUMBER
+# Optional (default value: 1000)
+# GP optimisation will terminate if this number of iterations is reached, 
+# regardless if it has converged or not.
+
+
+maxAddedPointsNoImprovement=NUMBER
+# Optional (default value: 100)
+# If this number of added points with no significant improvement is
+# reached, then GP optimisation is considered to have converged.
+# An improvement is considered significant if: 
+# 	newValue > oldValue * improvementFactor
+# See also the 'improvementFactor' option.
+
+
+improvementFactor=NUMBER
+# Optional (default value: 1.01)
+# An improvement is considered significant if: 
+# 	newValue > oldValue * improvementFactor
+# See also the 'maxAddedPointsNoImprovement' option.
+
+
+maxFailedAttempts=NUMBER
+# Optional (default value: 200)
+# If this number of failed attempts to find a new local optimum (for the
+# given upper quantile) is reached, then GP optimisation is considered to
+# have converged.
+
+
+beta=NUMBER
+# Optional (default value: 2)
+# The upper quantile, with which the search is directed, is calculated as:
+# 	beta * STDEV
+# where STDEV is the standard deviation as estimated by the GP.
+
+
+
+# GP Regression options
+# =====================
+
+noiseTerm=NUMBER
+# Optional (default value: 1)
+# Explicitly-defined variance of the Gaussian noise added for GP regression.
+
+
+noiseTermRatio=NUMBER
+# Optional (default value: 0.1)
+# The variance parameter of the Gaussian noise added to the GP will be
+# 	 noiseTermRatio * RANGE
+# where RANGE is the range of observations.
+
+
+useNoiseTermRatio=true|false
+# Optional (default value: false)
+# Whether the Gaussian noise added to the GP will be a ratio of the range
+# of observations in the training set. If not, then an explicitly-defined
+# variance will be used.
+
+
+heteroskedastic=true|false
+# Optional (default value: false)
+# Whether an heteroskedastic GP is assumed; if yes, then the variance for
+# each data-point is calculated by the objective function.
+
+
+
+
+# GP Classification options
+# =========================
+
+covarianceCorrection=NUMBER
+# Optional (default value: 1e-4)
+# A very small correction added to the diagonal of the Gram matrix to ensure
+# that it is positive definite. The default value is 1e-4.
+# Try increasing this if the Gram matrix appears to be non-positive definite.
+

@@ -2,6 +2,7 @@ package biopepa;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,21 @@ final public class BiopepaFile {
 			e.printStackTrace();
 		}
 
+		// extractParameters(astModel);
+	}
+
+	static void extractParameters(Model model) {
+		ArrayList<String> parameters = new ArrayList<String>();
+		for (Statement statement : model.statements())
+			
+			if (statement instanceof VariableDeclaration) {
+				VariableDeclaration dec = (VariableDeclaration) statement;
+				if (dec.getKind() == VariableDeclaration.Kind.VARIABLE) {
+					parameters.add(dec.getName().getIdentifier());
+				}
+			}
+		
+		// well... continue with that
 	}
 
 	public final boolean containsVariable(String var) {

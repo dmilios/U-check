@@ -1,0 +1,5 @@
+
+Bio-PEPA to simhya conversion (challenge: parameter info is lost after biopepa is compiled)
+
+print progress on screen (SSA, iterations)
+

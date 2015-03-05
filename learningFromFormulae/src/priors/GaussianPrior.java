@@ -5,6 +5,7 @@ public final class GaussianPrior extends Prior {
 	final private double mu;
 	final private double s2;
 
+	/** Normal distribution with mean 'mu' and variance 's2' */
 	public GaussianPrior(double mu, double s2) {
 		super();
 		this.mu = mu;

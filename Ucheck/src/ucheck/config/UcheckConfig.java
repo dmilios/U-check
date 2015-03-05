@@ -22,7 +22,7 @@ import priors.GammaPrior;
 import priors.GaussianPrior;
 import priors.Prior;
 import priors.UniformPrior;
-import ucheck.methods.SimhyaModel;
+import ucheck.SimhyaModel;
 import simhya.model.flat.parser.FlatParser;
 import smoothedMC.SmmcOptions;
 import ucheck.cli.Log;
@@ -295,7 +295,7 @@ public class UcheckConfig {
 		// common simulation options
 		addProperty(new DoubleSpec("endTime", 0, 0, false));
 		addProperty(new IntegerSpec("runs", 100, 1));
-		addProperty(new IntegerSpec("timepoints", 200, 2));
+		addProperty(new IntegerSpec("timepoints", 1000, 2));
 		addProperty(new BooleanSpec("timeseriesEnabled", false));
 
 		// common kernel options
@@ -314,7 +314,7 @@ public class UcheckConfig {
 
 		// inference options (GP optimisation parameters)
 		addProperty(new BooleanSpec("logspace", false));
-		addProperty(new IntegerSpec("maxIterations", 500, 1));
+		addProperty(new IntegerSpec("maxIterations", 1000, 1));
 		addProperty(new IntegerSpec("maxAddedPointsNoImprovement", 100, 1));
 		addProperty(new DoubleSpec("improvementFactor", 1.01, 0, false));
 		addProperty(new IntegerSpec("maxFailedAttempts", 200, 1));

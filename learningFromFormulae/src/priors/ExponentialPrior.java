@@ -5,6 +5,7 @@ public class ExponentialPrior extends Prior {
 	final private double lambda;
 
 	/**
+	 * Exponential distribution
 	 * @param mu
 	 *            mean parameter (== 1/rate)
 	 */

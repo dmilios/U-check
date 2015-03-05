@@ -6,6 +6,8 @@ public class GammaPrior extends Prior {
 	final private double beta;
 
 	/**
+	 * Gamma distribution with shape parameter 'k' and scale parameter 'theta'
+	 * 
 	 * @param k
 	 *            shape parameter
 	 * @param theta

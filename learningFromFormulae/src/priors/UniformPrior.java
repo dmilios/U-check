@@ -5,6 +5,7 @@ public final class UniformPrior extends Prior {
 	final private double a;
 	final private double b;
 
+	/** Uniform distribution specified in the internal [a, b] */
 	public UniformPrior(double a, double b) {
 		this.a = a;
 		this.b = b;

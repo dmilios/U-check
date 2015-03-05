@@ -90,7 +90,7 @@ public final class GpoOptions {
 	}
 
 	/**
-	 * Whether log-normalisation is performed; should beset equal to
+	 * Whether log-normalisation is performed; should be set equal to
 	 * {@code true} only for non-negative search spaces.
 	 */
 	final public boolean getLogspace() {

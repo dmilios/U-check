@@ -16,7 +16,7 @@ import simhya.model.flat.parser.TokenMgrError;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
-import ucheck.methods.SimhyaModel;
+import ucheck.SimhyaModel;
 
 public class TestMC {
 

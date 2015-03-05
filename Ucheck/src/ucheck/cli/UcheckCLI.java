@@ -22,7 +22,7 @@ public class UcheckCLI {
 
 		final Log log = new PrintStreamLog(System.out);
 
-		String title = "Uncertain Model Checking Tool";
+		String title = "U-check: Model checking tool for uncertain systems";
 		String usage = "Usage:\n\tuncertainmc MODE OPTIONFILE\n";
 		String optionfilehelp = "\"OPTIONFILE\" is a file that contains "
 				+ "all the experiment options.\n"
