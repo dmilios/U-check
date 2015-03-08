@@ -10,6 +10,7 @@ import simhya.model.flat.parser.ParseException;
 import simhya.model.flat.parser.TokenMgrError;
 import simhya.simengine.Simulator;
 import simhya.simengine.SimulatorFactory;
+import simhya.simengine.ode.OdeSimulator;
 import simhya.simengine.utils.InactiveProgressMonitor;
 import expr.Context;
 import expr.Variable;
@@ -78,7 +79,8 @@ public class SimhyaModel implements ModelInterface {
 		collector.setPrintConditionByTime(timepoints, tfinal);
 		simulator.initialize();
 		for (int run = 0; run < runs; run++) {
-			collector.newTrajectory();
+			if (!(simulator instanceof OdeSimulator)) // breaks otherwise
+				collector.newTrajectory();
 			simulator.resetModel(true);
 			simulator.reinitialize();
 			simulator.run();

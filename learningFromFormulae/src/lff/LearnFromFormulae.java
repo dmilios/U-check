@@ -64,4 +64,20 @@ public class LearnFromFormulae {
 		return gpo.optimise(post, lbounds, ubounds);
 	}
 
+	public GpoResult robustSystemDesign() {
+		final LFFRobustness robustness = new LFFRobustness(modelChecker, params);
+		robustness.setOptions(options);
+
+		GPOptimisation gpo = new GPOptimisation();
+		gpo.setOptions(options.getGpoOptions());
+
+		final double[] lbounds = new double[params.length];
+		final double[] ubounds = new double[params.length];
+		for (int i = 0; i < params.length; i++) {
+			lbounds[i] = params[i].getLowerBound();
+			ubounds[i] = params[i].getUpperBound();
+		}
+		return gpo.optimise(robustness, lbounds, ubounds);
+	}
+
 }
