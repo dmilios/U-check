@@ -1,11 +1,12 @@
 
 ## experiment options
 
-model = "models/RUMORS.txt"
-properties = "formulae/rumour.mtl"
-observations = "formulae/rumour.dat"
+model = models/RUMORS.txt
+# model = models/rumour.biopepa
+properties = formulae/rumour.mtl
+observations = formulae/rumour.dat
 
-mode = inference
+mode = robust
 parameter k_s = [0.0001, 1]
 parameter k_r = [0.0001, 1]
 
@@ -19,6 +20,7 @@ endTime = 5
 runs = 10
 timepoints = 1000
 timeseriesEnabled = true
+useODEs = true
 
 
 ## GP Kernel options

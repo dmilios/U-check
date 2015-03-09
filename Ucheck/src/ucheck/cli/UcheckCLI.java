@@ -57,6 +57,8 @@ public class UcheckCLI {
 			final String mode = config.getMode();
 			if (mode.equals("inference"))
 				performInference(config, log);
+			if (mode.equals("robust"))
+				performRobustSystemDesign(config, log);
 			if (mode.equals("smoothedmc"))
 				performSmoothedMC(config, log);
 		}
@@ -82,6 +84,19 @@ public class UcheckCLI {
 		lff.setOptions(lffOptions);
 
 		GpoResult result = lff.performInference(observations);
+		log.println(result.toString());
+	}
+
+	public static void performRobustSystemDesign(UcheckConfig config, Log log) {
+		final MitlModelChecker modelChecker = config.getModelChecker();
+		final LFFOptions lffOptions = config.getLFFOptions();
+		final lff.Parameter[] params = config.getLFFParameters();
+
+		LearnFromFormulae lff = new LearnFromFormulae(modelChecker);
+		lff.setParams(params);
+		lff.setOptions(lffOptions);
+
+		GpoResult result = lff.robustSystemDesign();
 		log.println(result.toString());
 	}
 

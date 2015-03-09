@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import biopepa.BiopepaModel;
 import lff.LFFOptions;
 import lff.ObservationsFile;
 import model.ModelInterface;
@@ -23,7 +24,6 @@ import priors.GaussianPrior;
 import priors.Prior;
 import priors.UniformPrior;
 import ucheck.SimhyaModel;
-import simhya.model.flat.parser.FlatParser;
 import smoothedMC.SmmcOptions;
 import ucheck.cli.Log;
 import ucheck.cli.PrintStreamLog;
@@ -98,17 +98,19 @@ public class UcheckConfig {
 	 */
 	private void verifyLoadedInformation() {
 
-		// verify model
-		final ModelInterface model = new SimhyaModel();
+		// --- verify model
 		String modelFile = (String) configOptions.get("model");
 		if (modelFile.startsWith("\""))
 			modelFile = modelFile.substring(1);
 		if (modelFile.endsWith("\""))
 			modelFile = modelFile.substring(0, modelFile.length() - 1);
 
+		final ModelInterface model;
+		if (modelFile.endsWith(".biopepa"))
+			model = new BiopepaModel();
+		else
+			model = new SimhyaModel();
 		try {
-			FlatParser parser = new FlatParser();
-			parser.parseFromFile(modelFile);
 			model.loadModel(modelFile);
 		} catch (Exception e) {
 			final String msg = e.getMessage();
@@ -118,7 +120,25 @@ public class UcheckConfig {
 				log.printError(msg);
 		}
 
-		// verify MiTL file
+		// --- verify simulator options
+		Boolean useODEs = (Boolean) configOptions.get("useODEs");
+		if (useODEs == null)
+			useODEs = false;
+		if (useODEs)
+			if (configOptions.get("mode").equals("robust"))
+				if (model instanceof SimhyaModel) {
+					SimhyaModel simhya = (SimhyaModel) model;
+					simhya.setODE();
+					configOptions.put("runs", 1);
+					configOptions.put("timeseriesEnabled", true);
+				} else
+					log.printWarning("ODEs are not currntly supported "
+							+ "for Bio-PEPA models! SSA will be used instead.");
+			else
+				log.printError("ODEs are supported for robust paramter "
+						+ "synthesis only!");
+
+		// --- verify MiTL file
 		String mitlFile = (String) configOptions.get("properties");
 		if (mitlFile.startsWith("\""))
 			mitlFile = mitlFile.substring(1);
@@ -132,7 +152,7 @@ public class UcheckConfig {
 			log.printError("Could not load property file " + mitlFile);
 		}
 
-		// verify observations
+		// --- verify observations
 		if (configOptions.get("mode").equals("inference")) {
 			String obsFile = (String) configOptions.get("observations");
 			if (obsFile.startsWith("\""))
@@ -146,18 +166,20 @@ public class UcheckConfig {
 				log.printError("Observations file " + e.getMessage());
 				return;
 			}
-			final int formulae = modelChecker.getProperties().length;
-			final ObservationsFile obs = new ObservationsFile();
-			observations = obs.load(obsText, formulae);
-			if (observations == null)
-				log.printError("Invalid observations file");
+			if (modelChecker.getProperties() != null) {
+				final int formulae = modelChecker.getProperties().length;
+				final ObservationsFile obs = new ObservationsFile();
+				observations = obs.load(obsText, formulae);
+				if (observations == null)
+					log.printError("Invalid observations file");
+			}
 		}
 
-		// verify that one or more parameters have been defined
+		// --- verify that one or more parameters have been defined
 		if (parameterNames.size() == 0)
 			log.printError("At least one parameter has to be specified!");
 
-		// verify that the parameter defined are included in the model
+		// --- verify that the parameter defined are included in the model
 		for (final String parameterName : parameterNames)
 			try {
 				model.setParameters(new String[] { parameterName },
@@ -167,7 +189,7 @@ public class UcheckConfig {
 						+ "\" does not exist in the model!");
 			}
 
-		// verify that the kernel hyperparameters are valid
+		// --- verify that the kernel hyperparameters are valid
 		Object kerneltype = configOptions.get("kernel");
 		Object[] lengthscales = (Object[]) configOptions.get("lengthscale");
 		if (kerneltype.equals("rbfiso"))
@@ -290,13 +312,15 @@ public class UcheckConfig {
 		addProperty(new StringSpec("model", ""));
 		addProperty(new StringSpec("properties", ""));
 		addProperty(new StringSpec("observations", ""));
-		addProperty(new CategoricalSpec("mode", "", "inference", "smoothedmc"));
+		addProperty(new CategoricalSpec("mode", "", "inference", "robust",
+				"smoothedmc"));
 
 		// common simulation options
 		addProperty(new DoubleSpec("endTime", 0, 0, false));
 		addProperty(new IntegerSpec("runs", 100, 1));
 		addProperty(new IntegerSpec("timepoints", 1000, 2));
 		addProperty(new BooleanSpec("timeseriesEnabled", false));
+		addProperty(new BooleanSpec("useODEs", false));
 
 		// common kernel options
 		addProperty(new CategoricalSpec("kernel", "rbfiso", "rbfiso", "rbfard"));

@@ -41,6 +41,8 @@ mode=MODE
 # 	inference   Perform parameter estimation for the model in MODEL,
 # 	            given the observations in the OBSERVATIONS file
 # 	            for the properties defined in the PROPERTIES file.
+# 	robust      Perform robust parameter synthesis for the model in MODEL,
+# 	            for the properties defined in the PROPERTIES file.
 # 	smoothedmc  Perform smoothed model checking for the model in MODEL,
 # 	            for the properties defined in the PROPERTIES file.
 
@@ -96,6 +98,14 @@ timeseriesEnabled=true|false
 timepoints=NUMBER
 # Optional (default value: 1000)
 # The number of time-points for which the state is recorded in a time-series.
+
+useODEs=true|false
+# Optional (default value: false)
+# Whether the CTMC is approximated by Ordinary Differential Equations.
+# It can be used for SimHyA models only and robust parameter synthesis.
+# If true, the following options are overridden:
+# 'timeseriesEnabled=true' and 'runs=1'
+
 
 
 

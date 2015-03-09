@@ -8,7 +8,7 @@ public class StringSpec extends PropertySpec {
 
 	@Override
 	public boolean isValid(String value) {
-		return value.startsWith("\"") && value.endsWith("\"");
+		return true;
 	}
 
 	@Override
