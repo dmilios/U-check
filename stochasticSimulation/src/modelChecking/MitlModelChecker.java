@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import parsers.MitlFactory;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import mitl.SignalFunction;
 import model.ModelInterface;
 import model.Trajectory;
 
@@ -14,6 +15,7 @@ public class MitlModelChecker {
 
 	final private ModelInterface model;
 	private MiTL[] properties = null;
+	private ArrayList<String> errors = new ArrayList<String>();
 
 	public MitlModelChecker(ModelInterface model) {
 		this.model = model;
@@ -27,16 +29,45 @@ public class MitlModelChecker {
 		return properties;
 	}
 
-	public void loadProperties(String file) throws IOException {
+	public void loadProperties(String file) throws Exception {
 		setProperties(readFile(file));
 	}
 
-	public void setProperties(String mitlText) {
+	public ArrayList<String> getErrors() {
+		return errors;
+	}
+
+	public void setProperties(String mitlText) throws Exception {
 		MitlFactory factory = new MitlFactory(model.getModelVariables());
 		MitlPropertiesList l = factory.constructProperties(mitlText);
-		ArrayList<MiTL> list = l.getProperties();
-		properties = new MiTL[list.size()];
-		list.toArray(properties);
+		errors.clear();
+		errors.addAll(factory.getErrors());
+
+		ArrayList<SignalFunction> sfs = factory.getSignals();
+		
+		
+		final ArrayList<String> falseErrors = new ArrayList<String>();
+		for (String error : errors) {
+
+			// very ugly... refactor some time...
+			final String prefix = "Function \"";
+			final String postfix = "\" is not defined!";
+			if (error.startsWith(prefix) && error.endsWith(postfix)) {
+				final String name = error.substring(prefix.length(),
+						error.indexOf(postfix));
+
+				if (name.equals("movavg"))
+					falseErrors.add(error);
+			}
+		}
+		for (String err : falseErrors)
+			errors.remove(err);
+
+		if (errors.size() == 0) {
+			ArrayList<MiTL> list = l.getProperties();
+			properties = new MiTL[list.size()];
+			list.toArray(properties);
+		}
 	}
 
 	public boolean[][] performMC(double tfinal, int runs, int timepoints) {

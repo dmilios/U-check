@@ -1,5 +1,7 @@
 package parsers;
 
+import java.util.ArrayList;
+
 import mitl.*;
 import expr.*;
 
@@ -12,9 +14,19 @@ public class MitlFactory {
 
 	private MitlPropertiesList propertiesList = new MitlPropertiesList();
 	private Context modelNamespace;
+	private ArrayList<String> errors = new ArrayList<String>();
+	private ArrayList<SignalFunction> signals = new ArrayList<SignalFunction>();
 
 	public MitlFactory(Context modelNamespace) {
 		this.modelNamespace = modelNamespace;
+	}
+
+	public ArrayList<String> getErrors() {
+		return errors;
+	}
+
+	public ArrayList<SignalFunction> getSignals() {
+		return signals;
 	}
 
 	public MitlPropertiesList constructProperties(String text) {
@@ -54,10 +66,10 @@ public class MitlFactory {
 		MiTLLexer lex = new MiTLLexer(new ANTLRStringStream(text));
 		CommonTokenStream tokens = new CommonTokenStream(lex);
 		MiTLParser parser = new MiTLParser(tokens);
-		MiTLParser.exprOR_return r = parser.exprOR();		
+		MiTLParser.exprOR_return r = parser.exprOR();
 		Tree ast = (Tree) r.getTree();
 		constructMiTLStatement(ast);
-		
+
 		// TODO: return the error message
 		return parser.getNumberOfSyntaxErrors() == 0;
 	}
@@ -171,8 +183,27 @@ public class MitlFactory {
 	}
 
 	private ArithmeticExpression constructFunction(Tree node) {
-		// TODO: implement functions
-		return null;
+		final String name = node.getText();
+		ArithmeticFunctionType type = null;
+		for (ArithmeticFunctionType t : ArithmeticFunctionType.values())
+			if (name.equals(t.toString())) {
+				type = t;
+				break;
+			}
+
+		if (type == null) {
+
+			ArithmeticExpression arg0 = constructExpression(node.getChild(0));
+			ArithmeticExpression arg1 = constructExpression(node.getChild(1));
+			SignalFunction sf = new SignalFunction(name, arg0, arg1);
+			signals.add(sf);
+			return sf;
+		}
+
+		if (type == null)
+			errors.add("Function \"" + name + "\" is not defined!");
+		ArithmeticExpression arg = constructExpression(node.getChild(0));
+		return new ArithmeticFunction(type, arg);
 	}
 
 	private ArithmeticExpression constructBinExpression(Tree node) {

@@ -3,20 +3,15 @@ package tests;
 import gp.kernels.KernelRBF;
 import gpoptim.GpoResult;
 import gridSampling.LatinHypercubeSampler;
-
-import java.io.IOException;
-
 import lff.LearnFromFormulae;
 import lff.Parameter;
 import modelChecking.MitlModelChecker;
-import simhya.model.flat.parser.ParseException;
 import simhya.model.flat.parser.TokenMgrError;
 import ucheck.SimhyaModel;
 
 public class TestRobust {
 
-	public static void main(String[] args) throws IOException,
-			NumberFormatException, ParseException, TokenMgrError {
+	public static void main(String[] args) throws TokenMgrError, Exception {
 
 		SimhyaModel model = new SimhyaModel();
 		model.loadModel("models/RUMORS.txt");
@@ -29,7 +24,7 @@ public class TestRobust {
 
 		LearnFromFormulae lff = new LearnFromFormulae(modelChecker);
 		lff.setParams(params);
-		
+
 		model.setODE();
 		lff.getOptions().setSimulationRuns(1);
 

@@ -1,5 +1,6 @@
-// $ANTLR 3.5-rc-2 /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g 2014-07-15 11:25:31
 package parsers;
+
+// $ANTLR 3.5-rc-2 /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g 2015-03-09 18:14:56
 
 import org.antlr.runtime.*;
 import java.util.Stack;
@@ -81,7 +82,7 @@ public class MiTLParser extends Parser {
 		return adaptor;
 	}
 	@Override public String[] getTokenNames() { return MiTLParser.tokenNames; }
-	@Override public String getGrammarFileName() { return "/home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g"; }
+	@Override public String getGrammarFileName() { return "/home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g"; }
 
 
 	public static class eval_return extends ParserRuleReturnScope {
@@ -92,7 +93,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "eval"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:10:1: eval : statementList ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:10:1: eval : statementList ;
 	public final MiTLParser.eval_return eval() throws RecognitionException {
 		MiTLParser.eval_return retval = new MiTLParser.eval_return();
 		retval.start = input.LT(1);
@@ -103,8 +104,8 @@ public class MiTLParser extends Parser {
 
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:10:6: ( statementList )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:10:8: statementList
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:10:6: ( statementList )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:10:8: statementList
 			{
 			root_0 = (Object)adaptor.nil();
 
@@ -145,7 +146,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "statementList"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:14:1: statementList : ( NEWLINE !)* ( statement )+ ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:14:1: statementList : ( NEWLINE !)* ( statement )+ ;
 	public final MiTLParser.statementList_return statementList() throws RecognitionException {
 		MiTLParser.statementList_return retval = new MiTLParser.statementList_return();
 		retval.start = input.LT(1);
@@ -158,13 +159,13 @@ public class MiTLParser extends Parser {
 		Object NEWLINE2_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:2: ( ( NEWLINE !)* ( statement )+ )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:4: ( NEWLINE !)* ( statement )+
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:2: ( ( NEWLINE !)* ( statement )+ )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:4: ( NEWLINE !)* ( statement )+
 			{
 			root_0 = (Object)adaptor.nil();
 
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:11: ( NEWLINE !)*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:11: ( NEWLINE !)*
 			loop1:
 			while (true) {
 				int alt1=2;
@@ -175,7 +176,7 @@ public class MiTLParser extends Parser {
 
 				switch (alt1) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:11: NEWLINE !
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:11: NEWLINE !
 					{
 					NEWLINE2=(Token)match(input,NEWLINE,FOLLOW_NEWLINE_in_statementList40); if (state.failed) return retval;
 					}
@@ -186,7 +187,7 @@ public class MiTLParser extends Parser {
 				}
 			}
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:14: ( statement )+
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:14: ( statement )+
 			int cnt2=0;
 			loop2:
 			while (true) {
@@ -198,7 +199,7 @@ public class MiTLParser extends Parser {
 
 				switch (alt2) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:14: statement
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:15:14: statement
 					{
 					pushFollow(FOLLOW_statement_in_statementList44);
 					statement3=statement();
@@ -248,7 +249,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "statement"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:18:1: statement : ( declaration ( NEWLINE !)+ | exprOR ( NEWLINE !)+ );
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:18:1: statement : ( declaration ( NEWLINE !)+ | exprOR ( NEWLINE !)+ );
 	public final MiTLParser.statement_return statement() throws RecognitionException {
 		MiTLParser.statement_return retval = new MiTLParser.statement_return();
 		retval.start = input.LT(1);
@@ -264,7 +265,7 @@ public class MiTLParser extends Parser {
 		Object NEWLINE7_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:19:2: ( declaration ( NEWLINE !)+ | exprOR ( NEWLINE !)+ )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:19:2: ( declaration ( NEWLINE !)+ | exprOR ( NEWLINE !)+ )
 			int alt5=2;
 			int LA5_0 = input.LA(1);
 			if ( (LA5_0==CONST) ) {
@@ -283,7 +284,7 @@ public class MiTLParser extends Parser {
 
 			switch (alt5) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:19:4: declaration ( NEWLINE !)+
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:19:4: declaration ( NEWLINE !)+
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -294,7 +295,7 @@ public class MiTLParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) adaptor.addChild(root_0, declaration4.getTree());
 
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:19:23: ( NEWLINE !)+
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:19:23: ( NEWLINE !)+
 					int cnt3=0;
 					loop3:
 					while (true) {
@@ -306,7 +307,7 @@ public class MiTLParser extends Parser {
 
 						switch (alt3) {
 						case 1 :
-							// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:19:23: NEWLINE !
+							// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:19:23: NEWLINE !
 							{
 							NEWLINE5=(Token)match(input,NEWLINE,FOLLOW_NEWLINE_in_statement58); if (state.failed) return retval;
 							}
@@ -324,7 +325,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:20:4: exprOR ( NEWLINE !)+
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:20:4: exprOR ( NEWLINE !)+
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -335,7 +336,7 @@ public class MiTLParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) adaptor.addChild(root_0, exprOR6.getTree());
 
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:20:18: ( NEWLINE !)+
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:20:18: ( NEWLINE !)+
 					int cnt4=0;
 					loop4:
 					while (true) {
@@ -347,7 +348,7 @@ public class MiTLParser extends Parser {
 
 						switch (alt4) {
 						case 1 :
-							// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:20:18: NEWLINE !
+							// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:20:18: NEWLINE !
 							{
 							NEWLINE7=(Token)match(input,NEWLINE,FOLLOW_NEWLINE_in_statement67); if (state.failed) return retval;
 							}
@@ -394,7 +395,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "declaration"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:23:1: declaration : ( CONST ^ DOUBLE ID ( '=' ! ( INTEGER | FLOAT ) )? SEMICOLON !| CONST ^ INT ID ( '=' ! INTEGER )? SEMICOLON !| CONST ^ BOOL ID ( '=' ! ( TRUE | FALSE ) )? SEMICOLON !);
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:23:1: declaration : ( CONST ^ DOUBLE ID ( '=' ! ( INTEGER | FLOAT ) )? SEMICOLON !| CONST ^ INT ID ( '=' ! INTEGER )? SEMICOLON !| CONST ^ BOOL ID ( '=' ! ( TRUE | FALSE ) )? SEMICOLON !);
 	public final MiTLParser.declaration_return declaration() throws RecognitionException {
 		MiTLParser.declaration_return retval = new MiTLParser.declaration_return();
 		retval.start = input.LT(1);
@@ -440,7 +441,7 @@ public class MiTLParser extends Parser {
 		Object SEMICOLON25_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:24:2: ( CONST ^ DOUBLE ID ( '=' ! ( INTEGER | FLOAT ) )? SEMICOLON !| CONST ^ INT ID ( '=' ! INTEGER )? SEMICOLON !| CONST ^ BOOL ID ( '=' ! ( TRUE | FALSE ) )? SEMICOLON !)
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:24:2: ( CONST ^ DOUBLE ID ( '=' ! ( INTEGER | FLOAT ) )? SEMICOLON !| CONST ^ INT ID ( '=' ! INTEGER )? SEMICOLON !| CONST ^ BOOL ID ( '=' ! ( TRUE | FALSE ) )? SEMICOLON !)
 			int alt9=3;
 			int LA9_0 = input.LA(1);
 			if ( (LA9_0==CONST) ) {
@@ -483,7 +484,7 @@ public class MiTLParser extends Parser {
 
 			switch (alt9) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:24:4: CONST ^ DOUBLE ID ( '=' ! ( INTEGER | FLOAT ) )? SEMICOLON !
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:24:4: CONST ^ DOUBLE ID ( '=' ! ( INTEGER | FLOAT ) )? SEMICOLON !
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -506,7 +507,7 @@ public class MiTLParser extends Parser {
 					adaptor.addChild(root_0, ID10_tree);
 					}
 
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:24:21: ( '=' ! ( INTEGER | FLOAT ) )?
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:24:21: ( '=' ! ( INTEGER | FLOAT ) )?
 					int alt6=2;
 					int LA6_0 = input.LA(1);
 					if ( (LA6_0==EQ) ) {
@@ -514,7 +515,7 @@ public class MiTLParser extends Parser {
 					}
 					switch (alt6) {
 						case 1 :
-							// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:24:22: '=' ! ( INTEGER | FLOAT )
+							// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:24:22: '=' ! ( INTEGER | FLOAT )
 							{
 							char_literal11=(Token)match(input,EQ,FOLLOW_EQ_in_declaration88); if (state.failed) return retval;
 							set12=input.LT(1);
@@ -538,7 +539,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:25:4: CONST ^ INT ID ( '=' ! INTEGER )? SEMICOLON !
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:25:4: CONST ^ INT ID ( '=' ! INTEGER )? SEMICOLON !
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -561,7 +562,7 @@ public class MiTLParser extends Parser {
 					adaptor.addChild(root_0, ID16_tree);
 					}
 
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:25:18: ( '=' ! INTEGER )?
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:25:18: ( '=' ! INTEGER )?
 					int alt7=2;
 					int LA7_0 = input.LA(1);
 					if ( (LA7_0==EQ) ) {
@@ -569,7 +570,7 @@ public class MiTLParser extends Parser {
 					}
 					switch (alt7) {
 						case 1 :
-							// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:25:19: '=' ! INTEGER
+							// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:25:19: '=' ! INTEGER
 							{
 							char_literal17=(Token)match(input,EQ,FOLLOW_EQ_in_declaration115); if (state.failed) return retval;
 							INTEGER18=(Token)match(input,INTEGER,FOLLOW_INTEGER_in_declaration118); if (state.failed) return retval;
@@ -587,7 +588,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:26:4: CONST ^ BOOL ID ( '=' ! ( TRUE | FALSE ) )? SEMICOLON !
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:26:4: CONST ^ BOOL ID ( '=' ! ( TRUE | FALSE ) )? SEMICOLON !
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -610,7 +611,7 @@ public class MiTLParser extends Parser {
 					adaptor.addChild(root_0, ID22_tree);
 					}
 
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:26:19: ( '=' ! ( TRUE | FALSE ) )?
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:26:19: ( '=' ! ( TRUE | FALSE ) )?
 					int alt8=2;
 					int LA8_0 = input.LA(1);
 					if ( (LA8_0==EQ) ) {
@@ -618,7 +619,7 @@ public class MiTLParser extends Parser {
 					}
 					switch (alt8) {
 						case 1 :
-							// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:26:20: '=' ! ( TRUE | FALSE )
+							// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:26:20: '=' ! ( TRUE | FALSE )
 							{
 							char_literal23=(Token)match(input,EQ,FOLLOW_EQ_in_declaration136); if (state.failed) return retval;
 							set24=input.LT(1);
@@ -671,7 +672,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "exprOR"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:33:1: exprOR : exprAND ( OR ^ exprAND )* ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:33:1: exprOR : exprAND ( OR ^ exprAND )* ;
 	public final MiTLParser.exprOR_return exprOR() throws RecognitionException {
 		MiTLParser.exprOR_return retval = new MiTLParser.exprOR_return();
 		retval.start = input.LT(1);
@@ -685,8 +686,8 @@ public class MiTLParser extends Parser {
 		Object OR27_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:34:2: ( exprAND ( OR ^ exprAND )* )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:34:4: exprAND ( OR ^ exprAND )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:34:2: ( exprAND ( OR ^ exprAND )* )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:34:4: exprAND ( OR ^ exprAND )*
 			{
 			root_0 = (Object)adaptor.nil();
 
@@ -697,7 +698,7 @@ public class MiTLParser extends Parser {
 			if (state.failed) return retval;
 			if ( state.backtracking==0 ) adaptor.addChild(root_0, exprAND26.getTree());
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:34:12: ( OR ^ exprAND )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:34:12: ( OR ^ exprAND )*
 			loop10:
 			while (true) {
 				int alt10=2;
@@ -708,7 +709,7 @@ public class MiTLParser extends Parser {
 
 				switch (alt10) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:34:13: OR ^ exprAND
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:34:13: OR ^ exprAND
 					{
 					OR27=(Token)match(input,OR,FOLLOW_OR_in_exprOR169); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -760,7 +761,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "exprAND"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:37:1: exprAND : mitlTerm ( AND ^ mitlTerm )* ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:37:1: exprAND : mitlTerm ( AND ^ mitlTerm )* ;
 	public final MiTLParser.exprAND_return exprAND() throws RecognitionException {
 		MiTLParser.exprAND_return retval = new MiTLParser.exprAND_return();
 		retval.start = input.LT(1);
@@ -774,8 +775,8 @@ public class MiTLParser extends Parser {
 		Object AND30_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:38:2: ( mitlTerm ( AND ^ mitlTerm )* )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:38:4: mitlTerm ( AND ^ mitlTerm )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:38:2: ( mitlTerm ( AND ^ mitlTerm )* )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:38:4: mitlTerm ( AND ^ mitlTerm )*
 			{
 			root_0 = (Object)adaptor.nil();
 
@@ -786,7 +787,7 @@ public class MiTLParser extends Parser {
 			if (state.failed) return retval;
 			if ( state.backtracking==0 ) adaptor.addChild(root_0, mitlTerm29.getTree());
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:38:13: ( AND ^ mitlTerm )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:38:13: ( AND ^ mitlTerm )*
 			loop11:
 			while (true) {
 				int alt11=2;
@@ -797,7 +798,7 @@ public class MiTLParser extends Parser {
 
 				switch (alt11) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:38:14: AND ^ mitlTerm
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:38:14: AND ^ mitlTerm
 					{
 					AND30=(Token)match(input,AND,FOLLOW_AND_in_exprAND189); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -849,7 +850,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "mitlTerm"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:1: mitlTerm : ( booelanAtomic ( U ^ timeBound booelanAtomic )? | F ^ timeBound booelanAtomic | G ^ timeBound booelanAtomic );
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:1: mitlTerm : ( booelanAtomic ( U ^ timeBound booelanAtomic )? | F ^ timeBound booelanAtomic | G ^ timeBound booelanAtomic );
 	public final MiTLParser.mitlTerm_return mitlTerm() throws RecognitionException {
 		MiTLParser.mitlTerm_return retval = new MiTLParser.mitlTerm_return();
 		retval.start = input.LT(1);
@@ -872,7 +873,7 @@ public class MiTLParser extends Parser {
 		Object G39_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:10: ( booelanAtomic ( U ^ timeBound booelanAtomic )? | F ^ timeBound booelanAtomic | G ^ timeBound booelanAtomic )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:10: ( booelanAtomic ( U ^ timeBound booelanAtomic )? | F ^ timeBound booelanAtomic | G ^ timeBound booelanAtomic )
 			int alt13=3;
 			switch ( input.LA(1) ) {
 			case FALSE:
@@ -905,7 +906,7 @@ public class MiTLParser extends Parser {
 			}
 			switch (alt13) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:12: booelanAtomic ( U ^ timeBound booelanAtomic )?
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:12: booelanAtomic ( U ^ timeBound booelanAtomic )?
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -916,7 +917,7 @@ public class MiTLParser extends Parser {
 					if (state.failed) return retval;
 					if ( state.backtracking==0 ) adaptor.addChild(root_0, booelanAtomic32.getTree());
 
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:26: ( U ^ timeBound booelanAtomic )?
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:26: ( U ^ timeBound booelanAtomic )?
 					int alt12=2;
 					int LA12_0 = input.LA(1);
 					if ( (LA12_0==U) ) {
@@ -924,7 +925,7 @@ public class MiTLParser extends Parser {
 					}
 					switch (alt12) {
 						case 1 :
-							// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:27: U ^ timeBound booelanAtomic
+							// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:43:27: U ^ timeBound booelanAtomic
 							{
 							U33=(Token)match(input,U,FOLLOW_U_in_mitlTerm211); if (state.failed) return retval;
 							if ( state.backtracking==0 ) {
@@ -952,7 +953,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:44:5: F ^ timeBound booelanAtomic
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:44:5: F ^ timeBound booelanAtomic
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -978,7 +979,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:45:5: G ^ timeBound booelanAtomic
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:45:5: G ^ timeBound booelanAtomic
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -1033,7 +1034,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "timeBound"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:52:1: timeBound : ( '<=' ! termExpr | LBRAT ! termExpr COMMA ^ termExpr RBRAT !| termExpr );
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:52:1: timeBound : ( '<=' ! termExpr | LBRAT ! termExpr COMMA ^ termExpr RBRAT !| termExpr );
 	public final MiTLParser.timeBound_return timeBound() throws RecognitionException {
 		MiTLParser.timeBound_return retval = new MiTLParser.timeBound_return();
 		retval.start = input.LT(1);
@@ -1055,7 +1056,7 @@ public class MiTLParser extends Parser {
 		Object RBRAT48_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:53:2: ( '<=' ! termExpr | LBRAT ! termExpr COMMA ^ termExpr RBRAT !| termExpr )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:53:2: ( '<=' ! termExpr | LBRAT ! termExpr COMMA ^ termExpr RBRAT !| termExpr )
 			int alt14=3;
 			switch ( input.LA(1) ) {
 			case LE:
@@ -1085,7 +1086,7 @@ public class MiTLParser extends Parser {
 			}
 			switch (alt14) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:53:4: '<=' ! termExpr
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:53:4: '<=' ! termExpr
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -1100,7 +1101,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:54:4: LBRAT ! termExpr COMMA ^ termExpr RBRAT !
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:54:4: LBRAT ! termExpr COMMA ^ termExpr RBRAT !
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -1128,7 +1129,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:55:4: termExpr
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:55:4: termExpr
 					{
 					root_0 = (Object)adaptor.nil();
 
@@ -1171,7 +1172,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "booelanAtomic"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:62:1: booelanAtomic : ( NOT ^)? ( relationalExpr | LPAR ! exprOR RPAR !| TRUE | FALSE ) ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:62:1: booelanAtomic : ( NOT ^)? ( relationalExpr | LPAR ! exprOR RPAR !| TRUE | FALSE ) ;
 	public final MiTLParser.booelanAtomic_return booelanAtomic() throws RecognitionException {
 		MiTLParser.booelanAtomic_return retval = new MiTLParser.booelanAtomic_return();
 		retval.start = input.LT(1);
@@ -1193,13 +1194,13 @@ public class MiTLParser extends Parser {
 		Object FALSE56_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:63:2: ( ( NOT ^)? ( relationalExpr | LPAR ! exprOR RPAR !| TRUE | FALSE ) )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:63:4: ( NOT ^)? ( relationalExpr | LPAR ! exprOR RPAR !| TRUE | FALSE )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:63:2: ( ( NOT ^)? ( relationalExpr | LPAR ! exprOR RPAR !| TRUE | FALSE ) )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:63:4: ( NOT ^)? ( relationalExpr | LPAR ! exprOR RPAR !| TRUE | FALSE )
 			{
 			root_0 = (Object)adaptor.nil();
 
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:63:7: ( NOT ^)?
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:63:7: ( NOT ^)?
 			int alt15=2;
 			int LA15_0 = input.LA(1);
 			if ( (LA15_0==NOT) ) {
@@ -1207,7 +1208,7 @@ public class MiTLParser extends Parser {
 			}
 			switch (alt15) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:63:7: NOT ^
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:63:7: NOT ^
 					{
 					NOT50=(Token)match(input,NOT,FOLLOW_NOT_in_booelanAtomic296); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -1220,7 +1221,7 @@ public class MiTLParser extends Parser {
 
 			}
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:64:3: ( relationalExpr | LPAR ! exprOR RPAR !| TRUE | FALSE )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:64:3: ( relationalExpr | LPAR ! exprOR RPAR !| TRUE | FALSE )
 			int alt16=4;
 			switch ( input.LA(1) ) {
 			case FLOAT:
@@ -1233,7 +1234,7 @@ public class MiTLParser extends Parser {
 				break;
 			case LPAR:
 				{
-				int LA16_3 = input.LA(2);
+				int LA16_4 = input.LA(2);
 				if ( (synpred21_MiTL()) ) {
 					alt16=1;
 				}
@@ -1247,7 +1248,7 @@ public class MiTLParser extends Parser {
 					try {
 						input.consume();
 						NoViableAltException nvae =
-							new NoViableAltException("", 16, 3, input);
+							new NoViableAltException("", 16, 4, input);
 						throw nvae;
 					} finally {
 						input.rewind(nvaeMark);
@@ -1274,7 +1275,7 @@ public class MiTLParser extends Parser {
 			}
 			switch (alt16) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:64:5: relationalExpr
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:64:5: relationalExpr
 					{
 					pushFollow(FOLLOW_relationalExpr_in_booelanAtomic304);
 					relationalExpr51=relationalExpr();
@@ -1285,7 +1286,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:65:5: LPAR ! exprOR RPAR !
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:65:5: LPAR ! exprOR RPAR !
 					{
 					LPAR52=(Token)match(input,LPAR,FOLLOW_LPAR_in_booelanAtomic310); if (state.failed) return retval;
 					pushFollow(FOLLOW_exprOR_in_booelanAtomic313);
@@ -1298,7 +1299,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:66:5: TRUE
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:66:5: TRUE
 					{
 					TRUE55=(Token)match(input,TRUE,FOLLOW_TRUE_in_booelanAtomic322); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -1309,7 +1310,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 4 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:67:5: FALSE
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:67:5: FALSE
 					{
 					FALSE56=(Token)match(input,FALSE,FOLLOW_FALSE_in_booelanAtomic328); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -1352,7 +1353,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "relationalExpr"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:73:1: relationalExpr : termExpr ( EQ | NEQ | GT | LT | GE | LE ) ^ termExpr ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:73:1: relationalExpr : termExpr ( EQ | NEQ | GT | LT | GE | LE ) ^ termExpr ;
 	public final MiTLParser.relationalExpr_return relationalExpr() throws RecognitionException {
 		MiTLParser.relationalExpr_return retval = new MiTLParser.relationalExpr_return();
 		retval.start = input.LT(1);
@@ -1366,8 +1367,8 @@ public class MiTLParser extends Parser {
 		Object set58_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:74:2: ( termExpr ( EQ | NEQ | GT | LT | GE | LE ) ^ termExpr )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:74:4: termExpr ( EQ | NEQ | GT | LT | GE | LE ) ^ termExpr
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:74:2: ( termExpr ( EQ | NEQ | GT | LT | GE | LE ) ^ termExpr )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:74:4: termExpr ( EQ | NEQ | GT | LT | GE | LE ) ^ termExpr
 			{
 			root_0 = (Object)adaptor.nil();
 
@@ -1427,7 +1428,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "termExpr"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:82:1: termExpr : factorExpr ( PLUS ^ factorExpr | MINUS ^ factorExpr )* ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:82:1: termExpr : factorExpr ( PLUS ^ factorExpr | MINUS ^ factorExpr )* ;
 	public final MiTLParser.termExpr_return termExpr() throws RecognitionException {
 		MiTLParser.termExpr_return retval = new MiTLParser.termExpr_return();
 		retval.start = input.LT(1);
@@ -1444,8 +1445,8 @@ public class MiTLParser extends Parser {
 		Object MINUS63_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:83:5: ( factorExpr ( PLUS ^ factorExpr | MINUS ^ factorExpr )* )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:83:10: factorExpr ( PLUS ^ factorExpr | MINUS ^ factorExpr )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:83:5: ( factorExpr ( PLUS ^ factorExpr | MINUS ^ factorExpr )* )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:83:10: factorExpr ( PLUS ^ factorExpr | MINUS ^ factorExpr )*
 			{
 			root_0 = (Object)adaptor.nil();
 
@@ -1456,7 +1457,7 @@ public class MiTLParser extends Parser {
 			if (state.failed) return retval;
 			if ( state.backtracking==0 ) adaptor.addChild(root_0, factorExpr60.getTree());
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:84:10: ( PLUS ^ factorExpr | MINUS ^ factorExpr )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:84:10: ( PLUS ^ factorExpr | MINUS ^ factorExpr )*
 			loop17:
 			while (true) {
 				int alt17=3;
@@ -1474,7 +1475,7 @@ public class MiTLParser extends Parser {
 
 				switch (alt17) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:84:12: PLUS ^ factorExpr
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:84:12: PLUS ^ factorExpr
 					{
 					PLUS61=(Token)match(input,PLUS,FOLLOW_PLUS_in_termExpr408); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -1491,7 +1492,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:85:12: MINUS ^ factorExpr
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:85:12: MINUS ^ factorExpr
 					{
 					MINUS63=(Token)match(input,MINUS,FOLLOW_MINUS_in_termExpr425); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -1543,7 +1544,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "factorExpr"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:89:1: factorExpr : factor ( MULT ^ factor | DIV ^ factor )* ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:89:1: factorExpr : factor ( MULT ^ factor | DIV ^ factor )* ;
 	public final MiTLParser.factorExpr_return factorExpr() throws RecognitionException {
 		MiTLParser.factorExpr_return retval = new MiTLParser.factorExpr_return();
 		retval.start = input.LT(1);
@@ -1560,8 +1561,8 @@ public class MiTLParser extends Parser {
 		Object DIV68_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:90:2: ( factor ( MULT ^ factor | DIV ^ factor )* )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:90:4: factor ( MULT ^ factor | DIV ^ factor )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:90:2: ( factor ( MULT ^ factor | DIV ^ factor )* )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:90:4: factor ( MULT ^ factor | DIV ^ factor )*
 			{
 			root_0 = (Object)adaptor.nil();
 
@@ -1572,7 +1573,7 @@ public class MiTLParser extends Parser {
 			if (state.failed) return retval;
 			if ( state.backtracking==0 ) adaptor.addChild(root_0, factor65.getTree());
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:91:3: ( MULT ^ factor | DIV ^ factor )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:91:3: ( MULT ^ factor | DIV ^ factor )*
 			loop18:
 			while (true) {
 				int alt18=3;
@@ -1586,7 +1587,7 @@ public class MiTLParser extends Parser {
 
 				switch (alt18) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:91:5: MULT ^ factor
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:91:5: MULT ^ factor
 					{
 					MULT66=(Token)match(input,MULT,FOLLOW_MULT_in_factorExpr461); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -1603,7 +1604,7 @@ public class MiTLParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:92:5: DIV ^ factor
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:92:5: DIV ^ factor
 					{
 					DIV68=(Token)match(input,DIV,FOLLOW_DIV_in_factorExpr471); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -1655,7 +1656,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "factor"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:96:1: factor : ( MINUS ^)? ( atomic | LPAR ! termExpr RPAR !| functionExpr ) ;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:96:1: factor : ( MINUS ^)? ( functionExpr | atomic | LPAR ! termExpr RPAR !) ;
 	public final MiTLParser.factor_return factor() throws RecognitionException {
 		MiTLParser.factor_return retval = new MiTLParser.factor_return();
 		retval.start = input.LT(1);
@@ -1663,24 +1664,24 @@ public class MiTLParser extends Parser {
 		Object root_0 = null;
 
 		Token MINUS70=null;
-		Token LPAR72=null;
-		Token RPAR74=null;
-		ParserRuleReturnScope atomic71 =null;
-		ParserRuleReturnScope termExpr73 =null;
-		ParserRuleReturnScope functionExpr75 =null;
+		Token LPAR73=null;
+		Token RPAR75=null;
+		ParserRuleReturnScope functionExpr71 =null;
+		ParserRuleReturnScope atomic72 =null;
+		ParserRuleReturnScope termExpr74 =null;
 
 		Object MINUS70_tree=null;
-		Object LPAR72_tree=null;
-		Object RPAR74_tree=null;
+		Object LPAR73_tree=null;
+		Object RPAR75_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:97:2: ( ( MINUS ^)? ( atomic | LPAR ! termExpr RPAR !| functionExpr ) )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:97:4: ( MINUS ^)? ( atomic | LPAR ! termExpr RPAR !| functionExpr )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:97:2: ( ( MINUS ^)? ( functionExpr | atomic | LPAR ! termExpr RPAR !) )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:97:4: ( MINUS ^)? ( functionExpr | atomic | LPAR ! termExpr RPAR !)
 			{
 			root_0 = (Object)adaptor.nil();
 
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:97:9: ( MINUS ^)?
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:97:9: ( MINUS ^)?
 			int alt19=2;
 			int LA19_0 = input.LA(1);
 			if ( (LA19_0==MINUS) ) {
@@ -1688,7 +1689,7 @@ public class MiTLParser extends Parser {
 			}
 			switch (alt19) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:97:9: MINUS ^
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:97:9: MINUS ^
 					{
 					MINUS70=(Token)match(input,MINUS,FOLLOW_MINUS_in_factor491); if (state.failed) return retval;
 					if ( state.backtracking==0 ) {
@@ -1701,7 +1702,7 @@ public class MiTLParser extends Parser {
 
 			}
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:98:3: ( atomic | LPAR ! termExpr RPAR !| functionExpr )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:98:3: ( functionExpr | atomic | LPAR ! termExpr RPAR !)
 			int alt20=3;
 			switch ( input.LA(1) ) {
 			case ID:
@@ -1710,21 +1711,34 @@ public class MiTLParser extends Parser {
 				if ( (synpred34_MiTL()) ) {
 					alt20=1;
 				}
-				else if ( (true) ) {
-					alt20=3;
+				else if ( (synpred35_MiTL()) ) {
+					alt20=2;
 				}
 
+				else {
+					if (state.backtracking>0) {state.failed=true; return retval;}
+					int nvaeMark = input.mark();
+					try {
+						input.consume();
+						NoViableAltException nvae =
+							new NoViableAltException("", 20, 1, input);
+						throw nvae;
+					} finally {
+						input.rewind(nvaeMark);
+					}
 				}
-				break;
-			case LPAR:
-				{
-				alt20=2;
+
 				}
 				break;
 			case FLOAT:
 			case INTEGER:
 				{
-				alt20=1;
+				alt20=2;
+				}
+				break;
+			case LPAR:
+				{
+				alt20=3;
 				}
 				break;
 			default:
@@ -1735,38 +1749,38 @@ public class MiTLParser extends Parser {
 			}
 			switch (alt20) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:98:4: atomic
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:98:4: functionExpr
 					{
-					pushFollow(FOLLOW_atomic_in_factor498);
-					atomic71=atomic();
+					pushFollow(FOLLOW_functionExpr_in_factor498);
+					functionExpr71=functionExpr();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, atomic71.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, functionExpr71.getTree());
 
 					}
 					break;
 				case 2 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:99:5: LPAR ! termExpr RPAR !
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:99:5: atomic
 					{
-					LPAR72=(Token)match(input,LPAR,FOLLOW_LPAR_in_factor504); if (state.failed) return retval;
-					pushFollow(FOLLOW_termExpr_in_factor507);
-					termExpr73=termExpr();
+					pushFollow(FOLLOW_atomic_in_factor504);
+					atomic72=atomic();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, termExpr73.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, atomic72.getTree());
 
-					RPAR74=(Token)match(input,RPAR,FOLLOW_RPAR_in_factor509); if (state.failed) return retval;
 					}
 					break;
 				case 3 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:100:5: functionExpr
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:100:5: LPAR ! termExpr RPAR !
 					{
-					pushFollow(FOLLOW_functionExpr_in_factor516);
-					functionExpr75=functionExpr();
+					LPAR73=(Token)match(input,LPAR,FOLLOW_LPAR_in_factor510); if (state.failed) return retval;
+					pushFollow(FOLLOW_termExpr_in_factor513);
+					termExpr74=termExpr();
 					state._fsp--;
 					if (state.failed) return retval;
-					if ( state.backtracking==0 ) adaptor.addChild(root_0, functionExpr75.getTree());
+					if ( state.backtracking==0 ) adaptor.addChild(root_0, termExpr74.getTree());
 
+					RPAR75=(Token)match(input,RPAR,FOLLOW_RPAR_in_factor515); if (state.failed) return retval;
 					}
 					break;
 
@@ -1802,7 +1816,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "functionExpr"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:104:1: functionExpr : ID ^ LPAR ! termExpr ( COMMA ! termExpr )* RPAR !;
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:105:1: functionExpr : ID ^ LPAR ! termExpr ( COMMA ! termExpr )* RPAR !;
 	public final MiTLParser.functionExpr_return functionExpr() throws RecognitionException {
 		MiTLParser.functionExpr_return retval = new MiTLParser.functionExpr_return();
 		retval.start = input.LT(1);
@@ -1822,26 +1836,26 @@ public class MiTLParser extends Parser {
 		Object RPAR81_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:105:2: ( ID ^ LPAR ! termExpr ( COMMA ! termExpr )* RPAR !)
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:105:4: ID ^ LPAR ! termExpr ( COMMA ! termExpr )* RPAR !
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:106:2: ( ID ^ LPAR ! termExpr ( COMMA ! termExpr )* RPAR !)
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:106:4: ID ^ LPAR ! termExpr ( COMMA ! termExpr )* RPAR !
 			{
 			root_0 = (Object)adaptor.nil();
 
 
-			ID76=(Token)match(input,ID,FOLLOW_ID_in_functionExpr531); if (state.failed) return retval;
+			ID76=(Token)match(input,ID,FOLLOW_ID_in_functionExpr532); if (state.failed) return retval;
 			if ( state.backtracking==0 ) {
 			ID76_tree = (Object)adaptor.create(ID76);
 			root_0 = (Object)adaptor.becomeRoot(ID76_tree, root_0);
 			}
 
-			LPAR77=(Token)match(input,LPAR,FOLLOW_LPAR_in_functionExpr534); if (state.failed) return retval;
-			pushFollow(FOLLOW_termExpr_in_functionExpr537);
+			LPAR77=(Token)match(input,LPAR,FOLLOW_LPAR_in_functionExpr535); if (state.failed) return retval;
+			pushFollow(FOLLOW_termExpr_in_functionExpr538);
 			termExpr78=termExpr();
 			state._fsp--;
 			if (state.failed) return retval;
 			if ( state.backtracking==0 ) adaptor.addChild(root_0, termExpr78.getTree());
 
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:105:23: ( COMMA ! termExpr )*
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:106:23: ( COMMA ! termExpr )*
 			loop21:
 			while (true) {
 				int alt21=2;
@@ -1852,10 +1866,10 @@ public class MiTLParser extends Parser {
 
 				switch (alt21) {
 				case 1 :
-					// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:105:24: COMMA ! termExpr
+					// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:106:24: COMMA ! termExpr
 					{
-					COMMA79=(Token)match(input,COMMA,FOLLOW_COMMA_in_functionExpr540); if (state.failed) return retval;
-					pushFollow(FOLLOW_termExpr_in_functionExpr543);
+					COMMA79=(Token)match(input,COMMA,FOLLOW_COMMA_in_functionExpr541); if (state.failed) return retval;
+					pushFollow(FOLLOW_termExpr_in_functionExpr544);
 					termExpr80=termExpr();
 					state._fsp--;
 					if (state.failed) return retval;
@@ -1869,7 +1883,7 @@ public class MiTLParser extends Parser {
 				}
 			}
 
-			RPAR81=(Token)match(input,RPAR,FOLLOW_RPAR_in_functionExpr547); if (state.failed) return retval;
+			RPAR81=(Token)match(input,RPAR,FOLLOW_RPAR_in_functionExpr548); if (state.failed) return retval;
 			}
 
 			retval.stop = input.LT(-1);
@@ -1900,7 +1914,7 @@ public class MiTLParser extends Parser {
 
 
 	// $ANTLR start "atomic"
-	// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:108:1: atomic : ( ( INTEGER | FLOAT ) | ID );
+	// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:109:1: atomic : ( ( INTEGER | FLOAT ) | ID );
 	public final MiTLParser.atomic_return atomic() throws RecognitionException {
 		MiTLParser.atomic_return retval = new MiTLParser.atomic_return();
 		retval.start = input.LT(1);
@@ -1912,8 +1926,8 @@ public class MiTLParser extends Parser {
 		Object set82_tree=null;
 
 		try {
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:109:2: ( ( INTEGER | FLOAT ) | ID )
-			// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:110:2: ( ( INTEGER | FLOAT ) | ID )
+			// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:
 			{
 			root_0 = (Object)adaptor.nil();
 
@@ -1953,8 +1967,8 @@ public class MiTLParser extends Parser {
 
 	// $ANTLR start synpred21_MiTL
 	public final void synpred21_MiTL_fragment() throws RecognitionException {
-		// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:64:5: ( relationalExpr )
-		// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:64:5: relationalExpr
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:64:5: ( relationalExpr )
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:64:5: relationalExpr
 		{
 		pushFollow(FOLLOW_relationalExpr_in_synpred21_MiTL304);
 		relationalExpr();
@@ -1968,8 +1982,8 @@ public class MiTLParser extends Parser {
 
 	// $ANTLR start synpred22_MiTL
 	public final void synpred22_MiTL_fragment() throws RecognitionException {
-		// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:65:5: ( LPAR exprOR RPAR )
-		// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:65:5: LPAR exprOR RPAR
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:65:5: ( LPAR exprOR RPAR )
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:65:5: LPAR exprOR RPAR
 		{
 		match(input,LPAR,FOLLOW_LPAR_in_synpred22_MiTL310); if (state.failed) return;
 
@@ -1987,8 +2001,8 @@ public class MiTLParser extends Parser {
 
 	// $ANTLR start synpred30_MiTL
 	public final void synpred30_MiTL_fragment() throws RecognitionException {
-		// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:85:12: ( MINUS factorExpr )
-		// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:85:12: MINUS factorExpr
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:85:12: ( MINUS factorExpr )
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:85:12: MINUS factorExpr
 		{
 		match(input,MINUS,FOLLOW_MINUS_in_synpred30_MiTL425); if (state.failed) return;
 
@@ -2004,11 +2018,11 @@ public class MiTLParser extends Parser {
 
 	// $ANTLR start synpred34_MiTL
 	public final void synpred34_MiTL_fragment() throws RecognitionException {
-		// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:98:4: ( atomic )
-		// /home/dimitrios/Dropbox/Documents/postdoc/antlr/MiTL.g:98:4: atomic
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:98:4: ( functionExpr )
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:98:4: functionExpr
 		{
-		pushFollow(FOLLOW_atomic_in_synpred34_MiTL498);
-		atomic();
+		pushFollow(FOLLOW_functionExpr_in_synpred34_MiTL498);
+		functionExpr();
 		state._fsp--;
 		if (state.failed) return;
 
@@ -2017,6 +2031,21 @@ public class MiTLParser extends Parser {
 	}
 	// $ANTLR end synpred34_MiTL
 
+	// $ANTLR start synpred35_MiTL
+	public final void synpred35_MiTL_fragment() throws RecognitionException {
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:99:5: ( atomic )
+		// /home/dmilios/Dropbox/Documents/postdoc/antlr/MiTL.g:99:5: atomic
+		{
+		pushFollow(FOLLOW_atomic_in_synpred35_MiTL504);
+		atomic();
+		state._fsp--;
+		if (state.failed) return;
+
+		}
+
+	}
+	// $ANTLR end synpred35_MiTL
+
 	// Delegated rules
 
 	public final boolean synpred22_MiTL() {
@@ -2024,6 +2053,20 @@ public class MiTLParser extends Parser {
 		int start = input.mark();
 		try {
 			synpred22_MiTL_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred35_MiTL() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred35_MiTL_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -2148,22 +2191,23 @@ public class MiTLParser extends Parser {
 	public static final BitSet FOLLOW_DIV_in_factorExpr471 = new BitSet(new long[]{0x0000000005288000L});
 	public static final BitSet FOLLOW_factor_in_factorExpr474 = new BitSet(new long[]{0x0000000008000202L});
 	public static final BitSet FOLLOW_MINUS_in_factor491 = new BitSet(new long[]{0x0000000001288000L});
-	public static final BitSet FOLLOW_atomic_in_factor498 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_LPAR_in_factor504 = new BitSet(new long[]{0x0000000005288000L});
-	public static final BitSet FOLLOW_termExpr_in_factor507 = new BitSet(new long[]{0x0000000400000000L});
-	public static final BitSet FOLLOW_RPAR_in_factor509 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_functionExpr_in_factor516 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_functionExpr531 = new BitSet(new long[]{0x0000000001000000L});
-	public static final BitSet FOLLOW_LPAR_in_functionExpr534 = new BitSet(new long[]{0x0000000005288000L});
-	public static final BitSet FOLLOW_termExpr_in_functionExpr537 = new BitSet(new long[]{0x0000000400000040L});
-	public static final BitSet FOLLOW_COMMA_in_functionExpr540 = new BitSet(new long[]{0x0000000005288000L});
-	public static final BitSet FOLLOW_termExpr_in_functionExpr543 = new BitSet(new long[]{0x0000000400000040L});
-	public static final BitSet FOLLOW_RPAR_in_functionExpr547 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_functionExpr_in_factor498 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_atomic_in_factor504 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_LPAR_in_factor510 = new BitSet(new long[]{0x0000000005288000L});
+	public static final BitSet FOLLOW_termExpr_in_factor513 = new BitSet(new long[]{0x0000000400000000L});
+	public static final BitSet FOLLOW_RPAR_in_factor515 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_functionExpr532 = new BitSet(new long[]{0x0000000001000000L});
+	public static final BitSet FOLLOW_LPAR_in_functionExpr535 = new BitSet(new long[]{0x0000000005288000L});
+	public static final BitSet FOLLOW_termExpr_in_functionExpr538 = new BitSet(new long[]{0x0000000400000040L});
+	public static final BitSet FOLLOW_COMMA_in_functionExpr541 = new BitSet(new long[]{0x0000000005288000L});
+	public static final BitSet FOLLOW_termExpr_in_functionExpr544 = new BitSet(new long[]{0x0000000400000040L});
+	public static final BitSet FOLLOW_RPAR_in_functionExpr548 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_relationalExpr_in_synpred21_MiTL304 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_LPAR_in_synpred22_MiTL310 = new BitSet(new long[]{0x000000104529E000L});
 	public static final BitSet FOLLOW_exprOR_in_synpred22_MiTL313 = new BitSet(new long[]{0x0000000400000000L});
 	public static final BitSet FOLLOW_RPAR_in_synpred22_MiTL315 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_MINUS_in_synpred30_MiTL425 = new BitSet(new long[]{0x0000000005288000L});
 	public static final BitSet FOLLOW_factorExpr_in_synpred30_MiTL428 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_atomic_in_synpred34_MiTL498 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_functionExpr_in_synpred34_MiTL498 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_atomic_in_synpred35_MiTL504 = new BitSet(new long[]{0x0000000000000002L});
 }

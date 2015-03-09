@@ -95,9 +95,10 @@ factorExpr
 
 factor
 	:	MINUS^?
-		(atomic
+		(functionExpr
+		|	atomic
 		|	LPAR! termExpr RPAR!
-		|	functionExpr
+
 		)
 	;
 

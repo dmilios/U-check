@@ -98,6 +98,14 @@ public class UcheckConfig {
 	 */
 	private void verifyLoadedInformation() {
 
+		// default values for all unspecified options
+		final Set<String> keys = optionSpecs.keySet();
+		for (final String key : keys)
+			if (!configOptions.containsKey(key)) {
+				Object defaultValue = optionSpecs.get(key).getDefaultValue();
+				configOptions.put(key, defaultValue);
+			}
+
 		// --- verify model
 		String modelFile = (String) configOptions.get("model");
 		if (modelFile.startsWith("\""))
@@ -114,16 +122,16 @@ public class UcheckConfig {
 			model.loadModel(modelFile);
 		} catch (Exception e) {
 			final String msg = e.getMessage();
-			if (msg.contains("java.io.FileNotFoundException"))
+			if (modelFile.isEmpty())
+				log.printError("No model is specified!");
+			else if (msg.contains("java.io.FileNotFoundException"))
 				log.printError(modelFile + " (No such file or directory)");
 			else
 				log.printError(msg);
 		}
 
 		// --- verify simulator options
-		Boolean useODEs = (Boolean) configOptions.get("useODEs");
-		if (useODEs == null)
-			useODEs = false;
+		boolean useODEs = (boolean) configOptions.get("useODEs");
 		if (useODEs)
 			if (configOptions.get("mode").equals("robust"))
 				if (model instanceof SimhyaModel) {
@@ -132,7 +140,7 @@ public class UcheckConfig {
 					configOptions.put("runs", 1);
 					configOptions.put("timeseriesEnabled", true);
 				} else
-					log.printWarning("ODEs are not currntly supported "
+					log.printWarning("ODEs are not currently supported "
 							+ "for Bio-PEPA models! SSA will be used instead.");
 			else
 				log.printError("ODEs are supported for robust paramter "
@@ -148,6 +156,8 @@ public class UcheckConfig {
 		try {
 			modelChecker = new MitlModelChecker(model);
 			modelChecker.loadProperties(mitlFile);
+			for (final String err : modelChecker.getErrors())
+				log.printError(mitlFile + ": " + err);
 		} catch (Exception e) {
 			log.printError("Could not load property file " + mitlFile);
 		}
