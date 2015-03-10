@@ -4,10 +4,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import expr.Context;
 import parsers.MitlFactory;
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
-import mitl.SignalFunction;
 import model.ModelInterface;
 import model.Trajectory;
 
@@ -15,7 +15,9 @@ public class MitlModelChecker {
 
 	final private ModelInterface model;
 	private MiTL[] properties = null;
+
 	private ArrayList<String> errors = new ArrayList<String>();
+	private ArrayList<SignalFunction> signalFunctions;
 
 	public MitlModelChecker(ModelInterface model) {
 		this.model = model;
@@ -38,36 +40,36 @@ public class MitlModelChecker {
 	}
 
 	public void setProperties(String mitlText) throws Exception {
-		MitlFactory factory = new MitlFactory(model.getModelVariables());
+		final Context context = model.getModelVariables();
+		MitlFactory factory = new MitlFactory(context);
 		MitlPropertiesList l = factory.constructProperties(mitlText);
 		errors.clear();
 		errors.addAll(factory.getErrors());
+		if (errors.size() > 0)
+			return;
 
-		ArrayList<SignalFunction> sfs = factory.getSignals();
-		
-		
-		final ArrayList<String> falseErrors = new ArrayList<String>();
-		for (String error : errors) {
+		ArrayList<MiTL> list = l.getProperties();
+		properties = new MiTL[list.size()];
+		list.toArray(properties);
+		signalFunctions = factory.getFunctionsOfSignals();
+	}
 
-			// very ugly... refactor some time...
-			final String prefix = "Function \"";
-			final String postfix = "\" is not defined!";
-			if (error.startsWith(prefix) && error.endsWith(postfix)) {
-				final String name = error.substring(prefix.length(),
-						error.indexOf(postfix));
+	private Trajectory enchance(final Trajectory x) {
+		final Context context = x.getContext();
+		final int totalVariables = context.getVariables().length;
+		final int initVariables = x.getValues().length;
+		if (totalVariables == initVariables)
+			return x;
 
-				if (name.equals("movavg"))
-					falseErrors.add(error);
-			}
+		double[][] values = new double[totalVariables][];
+		for (int i = 0; i < initVariables; i++)
+			values[i] = x.getValues()[i];
+		for (int i = initVariables; i < totalVariables; i++) {
+			SignalFunction sf = signalFunctions.get(i - initVariables);
+			final int index = sf.getVariable().getId();
+			values[i] = sf.evaluateSignal(x.getTimes(), values[index]);
 		}
-		for (String err : falseErrors)
-			errors.remove(err);
-
-		if (errors.size() == 0) {
-			ArrayList<MiTL> list = l.getProperties();
-			properties = new MiTL[list.size()];
-			list.toArray(properties);
-		}
+		return new Trajectory(x.getTimes(), x.getContext(), values);
 	}
 
 	public boolean[][] performMC(double tfinal, int runs, int timepoints) {
@@ -122,7 +124,7 @@ public class MitlModelChecker {
 		final int m = properties.length;
 		final boolean[] result = new boolean[m];
 		for (int i = 0; i < m; i++)
-			result[i] = properties[i].evaluate(x, 0);
+			result[i] = properties[i].evaluate(enchance(x), 0);
 		return result;
 	}
 
@@ -130,7 +132,7 @@ public class MitlModelChecker {
 		final int m = properties.length;
 		final double[] result = new double[m];
 		for (int i = 0; i < m; i++)
-			result[i] = properties[i].evaluateValue(x, 0);
+			result[i] = properties[i].evaluateValue(enchance(x), 0);
 		return result;
 	}
 

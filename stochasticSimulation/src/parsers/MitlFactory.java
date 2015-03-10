@@ -3,6 +3,9 @@ package parsers;
 import java.util.ArrayList;
 
 import mitl.*;
+import modelChecking.DerivariveFunction;
+import modelChecking.MovingAvgFunction;
+import modelChecking.SignalFunction;
 import expr.*;
 
 import org.antlr.runtime.ANTLRStringStream;
@@ -15,7 +18,7 @@ public class MitlFactory {
 	private MitlPropertiesList propertiesList = new MitlPropertiesList();
 	private Context modelNamespace;
 	private ArrayList<String> errors = new ArrayList<String>();
-	private ArrayList<SignalFunction> signals = new ArrayList<SignalFunction>();
+	private ArrayList<SignalFunction> signalFunctions = new ArrayList<SignalFunction>();
 
 	public MitlFactory(Context modelNamespace) {
 		this.modelNamespace = modelNamespace;
@@ -25,8 +28,8 @@ public class MitlFactory {
 		return errors;
 	}
 
-	public ArrayList<SignalFunction> getSignals() {
-		return signals;
+	public ArrayList<SignalFunction> getFunctionsOfSignals() {
+		return signalFunctions;
 	}
 
 	public MitlPropertiesList constructProperties(String text) {
@@ -193,11 +196,35 @@ public class MitlFactory {
 
 		if (type == null) {
 
-			ArithmeticExpression arg0 = constructExpression(node.getChild(0));
-			ArithmeticExpression arg1 = constructExpression(node.getChild(1));
-			SignalFunction sf = new SignalFunction(name, arg0, arg1);
-			signals.add(sf);
-			return sf;
+			if (name.equals("diff")) {
+				ArithmeticExpression arg0 = constructExpression(node
+						.getChild(0));
+				if (arg0 instanceof Variable) {
+					Variable var = (Variable) arg0;
+					SignalFunction sf = new DerivariveFunction(name,
+							modelNamespace, var);
+					signalFunctions.add(sf);
+					return sf;
+				}
+			}
+
+			if (name.equals("movavg")) {
+				ArithmeticExpression arg0 = constructExpression(node
+						.getChild(0));
+				ArithmeticExpression arg1 = constructExpression(node
+						.getChild(1));
+				if (arg0 instanceof Variable) {
+					Variable var = (Variable) arg0;
+					if (arg1.getVariables().isEmpty()) {
+						double width = arg1.evaluate();
+						SignalFunction sf = new MovingAvgFunction(name,
+								modelNamespace, var, width);
+						signalFunctions.add(sf);
+						return sf;
+					}
+				}
+			}
+
 		}
 
 		if (type == null)
