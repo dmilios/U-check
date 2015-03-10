@@ -3,9 +3,8 @@ package parsers;
 import java.util.ArrayList;
 
 import mitl.*;
-import modelChecking.DerivariveFunction;
-import modelChecking.MovingAvgFunction;
 import modelChecking.SignalFunction;
+import modelChecking.SignalFunctionType;
 import expr.*;
 
 import org.antlr.runtime.ANTLRStringStream;
@@ -187,50 +186,40 @@ public class MitlFactory {
 
 	private ArithmeticExpression constructFunction(Tree node) {
 		final String name = node.getText();
+		final int n = node.getChildCount();
+		ArithmeticExpression[] args = new ArithmeticExpression[n];
+		for (int i = 0; i < n; i++)
+			args[i] = constructExpression(node.getChild(i));
+
+		// function of a signal
+		SignalFunctionType signalType = null;
+		for (SignalFunctionType t : SignalFunctionType.values())
+			if (name.equals(t.toString())) {
+				signalType = t;
+				break;
+			}
+		if (signalType != null) {
+			try {
+				signalType.setArguments(args);
+			} catch (Exception e) {
+				errors.add(signalType.usage());
+			}
+			SignalFunction sf = new SignalFunction(name, modelNamespace,
+					signalType);
+			signalFunctions.add(sf);
+			return sf;
+		}
+
+		// regular arithmetic function
 		ArithmeticFunctionType type = null;
 		for (ArithmeticFunctionType t : ArithmeticFunctionType.values())
 			if (name.equals(t.toString())) {
 				type = t;
 				break;
 			}
-
-		if (type == null) {
-
-			if (name.equals("diff")) {
-				ArithmeticExpression arg0 = constructExpression(node
-						.getChild(0));
-				if (arg0 instanceof Variable) {
-					Variable var = (Variable) arg0;
-					SignalFunction sf = new DerivariveFunction(name,
-							modelNamespace, var);
-					signalFunctions.add(sf);
-					return sf;
-				}
-			}
-
-			if (name.equals("movavg")) {
-				ArithmeticExpression arg0 = constructExpression(node
-						.getChild(0));
-				ArithmeticExpression arg1 = constructExpression(node
-						.getChild(1));
-				if (arg0 instanceof Variable) {
-					Variable var = (Variable) arg0;
-					if (arg1.getVariables().isEmpty()) {
-						double width = arg1.evaluate();
-						SignalFunction sf = new MovingAvgFunction(name,
-								modelNamespace, var, width);
-						signalFunctions.add(sf);
-						return sf;
-					}
-				}
-			}
-
-		}
-
 		if (type == null)
 			errors.add("Function \"" + name + "\" is not defined!");
-		ArithmeticExpression arg = constructExpression(node.getChild(0));
-		return new ArithmeticFunction(type, arg);
+		return new ArithmeticFunction(type, args[0]);
 	}
 
 	private ArithmeticExpression constructBinExpression(Tree node) {

@@ -6,26 +6,25 @@ import expr.ArithmeticExpression;
 import expr.Context;
 import expr.Variable;
 
-public abstract class SignalFunction extends ArithmeticExpression {
+public class SignalFunction extends ArithmeticExpression {
 
 	private String name;
-	private Variable variable;
 	private Variable auxiliaryVariable = null;
+	private SignalFunctionType type;
 
-	public SignalFunction(String name, Context context, Variable var) {
+	public SignalFunction(String name, Context context, SignalFunctionType type) {
 		this.name = name;
-		this.variable = var;
-		auxiliaryVariable = new Variable(var.getName() + "__" + name, context);
+		final String var = type.getVariable().getName();
+		this.auxiliaryVariable = new Variable(var + "__" + name, context);
+		this.type = type;
 	}
 
-	abstract public double[] evaluateSignal(final double[] t, final double[] x);
-
-	public String getName() {
-		return name;
+	public double[] evaluateSignal(final double[] t, final double[] x) {
+		return type.evaluateSignal(t, x);
 	}
 
 	public Variable getVariable() {
-		return variable;
+		return type.getVariable();
 	}
 
 	@Override
@@ -48,7 +47,7 @@ public abstract class SignalFunction extends ArithmeticExpression {
 
 	@Override
 	public String toString() {
-		return name + "(" + variable.getName() + ")";
+		return name + "(" + type.getVariable().getName() + ")";
 	}
 
 }
