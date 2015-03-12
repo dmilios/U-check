@@ -1,0 +1,19 @@
+model SIR {
+	param N = 100;
+	param s0 = 0.95;
+	S = floor(s0*N);
+	I = N-S;
+	R = 0;
+
+	param ki = 0.12;
+	param kiN = ki/N;
+	param kr = 0.05;
+	//param ks = 0.005;
+	
+	infection:[  :-> S -= 1.0; I += 1.0 ]@{ kiN*S*I };
+	recovery:[  :-> R += 1.0; I -= 1.0 ]@{ kr*I };
+	//susceptible:[  :-> S += 1.0; R -= 1.0 ]@{ ks*R };
+
+    reg:[  :-> ]@{0.0001};
+
+}

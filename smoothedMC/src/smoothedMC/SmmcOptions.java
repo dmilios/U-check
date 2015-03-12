@@ -17,6 +17,7 @@ public final class SmmcOptions {
 	private GridSampler sampler = new RegularSampler();
 
 	private KernelFunction kernelGP = new KernelRBF();
+	private boolean useDefaultHyperparams = true;
 	private boolean hyperparamOptimisation = false;
 	private int hyperparamOptimisationRestarts = 5;
 	private double covarianceCorrection = 1e-4;
@@ -108,6 +109,24 @@ public final class SmmcOptions {
 	/** The kernel function used by the GP. */
 	public KernelFunction getKernelGP() {
 		return kernelGP;
+	}
+
+	/**
+	 * Whether the default hyperparameters are used by the GP (these depend on
+	 * the kernel and the data). If yes, then the kernel hyperparameters will be
+	 * overridden.
+	 */
+	public boolean useDefaultHyperparams() {
+		return useDefaultHyperparams;
+	}
+
+	/**
+	 * Whether the default hyperparameters are used by the GP (these depend on
+	 * the kernel and the data). If yes, then the kernel hyperparameters will be
+	 * overridden.
+	 */
+	public void setUseDefaultHyperparams(boolean useDefaultHyperparams) {
+		this.useDefaultHyperparams = useDefaultHyperparams;
 	}
 
 	/**

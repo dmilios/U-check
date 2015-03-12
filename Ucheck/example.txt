@@ -1,42 +1,52 @@
 
-## experiment options
+## main experiment options
 
-model = models/RUMORS.txt
-# model = models/rumour.biopepa
-properties = formulae/rumour.mtl
-observations = formulae/rumour.dat
+model = models/lacz.biopepa
+properties = formulae/lacz.mtl
+# observations = formulae/rumour.dat
 
-mode = inference
-parameter k_s = [0.0001, 1]
-parameter k_r = [0.0001, 1]
+mode = smoothedmc
+
+# parameter k2 = [10, 1000]
+# parameter k7 = [0.45, 45]
+
+# parameter k2 = [500, 1000]
+# parameter k7 = [20, 100]
+
+parameter k2 = [1000, 5000]
+parameter k7 = [45, 450]
 
 
-prior k_s = gamma(2, 1)
+
+## other experiment options
+outputDir = output
 
 
 
 ## simulation options
-endTime = 5
+endTime = 21000
 runs = 10
 timepoints = 1000
 timeseriesEnabled = true
-# useODEs = true
+# useODEs = false
+
+
 
 
 ## GP Kernel options
 kernel = rbfard
 amplitude = 1
-lengthscale = 2, 0.4
+lengthscale = 1, 1
 
 ## GP hypeparameters options
-hyperparamOptimisation = false
+hyperparamOptimisation = true
 hyperparamOptimisationRestarts = 0
 useDefaultHyperparams = true
 
 
 ## GP data options
 initialObservtions = 100
-numberOfTestPoints = 50
+numberOfTestPoints = 256
 
 
 ## GP optimisation options

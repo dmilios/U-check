@@ -1,0 +1,63 @@
+model lacz {
+
+	PLac = 1;
+	RNAP = 35;   // in Kierzek2002:  ~ N(35, 3.5^2)
+	PLacRNAP = 0;
+	TrLacZ1 = 0;
+	RbsLacZ = 0;
+	TrLacZ2 = 0;
+	Ribosome = 350;  // in Kierzek2002:  ~ N(350, 35^2)
+	RbsRibosome = 0;
+	TrRbsLacZ = 0;
+	LacZ = 0;
+	dgrLacZ = 0;
+	dgrRbsLacZ = 0;
+
+
+	// rates as expressed in sec^{-1}
+	param k1 = 0.17;
+	param k2 = 10;
+	param k3 = 1;
+	param k4 = 1;
+	param k5 = 0.015;
+	param k6 = 0.17;
+	param k7 = 0.45;
+	param k8 = 0.4;
+	param k9 = 0.015;
+	param k10 = 6.42e-5;
+	param k11 = 0.3;
+
+
+	// RNA polymarase binding
+	r1:  [  :-> PLac -= 1.0; RNAP -= 1.0; PLacRNAP += 1.0 ]@{ k1*PLac*RNAP };
+	// RNA polymarase dissociation
+	r2:  [  :-> PLacRNAP -= 1.0; PLac += 1.0; RNAP += 1.0 ]@{ k2*PLacRNAP }; 
+
+	// closed complex isomerization
+	r3:  [  :-> PLacRNAP -= 1.0; TrLacZ1 += 1.0 ]@{ k3*PLacRNAP };
+	// promoter clearance
+	r4:  [  :-> TrLacZ1 -= 1.0; PLac += 1.0; RbsLacZ += 1.0; TrLacZ2 += 1.0 ]@{ k4*TrLacZ1 };
+	
+	// mRNA chain elongation and RNAP release
+	r5:  [  :-> TrLacZ2 -= 1.0; RNAP += 1.0 ]@{ k5*TrLacZ2 };
+	
+	// Ribosome binding
+	r6:  [  :-> Ribosome -= 1.0; RbsLacZ -= 1.0; RbsRibosome += 1.0 ]@{ k6*Ribosome*RbsLacZ };
+	// Ribosome dissociation
+	r7:  [  :-> RbsRibosome -= 1.0; Ribosome += 1.0; RbsLacZ += 1.0 ]@{ k7*RbsRibosome };
+	
+	// RNS clearance
+	r8:  [  :-> RbsRibosome -= 1.0; RbsLacZ += 1.0; TrRbsLacZ += 1.0 ]@{ k8*RbsRibosome }; 
+	
+	// LacZ protein synthesis
+	r9:  [  :-> TrRbsLacZ -= 1.0; LacZ += 1.0 ]@{ k9*TrRbsLacZ };
+	
+	// degradation
+	r10: [  :-> LacZ -= 1.0; dgrLacZ += 1.0 ]@{ k10*LacZ };
+	r11: [  :-> RbsLacZ -= 1.0; dgrRbsLacZ += 1.0 ]@{ k11*RbsLacZ };
+
+
+
+	// stop_condition:[ S == 0 :-> stop ]@inf{1};
+	continuator:[ :-> ]@{0.001};
+}

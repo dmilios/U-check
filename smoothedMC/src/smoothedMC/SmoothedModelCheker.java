@@ -80,6 +80,12 @@ public class SmoothedModelCheker {
 						+ " sec");
 		}
 
+		else if (options.useDefaultHyperparams()) {
+			final double[] hyp = gp.getKernel().getDefaultHyperarameters(
+					gp.getTrainingSet());
+			gp.getKernel().setHyperarameters(hyp);
+		}
+
 		hyperparamsUsed = options.getKernelGP().getHypeparameters();
 		if (options.isDebugEnabled()) {
 			System.out.println("amplitude:   "
@@ -142,7 +148,8 @@ public class SmoothedModelCheker {
 	private void optimiseGPHyperParameters(GPEP gp, SmmcOptions options) {
 		HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
 		LocalOptimisation alg = new PowellMethodApache();
-		final double init[] = gp.getKernel().getHypeparameters();
+		final double init[] = gp.getKernel().getDefaultHyperarameters(
+				gp.getTrainingSet());
 		PointValue best = alg.optimise(func, init);
 
 		for (int r = 0; r < options.getHyperparamOptimisationRestarts(); r++) {

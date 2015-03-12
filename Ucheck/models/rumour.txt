@@ -1,4 +1,4 @@
-model rumor_spreading {
+model rumour_spreading {
 
 	param N = 15;
 	I = N-5;

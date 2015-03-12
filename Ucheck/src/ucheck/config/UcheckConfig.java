@@ -4,6 +4,7 @@ import gp.kernels.KernelFunction;
 import gp.kernels.KernelRBF;
 import gp.kernels.KernelRbfARD;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +39,8 @@ public class UcheckConfig {
 	private Map<String, Prior> priors = new HashMap<String, Prior>();
 
 	private Log log;
+	private String modelFile;
+	private String mitlFile;
 	private MitlModelChecker modelChecker;
 	private boolean[][] observations;
 
@@ -107,7 +110,7 @@ public class UcheckConfig {
 			}
 
 		// --- verify model
-		String modelFile = (String) configOptions.get("model");
+		modelFile = (String) configOptions.get("model");
 		if (modelFile.startsWith("\""))
 			modelFile = modelFile.substring(1);
 		if (modelFile.endsWith("\""))
@@ -147,7 +150,7 @@ public class UcheckConfig {
 						+ "synthesis only!");
 
 		// --- verify MiTL file
-		String mitlFile = (String) configOptions.get("properties");
+		mitlFile = (String) configOptions.get("properties");
 		if (mitlFile.startsWith("\""))
 			mitlFile = mitlFile.substring(1);
 		if (mitlFile.endsWith("\""))
@@ -200,6 +203,10 @@ public class UcheckConfig {
 			}
 
 		// --- verify that the kernel hyperparameters are valid
+		final boolean defaultHyp = (boolean) configOptions
+				.get("useDefaultHyperparams");
+		final boolean optimHyp = (boolean) configOptions
+				.get("hyperparamOptimisation");
 		Object kerneltype = configOptions.get("kernel");
 		Object[] lengthscales = (Object[]) configOptions.get("lengthscale");
 		if (kerneltype.equals("rbfiso"))
@@ -208,8 +215,9 @@ public class UcheckConfig {
 						+ "isometric RBF kernel; "
 						+ "only the first one will be used");
 		if (kerneltype.equals("rbfard"))
-			if (lengthscales.length != parameterNames.size())
-				log.printError("Automatic Relevance Determination requires "
+			if (lengthscales.length != parameterNames.size() && !defaultHyp
+					&& !optimHyp)
+				log.printError("The \"rbfard\" kernel requires "
 						+ "lengthscales to be specified for all parameters!");
 	}
 
@@ -325,6 +333,9 @@ public class UcheckConfig {
 		addProperty(new CategoricalSpec("mode", "", "inference", "robust",
 				"smoothedmc"));
 
+		// other experiment options
+		addProperty(new StringSpec("outputDir", "./"));
+
 		// common simulation options
 		addProperty(new DoubleSpec("endTime", 0, 0, false));
 		addProperty(new IntegerSpec("runs", 100, 1));
@@ -339,6 +350,7 @@ public class UcheckConfig {
 				new DoubleSpec("lengthscale", 1, 0, false)));
 
 		// common options (GP hyperparameters)
+		addProperty(new BooleanSpec("useDefaultHyperparams", true));
 		addProperty(new BooleanSpec("hyperparamOptimisation", false));
 		addProperty(new IntegerSpec("hyperparamOptimisationRestarts", 5, 0));
 
@@ -359,7 +371,6 @@ public class UcheckConfig {
 		addProperty(new DoubleSpec("noiseTermRatio", 0.1, 0, false));
 		addProperty(new BooleanSpec("useNoiseTermRatio", false));
 		addProperty(new BooleanSpec("heteroskedastic", false));
-		addProperty(new BooleanSpec("useDefaultHyperparams", true));
 
 		// smoothedmc options (GP classification parameters)
 		addProperty(new DoubleSpec("covarianceCorrection", 1e-4, 0, false));
@@ -372,12 +383,31 @@ public class UcheckConfig {
 		return "";
 	}
 
+	public String getModelFile() {
+		return modelFile;
+	}
+	
+	public String getMitlFile() {
+		return mitlFile;
+	}
+	
 	public MitlModelChecker getModelChecker() {
 		return modelChecker;
 	}
 
 	public boolean[][] getObservations() {
 		return observations;
+	}
+
+	public String getOutputDir() {
+		String dir = (String) configOptions.get("outputDir");
+		if (dir.startsWith("\""))
+			dir = dir.substring(1);
+		if (dir.endsWith("\""))
+			dir = dir.substring(0, dir.length() - 1);
+		if (!dir.endsWith(File.separator))
+			dir += File.separator;
+		return dir;
 	}
 
 	public smoothedMC.Parameter[] getSmMCParameters() {
@@ -437,6 +467,8 @@ public class UcheckConfig {
 			else if (key.equals("numberOfTestPoints"))
 				options.setM((int) value);
 
+			else if (key.equals("useDefaultHyperparams"))
+				options.setUseDefaultHyperparams((boolean) value);
 			else if (key.equals("hyperparamOptimisation"))
 				options.setHyperparamOptimisation((boolean) value);
 			else if (key.equals("hyperparamOptimisationRestarts"))

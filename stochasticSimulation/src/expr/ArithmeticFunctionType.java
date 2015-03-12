@@ -3,7 +3,7 @@ package expr;
 public enum ArithmeticFunctionType {
 
 	LOG("log"), EXP("exp"), H("heavyside"), FLOOR("floor"), CEIL("ceiling"), TANH(
-			"tanh");
+			"tanh"), ABS("abs");
 
 	final private String name;
 
@@ -25,6 +25,8 @@ public enum ArithmeticFunctionType {
 			return Math.ceil(value);
 		case TANH:
 			return Math.tanh(value);
+		case ABS:
+			return Math.abs(value);
 		}
 		return 0;
 	}

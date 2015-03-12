@@ -1,0 +1,4 @@
+const double epsilon = 0.1;
+
+G[15000, 21000] (abs(LacZ - movavg(LacZ, 200)) <= epsilon * movavg(LacZ, 200))
+G[5000, 21000] Ribosome > 100  &  F[5000, 21000] LacZ > 100

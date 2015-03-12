@@ -3,7 +3,9 @@ package ucheck.cli;
 import gp.classification.ClassificationPosterior;
 import gpoptim.GpoResult;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -101,6 +103,16 @@ public class UcheckCLI {
 	}
 
 	public static void performSmoothedMC(UcheckConfig config, Log log) {
+
+		final File outDir = new File(config.getOutputDir());
+		if (!outDir.exists())
+			outDir.mkdirs();
+		if (!outDir.canWrite() || !outDir.isDirectory()) {
+			log.printError("Cannot write into the \"" + outDir
+					+ "\" directory!");
+			return;
+		}
+
 		final MitlModelChecker check = config.getModelChecker();
 		final SmmcOptions options = config.getSmMCOptions();
 		final smoothedMC.Parameter[] params = config.getSmMCParameters();
@@ -114,12 +126,30 @@ public class UcheckCLI {
 		final double smmcElapsed = smmc.getSmoothedMCTimeElapsed();
 		final double[] hyperparams = smmc.getHyperparamsUsed();
 		log.println("# Smoothed Model Checking --- Results");
+		log.println("Model file: " + config.getModelFile());
+		log.println("MiTL file: " + config.getMitlFile());
+		log.println();
 		log.println("Time for Statistical MC: " + smcElapsed + " sec");
 		log.println("Time for hyperparam opt: " + hypElapsed + " sec");
 		log.println("Time for Smoothed MC: " + smmcElapsed + " sec");
 		log.println("Hyperparams used: " + Arrays.toString(hyperparams));
+		log.println();
 
-		System.out.println("\n" + SmmcUtils.results2csv(result, 2));
+		File modelfile = new File(config.getModelFile());
+		String name = modelfile.getName();
+		name = name.substring(0, name.lastIndexOf('.'));
+		final String path = outDir + File.separator + name + ".csv";
+		final String resultStr = SmmcUtils.results2csv(result, 2);
+
+		try {
+			FileWriter fw = new FileWriter(path);
+			fw.write(resultStr);
+			fw.close();
+			log.println("Smoothed MC results have been successfully written to '"
+					+ path + "'");
+		} catch (IOException e) {
+			log.printError("Could not write to output file '" + path + "'");
+		}
 	}
 
 }

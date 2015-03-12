@@ -21,7 +21,25 @@ import ucheck.SimhyaModel;
 public class TestMC {
 
 	public static void main(String[] args) throws Exception {
-		test_extinction_formula();
+
+		SimHyAModel model = new SimHyAModel();
+		model.loadModel("models/lacz.txt");
+		model.setSSA();
+
+		String[] params = new String[] { "k2", "k7" };
+		ArrayList<String> species = new ArrayList<String>();
+		// species.add("LacZ");
+		// species.add("PLac");
+		species.add("RNAP");
+		// species.add("Ribosome");
+		// species.add("RbsLacZ");
+
+		model.setParameters(params, new double[] { 10, 0.45 });
+		model.resetSimulator();
+		model.simulate(21000);
+		model.plotTrajectory(species);
+
+		// test_extinction_formula();
 		// compare_row_sums();
 	}
 
