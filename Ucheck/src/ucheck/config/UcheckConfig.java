@@ -134,8 +134,18 @@ public class UcheckConfig {
 		}
 
 		// --- verify simulator options
-		boolean useODEs = (boolean) configOptions.get("useODEs");
-		if (useODEs)
+		String simulator = (String) configOptions.get("simulator");
+		
+		if (simulator.equals("hybrid")) {
+			if (model instanceof SimhyaModel) {
+				SimhyaModel simhya = (SimhyaModel) model;
+				simhya.setHybrid();
+			} else
+				log.printWarning("ODEs are not currently supported "
+						+ "for Bio-PEPA models! SSA will be used instead.");
+		}
+		
+		if (simulator.equals("odes")) {
 			if (configOptions.get("mode").equals("robust"))
 				if (model instanceof SimhyaModel) {
 					SimhyaModel simhya = (SimhyaModel) model;
@@ -148,6 +158,7 @@ public class UcheckConfig {
 			else
 				log.printError("ODEs are supported for robust paramter "
 						+ "synthesis only!");
+		}
 
 		// --- verify MiTL file
 		mitlFile = (String) configOptions.get("properties");
@@ -341,7 +352,8 @@ public class UcheckConfig {
 		addProperty(new IntegerSpec("runs", 100, 1));
 		addProperty(new IntegerSpec("timepoints", 1000, 2));
 		addProperty(new BooleanSpec("timeseriesEnabled", false));
-		addProperty(new BooleanSpec("useODEs", false));
+		addProperty(new CategoricalSpec("simulator", "ssa", "ssa", "odes",
+				"hybrid"));
 
 		// common kernel options
 		addProperty(new CategoricalSpec("kernel", "rbfiso", "rbfiso", "rbfard"));
@@ -386,11 +398,11 @@ public class UcheckConfig {
 	public String getModelFile() {
 		return modelFile;
 	}
-	
+
 	public String getMitlFile() {
 		return mitlFile;
 	}
-	
+
 	public MitlModelChecker getModelChecker() {
 		return modelChecker;
 	}

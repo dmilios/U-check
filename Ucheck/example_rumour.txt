@@ -1,8 +1,7 @@
 
 ## experiment options
 
-model = models/RUMORS.txt
-# model = models/rumour.biopepa
+model = models/rumour.txt
 properties = formulae/rumour.mtl
 observations = formulae/rumour.dat
 
@@ -20,7 +19,7 @@ endTime = 5
 runs = 10
 timepoints = 1000
 timeseriesEnabled = true
-# useODEs = true
+simulator = ssa
 
 
 ## GP Kernel options

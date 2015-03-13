@@ -99,11 +99,15 @@ timepoints=NUMBER
 # Optional (default value: 1000)
 # The number of time-points for which the state is recorded in a time-series.
 
-useODEs=true|false
-# Optional (default value: false)
-# Whether the CTMC is approximated by Ordinary Differential Equations.
-# It can be used for SimHyA models only and robust parameter synthesis.
-# If true, the following options are overridden:
+simulator=SIMULATOR
+# Optional (default value: ssa)
+# The simulation algorithm; Bio-PEPA models support ssa only.
+# "SIMULATOR" can be one of the following:
+# 	ssa      Gillespie's stochastic simulation
+# 	odes     The CTMC is approximated by Ordinary Differential Equations
+# 	hybrid   Hybrid approach that automatically switches between ssa and odes.
+# ODEs can be used with robust parameter synthesis only.
+# If used, the following options are overridden:
 # 'timeseriesEnabled=true' and 'runs=1'
 
 

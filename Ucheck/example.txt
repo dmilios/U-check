@@ -28,8 +28,7 @@ endTime = 21000
 runs = 5
 timepoints = 1000
 timeseriesEnabled = true
-# useODEs = false
-
+# simulator = ssa
 
 
 
