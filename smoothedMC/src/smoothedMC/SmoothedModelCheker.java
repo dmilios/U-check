@@ -63,6 +63,32 @@ public class SmoothedModelCheker {
 
 	public ClassificationPosterior performSmoothedModelChecking(GpDataset data,
 			Parameter[] parameters, SmmcOptions options) {
+		final AnalyticApproximation approx = getAnalyticApproximation(data,
+				parameters, options);
+		final double[][] paramValueSet = options.getSampler().sample(
+				options.getM(), parameters);
+		return approx.getValuesAt(paramValueSet);
+	}
+
+	public AnalyticApproximation getAnalyticApproximation(
+			MitlModelChecker modelChecker, Parameter[] parameters,
+			SmmcOptions options) {
+		long t0;
+		double elapsed;
+		t0 = System.currentTimeMillis();
+		final GpDataset data = performStatisticalModelChecking(modelChecker,
+				parameters, options);
+		elapsed = (System.currentTimeMillis() - t0) / 1000d;
+		statisticalMCTimeElapsed = elapsed;
+		if (options.isDebugEnabled())
+			System.out.println("Statistical Model Checking:  " + elapsed
+					+ " sec");
+
+		return getAnalyticApproximation(data, parameters, options);
+	}
+
+	public AnalyticApproximation getAnalyticApproximation(GpDataset data,
+			Parameter[] parameters, SmmcOptions options) {
 		GPEP gp = new GPEP(options.getKernelGP());
 		gp.setTrainingSet(data);
 		gp.setScale(options.getSimulationRuns());
@@ -101,10 +127,7 @@ public class SmoothedModelCheker {
 		}
 
 		t0 = System.currentTimeMillis();
-		final double[][] paramValueSet = options.getSampler().sample(
-				options.getM(), parameters);
-		final GpDataset testSet = new GpDataset(paramValueSet);
-		final ClassificationPosterior post = gp.getGpPosterior(testSet);
+		gp.doTraining();
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
 		smoothedMCTimeElapsed = elapsed;
 		if (options.isDebugEnabled()) {
@@ -113,7 +136,8 @@ public class SmoothedModelCheker {
 			final double lik = gp.getMarginalLikelihood();
 			System.out.println("log-likelihood: " + lik);
 		}
-		return post;
+
+		return new AnalyticApproximation(gp);
 	}
 
 	public GpDataset performStatisticalModelChecking(

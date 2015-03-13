@@ -35,9 +35,43 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 		this.covarianceCorrection = covarianceCorrection;
 	}
 
-	@Override
+	private IMatrix invC;
+	private IMatrix mu_tilde;
+
+	public void doTraining() {
+		Gauss gauss = expectationPropagation(1e-6);
+
+		IMatrix v_tilde = gauss.Term.getColumn(0);
+		IMatrix tau_tilde = gauss.Term.getColumn(1);
+
+		IMatrix diagSigma_tilde = algebra.createZeros(tau_tilde.getLength(), 1);
+		for (int i = 0; i < diagSigma_tilde.getLength(); i++)
+			diagSigma_tilde.put(i, 1.0 / tau_tilde.get(i));
+		mu_tilde = v_tilde.mul(diagSigma_tilde);
+		IMatrix Sigma_tilde = algebra.createDiag(diagSigma_tilde.getData());
+
+		invC = algebra.solvePositive(gauss.C.add(Sigma_tilde),
+				algebra.createEye(mu_tilde.getLength()));
+	}
+
 	public ClassificationPosterior getGpPosterior(GpDataset testSet) {
-		Gauss gauss = calculatePosterior(testSet, 1e-6);
+		final double[] mmK = testSet.calculateVariances(getKernel());
+		final double[][] mnK = testSet.calculateCovariances(getKernel(),
+				trainingSet);
+		IMatrix ks = algebra.createMatrix(mnK);
+		IMatrix kss = algebra.createMatrix(mmK);
+
+		if (invC == null || mu_tilde == null || trainingSet.isModified())
+			doTraining();
+		IMatrix tmp = ks.mmul(invC);
+		IMatrix fs = tmp.mmul(mu_tilde);
+		IMatrix vfs = kss.sub(tmp.mmul(ks.transpose()).diag());
+		return new ClassificationPosterior(testSet, fs.getData(), vfs.getData());
+	}
+
+	@Deprecated
+	public ClassificationPosterior getGpPosterior_old(GpDataset testSet) {
+		Gauss gauss = expectationPropagation(1e-6);
 
 		IMatrix v_tilde = gauss.Term.getColumn(0);
 		IMatrix tau_tilde = gauss.Term.getColumn(1);
@@ -66,7 +100,7 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 
 	@Override
 	public double getMarginalLikelihood() {
-		Gauss gauss = calculatePosterior(trainingSet, 1e-3);
+		Gauss gauss = expectationPropagation(1e-3);
 		return gauss.logZ;
 	}
 
@@ -74,14 +108,10 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 	public double[] getMarginalLikelihoodGradient() {
 		throw new IllegalAccessError("Not supported yet!");
 	}
-	
+
 	double logdet_LC = 0;
 
-	private Gauss calculatePosterior(GpDataset testSet, final double tolerance) {
-		if (trainingSet.getDimension() != testSet.getDimension())
-			throw new IllegalArgumentException(
-					"The training and test sets must have the same dimension!");
-
+	private Gauss expectationPropagation(final double tolerance) {
 		double sum;
 		Gauss gauss = new Gauss();
 		final int n = trainingSet.getSize();
