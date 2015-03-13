@@ -2,12 +2,14 @@ package ucheck;
 
 import model.ModelInterface;
 import simhya.dataprocessing.DataCollector;
+import simhya.dataprocessing.HybridDataCollector;
 import simhya.dataprocessing.OdeDataCollector;
 import simhya.dataprocessing.StochasticDataCollector;
 import simhya.model.flat.FlatModel;
 import simhya.model.flat.parser.FlatParser;
 import simhya.model.flat.parser.ParseException;
 import simhya.model.flat.parser.TokenMgrError;
+import simhya.simengine.HybridSimulator;
 import simhya.simengine.Simulator;
 import simhya.simengine.SimulatorFactory;
 import simhya.simengine.ode.OdeSimulator;
@@ -55,6 +57,13 @@ public class SimhyaModel implements ModelInterface {
 		simulator.setProgressMonitor(new InactiveProgressMonitor());
 	}
 
+	public void setHybrid() {
+		collector = new HybridDataCollector(flatModel);
+		collector.saveAllVariables();
+		simulator = SimulatorFactory.newHybridSimulator(flatModel, collector);
+		simulator.setProgressMonitor(new InactiveProgressMonitor());
+	}
+
 	public void setODE() {
 		collector = new OdeDataCollector(flatModel);
 		collector.saveAllVariables();
@@ -79,7 +88,9 @@ public class SimhyaModel implements ModelInterface {
 		collector.setPrintConditionByTime(timepoints, tfinal);
 		simulator.initialize();
 		for (int run = 0; run < runs; run++) {
-			if (!(simulator instanceof OdeSimulator)) // breaks otherwise
+			// breaks otherwise
+			if (!(simulator instanceof OdeSimulator)
+					&& !(simulator instanceof HybridSimulator))
 				collector.newTrajectory();
 			simulator.resetModel(true);
 			simulator.reinitialize();

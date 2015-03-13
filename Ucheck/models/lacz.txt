@@ -57,7 +57,5 @@ model lacz {
 	r11: [  :-> RbsLacZ -= 1.0; dgrRbsLacZ += 1.0 ]@{ k11*RbsLacZ };
 
 
-
-	// stop_condition:[ S == 0 :-> stop ]@inf{1};
 	continuator:[ :-> ]@{0.001};
 }

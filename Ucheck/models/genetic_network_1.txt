@@ -1,0 +1,31 @@
+model genetic_network_1{
+
+	// The model in 
+	// Integrated simulation and model checking for the analysis of biochemical systems
+	// F. Ciocchetta, S. Gilmore, M-L Guigerro, J. Hillston
+	// ENTCS 232 (2009) 17-38
+
+	// That is the M_1 model: protein (P) degradation is assumed
+	// HINT: set t_final = 20000
+
+	D = 1;
+	M = 0;
+	P = 0;
+	P2 = 0;
+
+	param KM = 356;
+	param v = 2.19;
+	param k2 = 0.043;
+	param k3 = 0.039;
+	param k4 = 0.0007;
+	param k5 = 0.025;
+	param km5 = 0.5;
+
+
+	transcription   : [ :-> M += 1.0 ]@{ (v * D) / (KM + P2) } ;
+	translation     : [ :-> P += 1.0 ]@{ k2 * M } ;
+	degradation_M   : [ :-> M -= 1.0 ]@{ k3 * M } ;
+	degradation_P   : [ :-> P -= 1.0 ]@{ k4 * P } ;
+	dimerisation    : [ :-> P -= 2.0; P2 += 1.0 ]@{ k5 * P * (P - 1) / 2 } ;
+	monomerisation  : [ :-> P2 -= 1.0; P += 2.0 ]@{ km5 * P2 } ;
+}

@@ -1,0 +1,39 @@
+
+// The model in 
+// Integrated simulation and model checking for the analysis of biochemical systems
+// F. Ciocchetta, S. Gilmore, M-L Guigerro, J. Hillston
+// ENTCS 232 (2009) 17-38
+
+// That is the M_1 model: protein (P) degradation is assumed
+
+
+// HINT: set t_final = 20000
+
+
+
+
+KM = 356;
+v = 2.19;
+k2 = 0.043;
+k3 = 0.039;
+k4 = 0.0007;
+k5 = 0.025 / 2; // 0.025 is the discrete-world kinetic constant
+km5 = 0.5;
+
+
+transcription = [ (v * D) / (KM + P2) ] ;
+translation   = [ k2 * M ] ;
+degradation_M = [ k3 * M ] ;
+degradation_P = [ k4 * P ] ;
+dimerisation  = [ k5 * P * (P - 0) ] ; // in discrete-world: (k5 * P * (P - 1)) / 2
+monomerisation  = [ km5 * P2 ] ;
+
+
+D = transcription (.) ;
+M = transcription >> + translation (.) + degradation_M << ;
+P = translation >> + (dimerisation, 2) << + (monomerisation, 2) >> + degradation_P << ;
+P2 = transcription (-) + dimerisation >> + monomerisation << ;
+Res = degradation_M (.) + degradation_P (.) ;
+
+(((D[1] <transcription> M[0]) <translation> P[0]) <dimerisation, monomerisation, transcription> P2[0])
+ <degradation_M, degradation_P> Res[1]

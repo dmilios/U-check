@@ -22,15 +22,50 @@ public class TestMC {
 
 	public static void main(String[] args) throws Exception {
 
+		// test__genetic_network_1();
+		test__lacz();
+
+		// test_extinction_formula();
+		// compare_row_sums();
+	}
+
+	public static void test__genetic_network_1() throws Exception {
+
+		SimHyAModel model = new SimHyAModel();
+		model.loadModel("models/genetic_network_1.txt");
+		model.setSSA();
+		String[] params = new String[] { "k2"};
+
+		model.setParameters(params, new double[] { 0.043 });
+		model.resetSimulator();
+		model.simulate(20000);
+		model.plotTrajectory();
+	}
+	
+	public static void test__a_b_c() throws Exception {
+
+		SimHyAModel model = new SimHyAModel();
+		model.loadModel("models/a-b-c.txt");
+		model.setSSA();
+		String[] params = new String[] { "r1", "r2", "r3" };
+
+		model.setParameters(params, new double[] { 0.01, 0.01, 0.01 });
+		model.resetSimulator();
+		model.simulate(100);
+		model.plotTrajectory();
+	}
+
+	public static void test__lacz() throws Exception {
+
 		SimHyAModel model = new SimHyAModel();
 		model.loadModel("models/lacz.txt");
-		model.setSSA();
+		model.setHybrid();
 
 		String[] params = new String[] { "k2", "k7" };
 		ArrayList<String> species = new ArrayList<String>();
-		// species.add("LacZ");
+		species.add("LacZ");
 		// species.add("PLac");
-		species.add("RNAP");
+		// species.add("RNAP");
 		// species.add("Ribosome");
 		// species.add("RbsLacZ");
 
@@ -38,9 +73,6 @@ public class TestMC {
 		model.resetSimulator();
 		model.simulate(21000);
 		model.plotTrajectory(species);
-
-		// test_extinction_formula();
-		// compare_row_sums();
 	}
 
 	public static void test_extinction_formula() throws Exception {

@@ -14,6 +14,5 @@ model SIR {
 	recovery:[  :-> R += 1.0; I -= 1.0 ]@{ kr*I };
 	//susceptible:[  :-> S += 1.0; R -= 1.0 ]@{ ks*R };
 
-    reg:[  :-> ]@{0.0001};
-
+	reg:[  :-> ]@{0.0001};
 }
