@@ -1,7 +1,7 @@
 
 ## main experiment options
 
-model = models/lacz.biopepa
+model = models/lacz.txt
 properties = formulae/lacz.mtl
 # observations = formulae/rumour.dat
 
@@ -25,7 +25,7 @@ outputDir = output
 
 ## simulation options
 endTime = 21000
-runs = 10
+runs = 5
 timepoints = 1000
 timeseriesEnabled = true
 # useODEs = false
@@ -45,7 +45,7 @@ useDefaultHyperparams = true
 
 
 ## GP data options
-initialObservtions = 100
+initialObservtions = 49
 numberOfTestPoints = 256
 
 
