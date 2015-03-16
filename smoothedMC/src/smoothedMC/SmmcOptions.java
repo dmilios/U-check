@@ -14,6 +14,7 @@ public final class SmmcOptions {
 
 	private int initialObservtions = 20;
 	private int numberOfTestPoints = 100;
+	private double[][] testpoints = null;
 	private GridSampler sampler = new RegularSampler();
 
 	private KernelFunction kernelGP = new KernelRBF();
@@ -70,7 +71,7 @@ public final class SmmcOptions {
 	 * The number of points at which we explore the value of the satisfaction
 	 * function. These will be the test points in the GP.
 	 */
-	public int getM() {
+	public int getNumberOfTestPoints() {
 		return numberOfTestPoints;
 	}
 
@@ -78,8 +79,19 @@ public final class SmmcOptions {
 	 * The number of points at which we explore the value of the satisfaction
 	 * function. These will be the test points in the GP.
 	 */
-	public void setM(int datapoints) {
+	public void setNumberOfTestPoints(int datapoints) {
 		this.numberOfTestPoints = datapoints;
+		testpoints = null;
+	}
+
+	/** Explicitly defined set of points for the GP */
+	public double[][] getTestpoints() {
+		return testpoints;
+	}
+
+	/** Explicitly defined set of points for the GP */
+	public void setTestpoints(double[][] testpoints) {
+		this.testpoints = testpoints;
 	}
 
 	/**

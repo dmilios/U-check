@@ -71,8 +71,10 @@ public class SmoothedModelCheker {
 	public ClassificationPosterior performSmoothedModelChecking(
 			AnalyticApproximation approx, Parameter[] parameters,
 			SmmcOptions options) {
-		final double[][] paramValueSet = options.getSampler().sample(
-				options.getM(), parameters);
+		double[][] paramValueSet = options.getTestpoints();
+		if (paramValueSet == null)
+			paramValueSet = options.getSampler().sample(
+					options.getNumberOfTestPoints(), parameters);
 		return approx.getValuesAt(paramValueSet);
 	}
 

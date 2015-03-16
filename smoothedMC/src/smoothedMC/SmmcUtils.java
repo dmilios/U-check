@@ -18,7 +18,7 @@ public class SmmcUtils {
 
 		final SmmcOptions options = new SmmcOptions();
 		options.setN(n);
-		options.setM(m);
+		options.setNumberOfTestPoints(m);
 		options.setSimulationRuns(runs);
 		options.setSimulationEndTime(tfinal);
 		options.setTimeseriesEnabled(true);
@@ -114,7 +114,7 @@ public class SmmcUtils {
 
 		final SmmcOptions options = new SmmcOptions();
 		options.setN(64);
-		options.setM(256);
+		options.setNumberOfTestPoints(256);
 		options.setSimulationRuns(10);
 		options.setSimulationEndTime(200);
 		options.setSampler(new RegularSampler());

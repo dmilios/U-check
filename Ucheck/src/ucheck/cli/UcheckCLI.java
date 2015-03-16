@@ -112,7 +112,7 @@ public class UcheckCLI {
 					+ "\" directory!");
 			return;
 		}
-
+		
 		final MitlModelChecker check = config.getModelChecker();
 		final SmmcOptions options = config.getSmMCOptions();
 		final smoothedMC.Parameter[] params = config.getSmMCParameters();

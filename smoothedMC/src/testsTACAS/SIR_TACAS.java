@@ -69,7 +69,7 @@ public class SIR_TACAS {
 
 		final SmmcOptions options = new SmmcOptions();
 		options.setN(POINTS_IN_SMMC_GRID);
-		options.setM(POINTS_SAMPLED);
+		options.setNumberOfTestPoints(POINTS_SAMPLED);
 		options.setSimulationRuns(SIMULATION_RUNS);
 		options.setSimulationEndTime(tFinal);
 		options.setSampler(new RegularSampler());
@@ -104,7 +104,7 @@ public class SIR_TACAS {
 		System.out.println("Method: Smoothed MC");
 		System.out.println("SMC datapoints: " + options.getN());
 		System.out.println("Simulation runs: " + options.getSimulationRuns());
-		System.out.println("Smoothed MC datapoints: " + options.getM());
+		System.out.println("Smoothed MC datapoints: " + options.getNumberOfTestPoints());
 		System.out.println(" - - - ");
 
 		// generate a GP dataset that contains observations produced via

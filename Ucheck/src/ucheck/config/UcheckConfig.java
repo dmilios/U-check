@@ -6,6 +6,7 @@ import gp.kernels.KernelRbfARD;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import priors.GammaPrior;
 import priors.GaussianPrior;
 import priors.Prior;
 import priors.UniformPrior;
+import ucheck.DoubleMatrixFile;
 import ucheck.SimhyaModel;
 import smoothedMC.SmmcOptions;
 import ucheck.cli.Log;
@@ -43,6 +45,7 @@ public class UcheckConfig {
 	private String mitlFile;
 	private MitlModelChecker modelChecker;
 	private boolean[][] observations;
+	private double[][] testPoints;
 
 	public UcheckConfig() {
 		this(new PrintStreamLog(System.out));
@@ -135,7 +138,7 @@ public class UcheckConfig {
 
 		// --- verify simulator options
 		String simulator = (String) configOptions.get("simulator");
-		
+
 		if (simulator.equals("hybrid")) {
 			if (model instanceof SimhyaModel) {
 				SimhyaModel simhya = (SimhyaModel) model;
@@ -144,7 +147,7 @@ public class UcheckConfig {
 				log.printWarning("ODEs are not currently supported "
 						+ "for Bio-PEPA models! SSA will be used instead.");
 		}
-		
+
 		if (simulator.equals("odes")) {
 			if (configOptions.get("mode").equals("robust"))
 				if (model instanceof SimhyaModel) {
@@ -196,6 +199,22 @@ public class UcheckConfig {
 				observations = obs.load(obsText, formulae);
 				if (observations == null)
 					log.printError("Invalid observations file");
+			}
+		}
+
+		// --- verify test points file
+		String testPointsFile = (String) configOptions.get("testPointsFile");
+		if (!testPointsFile.isEmpty()) {
+			DoubleMatrixFile pointsFile = new DoubleMatrixFile();
+			try {
+				testPoints = pointsFile.load(
+						new FileInputStream(testPointsFile), 1);
+			} catch (NumberFormatException e) {
+				log.printError("File " + testPointsFile + ": " + e.getMessage());
+			} catch (FileNotFoundException e) {
+				log.printError(e.getMessage());
+			} catch (IOException e) {
+				log.printError(e.getMessage());
 			}
 		}
 
@@ -346,6 +365,7 @@ public class UcheckConfig {
 
 		// other experiment options
 		addProperty(new StringSpec("outputDir", "./"));
+		addProperty(new StringSpec("testPointsFile", ""));
 
 		// common simulation options
 		addProperty(new DoubleSpec("endTime", 0, 0, false));
@@ -409,6 +429,11 @@ public class UcheckConfig {
 
 	public boolean[][] getObservations() {
 		return observations;
+	}
+
+	@Deprecated
+	public double[][] getTestPoints() {
+		return testPoints;
 	}
 
 	public String getOutputDir() {
@@ -477,7 +502,7 @@ public class UcheckConfig {
 			else if (key.equals("initialObservtions"))
 				options.setN((int) value);
 			else if (key.equals("numberOfTestPoints"))
-				options.setM((int) value);
+				options.setNumberOfTestPoints((int) value);
 
 			else if (key.equals("useDefaultHyperparams"))
 				options.setUseDefaultHyperparams((boolean) value);
@@ -494,6 +519,7 @@ public class UcheckConfig {
 			else
 				;
 		}
+		options.setTestpoints(testPoints);
 		return options;
 	}
 
