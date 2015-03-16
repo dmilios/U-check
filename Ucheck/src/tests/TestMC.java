@@ -17,16 +17,32 @@ import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
 import ucheck.SimhyaModel;
+import ucheck.prism.PrismCtmcModel;
 
 public class TestMC {
 
 	public static void main(String[] args) throws Exception {
 
+		test__knacl();
+
 		// test__genetic_network_1();
-		test__lacz();
+		// test__lacz();
 
 		// test_extinction_formula();
 		// compare_row_sums();
+	}
+
+	public static void test__knacl() throws Exception {
+
+		PrismCtmcModel model = new PrismCtmcModel();
+		model.loadModel("models/knacl.sm");
+
+		String[] params = new String[] { "e1rate", "e2rate", "e3rate", "e4rate" };
+		model.setParameters(params, new double[] { 100, 10, 30, 20 });
+
+		Trajectory[] traj = model.generateTrajectories(2, 1);
+		System.out.println(traj[0]);
+		System.out.println("Timepoints: " + traj[0].getTimes().length);
 	}
 
 	public static void test__genetic_network_1() throws Exception {
@@ -34,14 +50,14 @@ public class TestMC {
 		SimHyAModel model = new SimHyAModel();
 		model.loadModel("models/genetic_network_1.txt");
 		model.setSSA();
-		String[] params = new String[] { "k2"};
+		String[] params = new String[] { "k2" };
 
 		model.setParameters(params, new double[] { 0.043 });
 		model.resetSimulator();
 		model.simulate(20000);
 		model.plotTrajectory();
 	}
-	
+
 	public static void test__a_b_c() throws Exception {
 
 		SimHyAModel model = new SimHyAModel();

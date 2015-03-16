@@ -1,16 +1,17 @@
 
 ## experiment options
 
-model = models/rumour.sm
-properties = formulae/rumour_sm.mtl
-observations = formulae/rumour.dat
+model = models/knacl.sm
+properties = formulae/knacl.mtl
+# observations = formulae/knacl.dat
+
 
 mode = smoothedmc
-parameter k_s = [0.0001, 1]
-parameter k_r = [0.0001, 1]
+parameter e1rate = [0.1, 20]
+parameter e2rate = [0.1, 20]
+parameter e3rate = [0.1, 20]
+parameter e4rate = [0.1, 20]
 
-
-prior k_s = gamma(2, 1)
 
 
 
@@ -19,9 +20,8 @@ outputDir = output
 
 
 
-
 ## simulation options
-endTime = 5
+endTime = 2
 runs = 10
 timepoints = 1000
 timeseriesEnabled = true
@@ -40,8 +40,8 @@ useDefaultHyperparams = true
 
 
 ## GP data options
-initialObservtions = 100
-numberOfTestPoints = 50
+initialObservtions = 625
+numberOfTestPoints = 4096
 
 
 ## GP optimisation options

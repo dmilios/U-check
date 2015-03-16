@@ -30,6 +30,7 @@ import ucheck.SimhyaModel;
 import smoothedMC.SmmcOptions;
 import ucheck.cli.Log;
 import ucheck.cli.PrintStreamLog;
+import ucheck.prism.PrismCtmcModel;
 
 public class UcheckConfig {
 
@@ -122,6 +123,8 @@ public class UcheckConfig {
 		final ModelInterface model;
 		if (modelFile.endsWith(".biopepa"))
 			model = new BiopepaModel();
+		else if (modelFile.endsWith(".sm"))
+			model = new PrismCtmcModel();
 		else
 			model = new SimhyaModel();
 		try {

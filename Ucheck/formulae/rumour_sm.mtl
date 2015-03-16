@@ -1,0 +1,8 @@
+
+// use this file for the prism model
+// because prism variables have to start with low-case letter
+// in contrast with biopepa and simhya
+
+G[3.0, 5.0] ignorants > 0
+G[0.5, 1.0] blockers >= spreaders
+(F[0.0, 1.0] spreaders >= 7.5) & (G[1.0, 2.0] spreaders <= 3.75)

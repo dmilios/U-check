@@ -25,7 +25,7 @@ public class UcheckCLI {
 		final Log log = new PrintStreamLog(System.out);
 
 		String title = "U-check: Model checking tool for uncertain systems";
-		String usage = "Usage:\n\tuncertainmc MODE OPTIONFILE\n";
+		String usage = "Usage:\n\tuncertainmc OPTIONFILE\n";
 		String optionfilehelp = "\"OPTIONFILE\" is a file that contains "
 				+ "all the experiment options.\n"
 				+ "If not set, then a default option file will be print on screen.\n";
