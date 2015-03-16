@@ -1,20 +1,28 @@
 package ssa;
 
 import java.util.Set;
+
 import expr.*;
 
 public class CTMCModel {
 
 	final private Context stateVariables;
+	final private Context constants;
 	final private int[] initialState;
 	final private CTMCReaction[] reactions;
 	final private int[][] stoichiometryMatrix;
 
 	public CTMCModel(Context stateVariables, CTMCReaction[] reactions,
 			int[] initialState) {
+		this(stateVariables, new Context(), reactions, initialState);
+	}
+
+	public CTMCModel(Context stateVariables, Context constants,
+			CTMCReaction[] reactions, int[] initialState) {
 		if (stateVariables.getVariables().length != initialState.length)
 			throw new IllegalArgumentException("Incompatible initial state");
 		this.stateVariables = stateVariables;
+		this.constants = constants;
 		this.reactions = reactions;
 		this.initialState = initialState;
 		stoichiometryMatrix = constructStoichiometryMatrix(stateVariables,
@@ -26,8 +34,8 @@ public class CTMCModel {
 	 * one or more rate expressions.
 	 */
 	final public void setParameterValue(final String name, final double value) {
-		// TODO: Implement this!
-		// Bio-PEPA compiled models do not contain parameter information
+		final Variable var = constants.getVariable(name);
+		constants.setValue(var, value);
 	}
 
 	final static private int[][] constructStoichiometryMatrix(
@@ -61,6 +69,10 @@ public class CTMCModel {
 
 	public Context getStateVariables() {
 		return stateVariables;
+	}
+
+	public Context getConstants() {
+		return constants;
 	}
 
 	public CTMCReaction[] getReactions() {
