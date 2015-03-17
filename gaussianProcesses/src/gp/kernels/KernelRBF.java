@@ -44,7 +44,9 @@ public class KernelRBF extends KernelFunction {
 			if (y[i] < min)
 				min = y[i];
 		}
-		defaultHyp[0] = (max - min) / 2.0 + 1e-5;
+		defaultHyp[0] = (max - min) / 2.0;
+		if (defaultHyp[0] == 0)
+			defaultHyp[0] = 1;
 
 		double sum = 0;
 		final int n = data.getSize();

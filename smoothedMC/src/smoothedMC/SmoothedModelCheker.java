@@ -61,8 +61,8 @@ public class SmoothedModelCheker {
 		return performSmoothedModelChecking(data, parameters, options);
 	}
 
-	public ProbitRegressionPosterior performSmoothedModelChecking(GpDataset data,
-			Parameter[] parameters, SmmcOptions options) {
+	public ProbitRegressionPosterior performSmoothedModelChecking(
+			GpDataset data, Parameter[] parameters, SmmcOptions options) {
 		final AnalyticApproximation approx = getAnalyticApproximation(data,
 				parameters, options);
 		return performSmoothedModelChecking(approx, parameters, options);
@@ -179,9 +179,14 @@ public class SmoothedModelCheker {
 
 	private void optimiseGPHyperParameters(GPEP gp, SmmcOptions options) {
 		HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
+		GpDataset train = gp.getTrainingSet();
+		final double init[] = gp.getKernel().getDefaultHyperarameters(train);
+		if (variance(train.getTargets()) == 0) {
+			gp.getKernel().setHyperarameters(init);
+			return; // don't bother optimising; they are all either '1' or '0'
+		}
+
 		LocalOptimisation alg = new PowellMethodApache();
-		final double init[] = gp.getKernel().getDefaultHyperarameters(
-				gp.getTrainingSet());
 		PointValue best = alg.optimise(func, init);
 
 		for (int r = 0; r < options.getHyperparamOptimisationRestarts(); r++) {
@@ -193,6 +198,19 @@ public class SmoothedModelCheker {
 				best = curr;
 		}
 		gp.getKernel().setHyperarameters(best.getPoint());
+	}
+
+	final static private double variance(double[] vector) {
+		double mean = 0;
+		for (double v : vector)
+			mean += v;
+		mean /= (double) vector.length;
+		double sum = 0;
+		for (int i = 0; i < vector.length; i++) {
+			final double aux = vector[i] - mean;
+			sum += aux * aux;
+		}
+		return sum / (double) (vector.length - 1);
 	}
 
 }

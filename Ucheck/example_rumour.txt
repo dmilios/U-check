@@ -34,7 +34,7 @@ amplitude = 1
 lengthscale = 2, 0.4
 
 ## GP hypeparameters options
-hyperparamOptimisation = false
+hyperparamOptimisation = true
 hyperparamOptimisationRestarts = 0
 useDefaultHyperparams = true
 

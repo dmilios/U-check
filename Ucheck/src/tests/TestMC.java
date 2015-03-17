@@ -23,13 +23,26 @@ public class TestMC {
 
 	public static void main(String[] args) throws Exception {
 
-		test__knacl();
+		test__rumour();
 
 		// test__genetic_network_1();
 		// test__lacz();
 
 		// test_extinction_formula();
 		// compare_row_sums();
+	}
+
+	public static void test__rumour() throws Exception {
+
+		SimHyAModel model = new SimHyAModel();
+		model.loadModel("models/rumour.txt");
+		model.setODE();
+		String[] params = new String[] { "k_s", "k_r" };
+
+		model.setParameters(params, new double[] { 0.1, 0.02 });
+		model.resetSimulator();
+		model.simulate(5);
+		model.plotTrajectory();
 	}
 
 	public static void test__knacl() throws Exception {
