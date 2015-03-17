@@ -445,8 +445,8 @@ public class UcheckConfig {
 			dir = dir.substring(1);
 		if (dir.endsWith("\""))
 			dir = dir.substring(0, dir.length() - 1);
-		if (!dir.endsWith(File.separator))
-			dir += File.separator;
+		if (dir.endsWith(File.separator))
+			dir = dir.substring(0, dir.length() - 1);
 		return dir;
 	}
 

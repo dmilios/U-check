@@ -3,12 +3,12 @@ package gp.classification;
 import gp.GpDataset;
 import gp.GpPosterior;
 
-public final class ClassificationPosterior extends GpPosterior {
+public final class ProbitRegressionPosterior extends GpPosterior {
 
 	final private double[] probabilities;
 	final private double[] cached_denominator;
 
-	public ClassificationPosterior(GpDataset inputData, double[] mean,
+	public ProbitRegressionPosterior(GpDataset inputData, double[] mean,
 			double[] var) {
 		super(inputData, mean, var);
 

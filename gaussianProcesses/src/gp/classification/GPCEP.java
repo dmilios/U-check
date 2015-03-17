@@ -6,7 +6,7 @@ import gp.GpDataset;
 import gp.kernels.KernelFunction;
 import gp.kernels.KernelRBF;
 
-public class GPCEP extends AbstractGP<ClassificationPosterior> {
+public class GPCEP extends AbstractGP<ProbitRegressionPosterior> {
 
 	private double eps_damp = 0.5;
 
@@ -15,9 +15,9 @@ public class GPCEP extends AbstractGP<ClassificationPosterior> {
 	}
 
 	@Override
-	public ClassificationPosterior getGpPosterior(GpDataset testSet) {
+	public ProbitRegressionPosterior getGpPosterior(GpDataset testSet) {
 		Gauss gauss = calculatePosterior(testSet);
-		return new ClassificationPosterior(testSet, gauss.m.getData(),
+		return new ProbitRegressionPosterior(testSet, gauss.m.getData(),
 				gauss.diagV.getData());
 	}
 
@@ -367,7 +367,7 @@ public class GPCEP extends AbstractGP<ClassificationPosterior> {
 		double elapsed;
 
 		t0 = System.currentTimeMillis();
-		ClassificationPosterior post = gp.getGpPosterior(xt);
+		ProbitRegressionPosterior post = gp.getGpPosterior(xt);
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
 		for (int i = 0; i < m; i++) {
 			System.out.print(X[i][0] + "\t");

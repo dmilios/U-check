@@ -1,7 +1,7 @@
 package testsTACAS;
 
 import gp.GpDataset;
-import gp.classification.ClassificationPosterior;
+import gp.classification.ProbitRegressionPosterior;
 
 import java.io.File;
 import java.io.IOException;
@@ -133,7 +133,7 @@ public class Lacz_debug {
 
 		// given the observations, do the smoothed MC
 		SmoothedModelCheker smmc = new SmoothedModelCheker();
-		ClassificationPosterior post = smmc.performSmoothedModelChecking(data,
+		ProbitRegressionPosterior post = smmc.performSmoothedModelChecking(data,
 				parameters, options);
 
 		SmmcUtils.results2matlab(post, filePrefix + "_smmc");

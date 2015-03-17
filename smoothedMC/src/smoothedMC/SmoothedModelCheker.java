@@ -6,7 +6,7 @@ import optim.PointValue;
 import optim.methods.PowellMethodApache;
 import gp.GpDataset;
 import gp.HyperparamLogLikelihood;
-import gp.classification.ClassificationPosterior;
+import gp.classification.ProbitRegressionPosterior;
 import gp.classification.GPEP;
 import gp.kernels.KernelRbfARD;
 import smoothedMC.Parameter;
@@ -36,7 +36,7 @@ public class SmoothedModelCheker {
 		return hyperparamsUsed;
 	}
 
-	public ClassificationPosterior performSmoothedModelChecking(
+	public ProbitRegressionPosterior performSmoothedModelChecking(
 			String modelFile, String mitlFile, Parameter[] params,
 			SmmcOptions options) {
 
@@ -44,7 +44,7 @@ public class SmoothedModelCheker {
 				+ " It is part of the old interface, but useful!");
 	}
 
-	public ClassificationPosterior performSmoothedModelChecking(
+	public ProbitRegressionPosterior performSmoothedModelChecking(
 			MitlModelChecker modelChecker, Parameter[] parameters,
 			SmmcOptions options) {
 		long t0;
@@ -61,14 +61,14 @@ public class SmoothedModelCheker {
 		return performSmoothedModelChecking(data, parameters, options);
 	}
 
-	public ClassificationPosterior performSmoothedModelChecking(GpDataset data,
+	public ProbitRegressionPosterior performSmoothedModelChecking(GpDataset data,
 			Parameter[] parameters, SmmcOptions options) {
 		final AnalyticApproximation approx = getAnalyticApproximation(data,
 				parameters, options);
 		return performSmoothedModelChecking(approx, parameters, options);
 	}
 
-	public ClassificationPosterior performSmoothedModelChecking(
+	public ProbitRegressionPosterior performSmoothedModelChecking(
 			AnalyticApproximation approx, Parameter[] parameters,
 			SmmcOptions options) {
 		double[][] paramValueSet = options.getTestpoints();

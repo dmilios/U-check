@@ -1,6 +1,6 @@
 package smoothedMC;
 
-import gp.classification.ClassificationPosterior;
+import gp.classification.ProbitRegressionPosterior;
 import gp.kernels.KernelRBF;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class SmmcUtils {
 			params[i] = new Parameter(parameter[i], lb[i], ub[i]);
 
 		final SmoothedModelCheker smc = new SmoothedModelCheker();
-		final ClassificationPosterior post = smc.performSmoothedModelChecking(
+		final ProbitRegressionPosterior post = smc.performSmoothedModelChecking(
 				modelFile, mitlFile, params, options);
 		results2matlab(post, modelFile);
 	}
@@ -50,7 +50,7 @@ public class SmmcUtils {
 	 * {@code csvread ('example.csv', 1)} <br>
 	 * (which ignores the first line)
 	 */
-	public static final String results2csv(ClassificationPosterior post,
+	public static final String results2csv(ProbitRegressionPosterior post,
 			double beta) {
 		final StringBuilder str = new StringBuilder();
 		final int dim = post.getInputData().getDimension();
@@ -71,7 +71,7 @@ public class SmmcUtils {
 	}
 
 	/** Do not use that; it is ugly... will be removed, when it is not needed */
-	public static final void results2matlab(ClassificationPosterior post,
+	public static final void results2matlab(ProbitRegressionPosterior post,
 			String modelFile) throws IOException {
 		String outDir = "output";
 		if (!new File(outDir).exists()) {
@@ -131,7 +131,7 @@ public class SmmcUtils {
 		params[0] = new Parameter("ki", 0.005, 0.3);
 
 		final SmoothedModelCheker smc = new SmoothedModelCheker();
-		final ClassificationPosterior post = smc.performSmoothedModelChecking(
+		final ProbitRegressionPosterior post = smc.performSmoothedModelChecking(
 				modelFile, mitlFile, params, options);
 		results2matlab(post, modelFile);
 	}

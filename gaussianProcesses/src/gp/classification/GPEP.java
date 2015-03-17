@@ -13,7 +13,7 @@ import gp.HyperparamLogLikelihood;
 import gp.kernels.KernelFunction;
 import gp.kernels.KernelRBF;
 
-public class GPEP extends AbstractGP<ClassificationPosterior> {
+public class GPEP extends AbstractGP<ProbitRegressionPosterior> {
 
 	private double eps_damp = 0.5;
 	private int scale = 1;
@@ -54,7 +54,7 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 				algebra.createEye(mu_tilde.getLength()));
 	}
 
-	public ClassificationPosterior getGpPosterior(GpDataset testSet) {
+	public ProbitRegressionPosterior getGpPosterior(GpDataset testSet) {
 		final double[] mmK = testSet.calculateVariances(getKernel());
 		final double[][] mnK = testSet.calculateCovariances(getKernel(),
 				trainingSet);
@@ -66,11 +66,11 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 		IMatrix tmp = ks.mmul(invC);
 		IMatrix fs = tmp.mmul(mu_tilde);
 		IMatrix vfs = kss.sub(tmp.mmul(ks.transpose()).diag());
-		return new ClassificationPosterior(testSet, fs.getData(), vfs.getData());
+		return new ProbitRegressionPosterior(testSet, fs.getData(), vfs.getData());
 	}
 
 	@Deprecated
-	public ClassificationPosterior getGpPosterior_old(GpDataset testSet) {
+	public ProbitRegressionPosterior getGpPosterior_old(GpDataset testSet) {
 		Gauss gauss = expectationPropagation(1e-6);
 
 		IMatrix v_tilde = gauss.Term.getColumn(0);
@@ -95,7 +95,7 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 		IMatrix fs = tmp.mmul(mu_tilde);
 		IMatrix vfs = kss.sub(tmp.mmul(ks.transpose()).diag());
 
-		return new ClassificationPosterior(testSet, fs.getData(), vfs.getData());
+		return new ProbitRegressionPosterior(testSet, fs.getData(), vfs.getData());
 	}
 
 	@Override
@@ -664,7 +664,7 @@ public class GPEP extends AbstractGP<ClassificationPosterior> {
 		double elapsed;
 
 		t0 = System.currentTimeMillis();
-		ClassificationPosterior post = gp.getGpPosterior(xt);
+		ProbitRegressionPosterior post = gp.getGpPosterior(xt);
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
 		for (int i = 0; i < m; i++) {
 			System.out.print(post.getInputData().getInstance(i)[0] + "\t");

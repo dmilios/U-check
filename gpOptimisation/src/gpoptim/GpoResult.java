@@ -20,14 +20,20 @@ public final class GpoResult {
 		str += "Solution:     " + Arrays.toString(solution) + "\n";
 		str += "Standard Dev: " + Arrays.toString(getStandardDeviations());
 		str += "\n";
-		str += "Covariances:  " + getCovarianceStr() + "\n";
+		str += "Covariance matrix:\n" + getCovarianceStr() + "\n";
+		str += "\n";
+		str += "Hyperparams used: \n";
+		str += "      amplitude: " + hyperparamsUsed[0] + "\n";
+		for (int i = 1; i < hyperparamsUsed.length; i++)
+			str += "    lengthscale: " + hyperparamsUsed[i] + "\n";
+		str += "\n";
 		str += "Fitness:  " + fitness + "\n";
+		str += " Iterations: " + iterations + "\n";
+		str += "Evaluations: " + evaluations + "\n";
+		str += "\n";
 		str += "Time for hyperparam opt: " + hyperparamOptimTimeElapsed
 				+ " sec\n";
 		str += "Time for GP optimsation: " + gpOptimTimeElapsed + " sec\n";
-		str += "Hyperparams used: " + Arrays.toString(hyperparamsUsed) + "\n";
-		str += " Iterations: " + iterations + "\n";
-		str += "Evaluations: " + evaluations + "\n";
 		return str;
 	}
 
@@ -59,7 +65,7 @@ public final class GpoResult {
 		for (int j = 1; j < covariance[0].length; j++)
 			str += ", " + covariance[0][j];
 		for (int i = 1; i < covariance.length; i++) {
-			str += "; " + covariance[i][0];
+			str += ";\n " + covariance[i][0];
 			for (int j = 1; j < covariance[i].length; j++)
 				str += ", " + covariance[i][j];
 		}

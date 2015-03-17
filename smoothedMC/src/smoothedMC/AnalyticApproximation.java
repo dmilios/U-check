@@ -1,7 +1,7 @@
 package smoothedMC;
 
 import gp.GpDataset;
-import gp.classification.ClassificationPosterior;
+import gp.classification.ProbitRegressionPosterior;
 import gp.classification.GPEP;
 
 public final class AnalyticApproximation {
@@ -17,11 +17,11 @@ public final class AnalyticApproximation {
 		this.gp = gp;
 	}
 
-	public ClassificationPosterior getValuesAt(GpDataset points) {
+	public ProbitRegressionPosterior getValuesAt(GpDataset points) {
 		return gp.getGpPosterior(points);
 	}
 
-	public ClassificationPosterior getValuesAt(double[][] points) {
+	public ProbitRegressionPosterior getValuesAt(double[][] points) {
 		final GpDataset testSet = new GpDataset(points);
 		return gp.getGpPosterior(testSet);
 	}

@@ -7,14 +7,14 @@ properties = formulae/lacz.mtl
 
 mode = smoothedmc
 
-# parameter k2 = [10, 1000]
-# parameter k7 = [0.45, 45]
+parameter k2 = [10, 1000]
+parameter k7 = [0.45, 45]
 
 # parameter k2 = [500, 1000]
 # parameter k7 = [20, 100]
 
-parameter k2 = [1000, 5000]
-parameter k7 = [45, 450]
+#parameter k2 = [1000, 5000]
+#parameter k7 = [45, 450]
 
 
 
