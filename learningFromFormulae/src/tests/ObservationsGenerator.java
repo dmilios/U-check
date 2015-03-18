@@ -3,6 +3,7 @@ package tests;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import model.ModelInterface;
 import modelChecking.MitlModelChecker;
 import biopepa.BiopepaModel;
 
@@ -46,6 +47,13 @@ public class ObservationsGenerator {
 		biopepa.loadModel(model);
 		MitlModelChecker modelChecker = new MitlModelChecker(biopepa);
 		modelChecker.loadProperties(properties);
+		return generate(biopepa, properties, stopTime, runs);
+	}
+
+	public static boolean[][] generate(ModelInterface model, String properties,
+			double stopTime, int runs) throws Exception {
+		MitlModelChecker modelChecker = new MitlModelChecker(model);
+		modelChecker.loadProperties(properties);
 		return modelChecker.performMC(stopTime, runs);
 	}
 
@@ -53,7 +61,12 @@ public class ObservationsGenerator {
 			double stopTime, int runs) throws Exception {
 		BiopepaModel biopepa = new BiopepaModel();
 		biopepa.loadModel(model);
-		MitlModelChecker modelChecker = new MitlModelChecker(biopepa);
+		return generateRobust(biopepa, properties, stopTime, runs);
+	}
+
+	public static double[][] generateRobust(ModelInterface model,
+			String properties, double stopTime, int runs) throws Exception {
+		MitlModelChecker modelChecker = new MitlModelChecker(model);
 		modelChecker.loadProperties(properties);
 		return modelChecker.performMCRobust(stopTime, runs);
 	}

@@ -1,0 +1,27 @@
+U-check: Model checking tool for uncertain systems
+
+# Robust Parameter Synthesis
+Model file: case_study/rumour.sm
+MiTL file: case_study/rumour.mtl
+
+Parameters explored: k_s, k_r
+
+# Gaussian Process Optimisation --- Results
+Solution:     [0.3410609996706949, 0.10736369126944924]
+Standard Dev: [3.6248813872572243, 0.7830513406533174]
+Covariance matrix:
+[13.13976507168386, 2.838061284295024;
+ 2.838061284295024, 0.6131694020989578]
+
+Hyperparams used: 
+      amplitude: 7152.689865054107
+    lengthscale: 1.0332476212106048
+    lengthscale: 1.582551649513992
+
+Fitness:  0.9
+ Iterations: 102
+Evaluations: 202
+
+Time for hyperparam opt: 0.193 sec
+Time for GP optimsation: 3.738 sec
+

@@ -39,7 +39,8 @@ public class TestMC {
 		model.setSSA();
 		String[] params = new String[] { "k_s", "k_r" };
 
-		model.setParameters(params, new double[] { 0.05, 0.02 });
+		double k_s = 0.2;
+		model.setParameters(params, new double[] { k_s, k_s / 3.0 });
 		model.resetSimulator();
 		model.simulate(5);
 		model.plotTrajectory();

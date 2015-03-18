@@ -1,0 +1,40 @@
+
+ctmc
+
+
+const int N=100;
+const double k_s=0.05;
+const double k_r=0.02;
+
+
+module ignorants
+	ignorants : [0..N] init N-10;
+	[spreading] true -> ignorants : (ignorants'=ignorants-1);
+endmodule
+
+
+module spreaders
+	spreaders : [0..N] init 10;
+	[spreading] true -> spreaders : (spreaders'=spreaders+1);
+	[stop_spreading1]  true -> spreaders * (spreaders - 1) : (spreaders'=spreaders-1);
+	[stop_spreading2]  true -> spreaders : (spreaders'=spreaders-1);
+endmodule
+
+
+module blockers
+	blockers : [0..N] init 0;
+	[stop_spreading1]  true -> 1 : (blockers'=blockers+1);
+	[stop_spreading2]  true -> blockers : (blockers'=blockers+1);
+endmodule
+
+
+module base_rates
+	
+	dummy : bool; // dummy variable
+	
+	[spreading]       true -> k_s : true;
+	[stop_spreading1] true -> k_r : true;
+	[stop_spreading2] true -> k_r : true;
+	
+endmodule
+

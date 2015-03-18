@@ -1,31 +1,17 @@
 
 ## experiment options
 
-modelFile = models/rumour.sm
-propertiesFile = formulae/rumour_sm.mtl
-observationsFile = formulae/rumour.dat
+modelFile = case_study/rumour.sm
+propertiesFile = case_study/rumour.mtl
 
-mode = smoothedmc
-# mode = robust
-# mode = inference
+mode = robust
 parameter k_s = [0.0001, 2]
-parameter k_r = [0.0001, 2]
-
-
-prior k_s = exponential(0.1)
-prior k_r = exponential(0.1)
-
-
-
-## other experiment options
-outputDir = output
-
-
+parameter k_r = [0.0001, 0.5]
 
 
 ## simulation options
 endTime = 5
-runs = 10
+runs = 100
 timepoints = 1000
 timeseriesEnabled = true
 simulator = ssa
@@ -44,11 +30,11 @@ useDefaultHyperparams = true
 
 ## GP data options
 initialObservtions = 100
-numberOfTestPoints = 625
+numberOfTestPoints = 100
 
 
 ## GP optimisation options
-logspace = false
+logspace = true
 maxIterations = 500
 maxAddedPointsNoImprovement = 100
 improvementFactor = 1.01
@@ -61,8 +47,4 @@ noiseTerm = 1
 noiseTermRatio = 0.1
 useNoiseTermRatio = false
 heteroskedastic = true
-
-
-## GP Classification options
-covarianceCorrection = 1e-4
 

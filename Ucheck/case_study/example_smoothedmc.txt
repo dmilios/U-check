@@ -1,0 +1,40 @@
+
+## experiment options
+
+modelFile = case_study/rumour.sm
+propertiesFile = case_study/rumour.mtl
+
+mode = smoothedmc
+parameter k_s = [0.0001, 2]
+parameter k_r = [0.0001, 0.5]
+
+outputDir = case_study
+
+
+## simulation options
+endTime = 5
+runs = 10
+timepoints = 1000
+timeseriesEnabled = true
+simulator = ssa
+
+
+## GP Kernel options
+kernel = rbfard
+amplitude = 1
+lengthscale = 2, 0.4
+
+## GP hypeparameters options
+hyperparamOptimisation = true
+hyperparamOptimisationRestarts = 0
+useDefaultHyperparams = true
+
+
+## GP data options
+initialObservtions = 100
+numberOfTestPoints = 625
+
+
+## GP Classification options
+covarianceCorrection = 1e-4
+

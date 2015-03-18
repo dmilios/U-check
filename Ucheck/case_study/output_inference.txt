@@ -1,0 +1,26 @@
+U-check: Model checking tool for uncertain systems
+
+# Inference from Qualitative Data
+Model file: case_study/rumour.sm
+MiTL file: case_study/rumour.mtl
+
+Parameters explored: k_s, k_r
+
+# Gaussian Process Optimisation --- Results
+Solution:     [0.05098993039106938, 0.02430176520400998]
+Standard Dev: [0.007751880832319672, 0.0019051431370011513]
+Covariance matrix:
+[6.009165643848513E-5, 0.0;
+ 0.0, 3.629570372462587E-6]
+
+Hyperparams used: 
+      amplitude: 2.112366350195474E7
+    lengthscale: 1.2904415962043214
+    lengthscale: 0.42446483357114656
+
+Fitness:  -213.02851169643625
+ Iterations: 102
+Evaluations: 202
+
+Time for hyperparam opt: 0.257 sec
+Time for GP optimsation: 2.335 sec

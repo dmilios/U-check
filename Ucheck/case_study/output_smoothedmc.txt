@@ -1,0 +1,18 @@
+U-check: Model checking tool for uncertain systems
+
+# Smoothed Model Checking --- Results
+Model file: case_study/rumour.sm
+MiTL file: case_study/rumour.mtl
+
+Parameters explored: k_s, k_r
+Hyperparams used: 
+      amplitude: 4.238349250217746
+    lengthscale: 1.4002113293255594
+    lengthscale: 0.4542272302681224
+
+Time for Statistical MC: 0.21 sec
+Time for hyperparam opt: 10.356 sec
+Time for Smoothed MC:    0.859 sec
+
+Smoothed MC results have been successfully written to 'case_study/rumour.csv'
+A MATLAB/Octave script has been successfully produced in 'case_study/load_rumour.m'
