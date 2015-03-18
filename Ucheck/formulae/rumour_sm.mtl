@@ -3,6 +3,13 @@
 // because prism variables have to start with low-case letter
 // in contrast with biopepa and simhya
 
-G[3.0, 5.0] ignorants > 0
-G[0.5, 1.0] blockers >= spreaders
-(F[0.0, 1.0] spreaders >= 7.5) & (G[1.0, 2.0] spreaders <= 3.75)
+
+F[0.0, 1.0] spreaders >= 50 & G[3.0, 5.0] ignorants > 0
+F[0.5, 1.0] blockers >= spreaders
+G[1.4, 2.0] spreaders <= 25
+
+
+
+// G[3.0, 5.0] ignorants > 0
+// G[0.5, 1.0] blockers >= spreaders
+// (F[0.0, 1.0] spreaders >= 7.5) & (G[1.0, 2.0] spreaders <= 3.75)

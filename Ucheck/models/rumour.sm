@@ -2,19 +2,19 @@
 ctmc
 
 
-const int N=15;
-const double k_s=0.5;
-const double k_r=0.1;
+const int N=100;
+const double k_s=0.05;
+const double k_r=0.02;
 
 
 module ignorants
-	ignorants : [0..N] init N-5;
+	ignorants : [0..N] init N-10;
 	[spreading] true -> ignorants : (ignorants'=ignorants-1);
 endmodule
 
 
 module spreaders
-	spreaders : [0..N] init 5;
+	spreaders : [0..N] init 10;
 	[spreading] true -> spreaders : (spreaders'=spreaders+1);
 	[stop_spreading1]  true -> spreaders * (spreaders - 1) : (spreaders'=spreaders-1);
 	[stop_spreading2]  true -> spreaders : (spreaders'=spreaders-1);

@@ -1,9 +1,9 @@
 
 ## experiment options
 
-model = models/knacl.sm
-properties = formulae/knacl.mtl
-# observations = formulae/knacl.dat
+modelFile = models/knacl.sm
+propertiesFile = formulae/knacl.mtl
+# observationsFile = formulae/knacl.dat
 
 
 mode = smoothedmc

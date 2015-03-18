@@ -1,16 +1,19 @@
 
 ## experiment options
 
-model = models/rumour.sm
-properties = formulae/rumour_sm.mtl
-observations = formulae/rumour.dat
+modelFile = models/rumour.sm
+propertiesFile = formulae/rumour_sm.mtl
+observationsFile = formulae/rumour.dat
 
-mode = smoothedmc
-parameter k_s = [0.0001, 1]
-parameter k_r = [0.0001, 1]
+# mode = smoothedmc
+# mode = robust
+mode = inference
+parameter k_s = [0.0001, 0.2]
+parameter k_r = [0.0001, 0.2]
 
 
-prior k_s = gamma(2, 1)
+prior k_s = exponential(0.1)
+prior k_r = exponential(0.1)
 
 
 
@@ -41,7 +44,7 @@ useDefaultHyperparams = true
 
 ## GP data options
 initialObservtions = 100
-numberOfTestPoints = 50
+numberOfTestPoints = 625
 
 
 ## GP optimisation options

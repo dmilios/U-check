@@ -1,5 +1,9 @@
 function [X, pr, lb, ub] = loadSmoothedMC(filename, dimension)
-data = csvread (filename, 1);
+if exist('OCTAVE_VERSION', 'builtin')
+	data = load(filename);
+else
+	data = csvread(filename, 1);
+end
 X = data(:, 1:dimension);
 pr = data(:, dimension+1);
 lb = data(:, dimension+2);

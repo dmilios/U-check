@@ -1,9 +1,9 @@
 
 ## main experiment options
 
-model = models/lacz.txt
-properties = formulae/lacz.mtl
-# observations = formulae/rumour.dat
+modelFile = models/lacz.txt
+propertiesFile = formulae/lacz.mtl
+# observationsFile = formulae/rumour.dat
 
 mode = smoothedmc
 

@@ -2,21 +2,21 @@
 # Experiment options
 # ==================
 
-model=MODEL
+modelFile=MODEL
 # Required
 # "MODEL" is a file that contains the specification of a population CTMC 
 # described either in the SimHyA or the Bio-PEPA language. Bio-PEPA models 
 # must be of the form "*.biopepa".
 
 
-properties=PROPERTIES
+propertiesFile=PROPERTIES
 # Required
 # "PROPERTIES" is a file that contains the specification of one or more MiTL
 # properties.
 
 
 
-observations=OBSERVATIONS
+observationsFile=OBSERVATIONS
 # Required (inference only)
 # "OBSERVATIONS" is a csv file that contains a NxM matrix, whose rows 
 # correspond to N independent observations of the system in question.

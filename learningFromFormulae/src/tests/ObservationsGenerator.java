@@ -58,7 +58,7 @@ public class ObservationsGenerator {
 		return modelChecker.performMCRobust(stopTime, runs);
 	}
 
-	private static void savetofile(String file, boolean[][] data)
+	public static void savetofile(String file, boolean[][] data)
 			throws FileNotFoundException {
 		final PrintWriter pw = new PrintWriter(file);
 		for (int i = 0; i < data.length; i++) {
@@ -73,7 +73,7 @@ public class ObservationsGenerator {
 		pw.close();
 	}
 
-	private static void savetofile(String file, double[][] data)
+	public static void savetofile(String file, double[][] data)
 			throws FileNotFoundException {
 		final PrintWriter pw = new PrintWriter(file);
 		for (int i = 0; i < data.length; i++) {

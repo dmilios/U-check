@@ -17,10 +17,22 @@ public class PowellMethodApache extends LocalOptimisation {
 
 	@Override
 	public PointValue optimise(final ObjectiveFunction func, double[] init) {
+
+		// Just keep track of the best solution manually
+		// To be used as last resort if the Powell method fails
+		final double[] bestSoFar = new double[init.length];
+		final double[] bestValueSoFar = new double[1];
+		System.arraycopy(init, 0, bestSoFar, 0, init.length);
+
 		final MultivariateFunction f = new MultivariateFunction() {
 			@Override
 			public double value(double[] point) {
-				return func.getValueAt(point);
+				final double value = func.getValueAt(point);
+				if (value > bestValueSoFar[0]) {
+					bestValueSoFar[0] = value;
+					System.arraycopy(point, 0, bestSoFar, 0, point.length);
+				}
+				return value;
 			}
 		};
 
@@ -41,9 +53,9 @@ public class PowellMethodApache extends LocalOptimisation {
 			optimum = pair.getPoint();
 			value = pair.getValue();
 		} catch (TooManyEvaluationsException e) {
-			System.out.println("Powell method failed; using initial value");
-			optimum = init;
-			value = Double.NEGATIVE_INFINITY;
+			// Use last resort if the Powell method fails
+			optimum = bestSoFar;
+			value = bestValueSoFar[0];
 		}
 
 		return new PointValue(optimum, value);

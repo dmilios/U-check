@@ -114,7 +114,7 @@ public class UcheckConfig {
 			}
 
 		// --- verify model
-		modelFile = (String) configOptions.get("model");
+		modelFile = (String) configOptions.get("modelFile");
 		if (modelFile.startsWith("\""))
 			modelFile = modelFile.substring(1);
 		if (modelFile.endsWith("\""))
@@ -167,7 +167,7 @@ public class UcheckConfig {
 		}
 
 		// --- verify MiTL file
-		mitlFile = (String) configOptions.get("properties");
+		mitlFile = (String) configOptions.get("propertiesFile");
 		if (mitlFile.startsWith("\""))
 			mitlFile = mitlFile.substring(1);
 		if (mitlFile.endsWith("\""))
@@ -184,7 +184,7 @@ public class UcheckConfig {
 
 		// --- verify observations
 		if (configOptions.get("mode").equals("inference")) {
-			String obsFile = (String) configOptions.get("observations");
+			String obsFile = (String) configOptions.get("observationsFile");
 			if (obsFile.startsWith("\""))
 				obsFile = obsFile.substring(1);
 			if (obsFile.endsWith("\""))
@@ -204,7 +204,7 @@ public class UcheckConfig {
 					log.printError("Invalid observations file");
 			}
 		}
-
+		
 		// --- verify test points file
 		String testPointsFile = (String) configOptions.get("testPointsFile");
 		if (!testPointsFile.isEmpty()) {
@@ -360,9 +360,9 @@ public class UcheckConfig {
 	final private void defineConfigurationOptions() {
 
 		// main experiment options
-		addProperty(new StringSpec("model", ""));
-		addProperty(new StringSpec("properties", ""));
-		addProperty(new StringSpec("observations", ""));
+		addProperty(new StringSpec("modelFile", ""));
+		addProperty(new StringSpec("propertiesFile", ""));
+		addProperty(new StringSpec("observationsFile", ""));
 		addProperty(new CategoricalSpec("mode", "", "inference", "robust",
 				"smoothedmc"));
 

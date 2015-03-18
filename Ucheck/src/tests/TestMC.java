@@ -36,15 +36,29 @@ public class TestMC {
 
 		SimHyAModel model = new SimHyAModel();
 		model.loadModel("models/rumour.txt");
-		model.setODE();
+		model.setSSA();
 		String[] params = new String[] { "k_s", "k_r" };
 
-		model.setParameters(params, new double[] { 0.1, 0.02 });
+		model.setParameters(params, new double[] { 0.05, 0.02 });
 		model.resetSimulator();
 		model.simulate(5);
 		model.plotTrajectory();
 	}
 
+	public static void test__SIR() throws Exception {
+
+		SimHyAModel model = new SimHyAModel();
+		model.loadModel("models/SIR.txt");
+		model.setSSA();
+		String[] params = new String[] { "ki", "kr" };
+
+		model.setParameters(params, new double[] { 0.12, 0.05 });
+		model.resetSimulator();
+		model.simulate(100);
+		model.plotTrajectory();
+	}
+
+	
 	public static void test__knacl() throws Exception {
 
 		PrismCtmcModel model = new PrismCtmcModel();
