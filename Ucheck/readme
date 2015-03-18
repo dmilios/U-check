@@ -101,7 +101,7 @@ timepoints=NUMBER
 
 simulator=SIMULATOR
 # Optional (default value: ssa)
-# The simulation algorithm; Bio-PEPA models support ssa only.
+# The simulation algorithm; Bio-PEPA and PRISM models support ssa only.
 # "SIMULATOR" can be one of the following:
 # 	ssa      Gillespie's stochastic simulation
 # 	odes     The CTMC is approximated by Ordinary Differential Equations
@@ -162,7 +162,7 @@ useDefaultHyperparams=true|false
 # GP data options
 # ===============
 
-initialObservtions=NUMBER
+initialObservations=NUMBER
 # Optional (default value: 50)
 # The size of the training set for the GP process.
 # The use of the training set depends on the mode:
@@ -177,6 +177,17 @@ numberOfTestPoints=NUMBER
 # 	inference   Calculation the GP posterior at each step,
 # 	            in order to find a new potential global maximum.
 # 	smoothedmc  The points at which we explore the satisfaction function.
+
+
+testPointsFile=POINTS
+# Optional (default value: none)
+# "POINTS" is a csv file that contains a NxD matrix, whose rows 
+# correspond to N independent parameter combinations of D parameters.
+# Each row is a D-dimensional point in the parameter space.
+# For example, given N=2 and D=3, the contents could be:
+# 	0.1, 0.3, 2
+# 	1.3, 4.2, 1
+# If set, the 'numberOfTestPoints' option will be overridden.
 
 
 

@@ -390,7 +390,7 @@ public class UcheckConfig {
 		addProperty(new IntegerSpec("hyperparamOptimisationRestarts", 5, 0));
 
 		// common options (GP data)
-		addProperty(new IntegerSpec("initialObservtions", 100, 1));
+		addProperty(new IntegerSpec("initialObservations", 100, 1));
 		addProperty(new IntegerSpec("numberOfTestPoints", 50, 1));
 
 		// inference options (GP optimisation parameters)
@@ -502,7 +502,7 @@ public class UcheckConfig {
 			else if (key.equals("timeseriesEnabled"))
 				options.setTimeseriesEnabled((boolean) value);
 
-			else if (key.equals("initialObservtions"))
+			else if (key.equals("initialObservations"))
 				options.setN((int) value);
 			else if (key.equals("numberOfTestPoints"))
 				options.setNumberOfTestPoints((int) value);
@@ -542,7 +542,7 @@ public class UcheckConfig {
 			else if (key.equals("timeseriesEnabled"))
 				options.setTimeseriesEnabled((boolean) value);
 
-			else if (key.equals("initialObservtions"))
+			else if (key.equals("initialObservations"))
 				options.getGpoOptions().setInitialObservtions((int) value);
 			else if (key.equals("numberOfTestPoints"))
 				options.getGpoOptions().setGridSampleNumber((int) value);

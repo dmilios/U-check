@@ -40,7 +40,7 @@ useDefaultHyperparams = true
 
 
 ## GP data options
-initialObservtions = 625
+initialObservations = 625
 numberOfTestPoints = 4096
 
 
