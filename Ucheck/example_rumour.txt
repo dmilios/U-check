@@ -43,8 +43,8 @@ useDefaultHyperparams = true
 
 
 ## GP data options
-initialObservations = 100
-numberOfTestPoints = 625
+initialObservations = 49
+numberOfTestPoints = 49
 
 
 ## GP optimisation options

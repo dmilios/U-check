@@ -5,8 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.panayotis.gnuplot.JavaPlot;
+import com.panayotis.gnuplot.dataset.Point;
+import com.panayotis.gnuplot.dataset.PointDataSet;
+import com.panayotis.gnuplot.plot.DataSetPlot;
+import com.panayotis.gnuplot.style.PlotStyle;
+import com.panayotis.gnuplot.style.Style;
+
 import mitl.MiTL;
 import mitl.MitlPropertiesList;
+import model.ModelInterface;
 import model.Trajectory;
 import modelChecking.MitlModelChecker;
 import parsers.MitlFactory;
@@ -34,16 +42,17 @@ public class TestMC {
 
 	public static void test__rumour() throws Exception {
 
-		SimHyAModel model = new SimHyAModel();
+		ModelInterface model = new SimhyaModel();
 		model.loadModel("models/rumour.txt");
-		model.setSSA();
 		String[] params = new String[] { "k_s", "k_r" };
 
-		double k_s = 0.2;
-		model.setParameters(params, new double[] { k_s, k_s / 3.0 });
-		model.resetSimulator();
-		model.simulate(5);
-		model.plotTrajectory();
+		model.setParameters(params, new double[] { 0.05, 0.02 });
+		Trajectory traj = model.generateTrajectories(5, 1, 1000)[0];
+		traj.toCSV();
+
+		JavaPlot plot = new JavaPlot();
+		addTrajectoryToPlot(traj, plot);
+		plot.plot();
 	}
 
 	public static void test__SIR() throws Exception {
@@ -59,7 +68,6 @@ public class TestMC {
 		model.plotTrajectory();
 	}
 
-	
 	public static void test__knacl() throws Exception {
 
 		PrismCtmcModel model = new PrismCtmcModel();
@@ -117,6 +125,39 @@ public class TestMC {
 		model.resetSimulator();
 		model.simulate(21000);
 		model.plotTrajectory(species);
+	}
+
+	final protected static void addTrajectoryToPlot(Trajectory x,
+			JavaPlot plot, String... names) {
+		final int vars = x.getValues().length;
+		if (names.length == 0) {
+			names = new String[vars];
+			for (int var = 0; var < vars; var++)
+				names[var] = x.getContext().getVariables()[var].getName();
+		}
+		final int n = x.getTimes().length;
+		for (int var = 0; var < vars; var++) {
+			final String name = x.getContext().getVariables()[var].getName();
+			boolean found = false;
+			for (final String currName : names)
+				if (name.equals(currName)) {
+					found = true;
+					break;
+				}
+			if (!found)
+				continue;
+			final PointDataSet<Double> set = new PointDataSet<Double>(n);
+			for (int i = 0; i < n; i++)
+				set.add(new Point<Double>(x.getTimes()[i], x.getValues(var)[i]));
+			final PlotStyle style = new PlotStyle();
+			style.setStyle(Style.LINES);
+			final DataSetPlot currPlot = new DataSetPlot(set);
+			currPlot.setPlotStyle(style);
+			currPlot.setTitle(name);
+			plot.addPlot(currPlot);
+		}
+		plot.getAxis("x").setLabel("Time");
+		plot.getAxis("y").setLabel("Population");
 	}
 
 	public static void test_extinction_formula() throws Exception {
