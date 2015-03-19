@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import linalg.IAlgebra;
 import linalg.IMatrix;
+import linalg.NonPosDefMatrixException;
 import gp.AbstractGP;
 import gp.GpDataset;
 import gp.kernels.KernelFunction;
@@ -47,7 +48,7 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 	private IMatrix invC_y = null;
 	private IMatrix invC = null;
 
-	final private void setupPriorProcess() {
+	final private void setupPriorProcess() throws NonPosDefMatrixException {
 		final double[] noiseTerms;
 		if (!heteroskedastic) {
 			noiseTerms = new double[trainingSet.getSize()];
@@ -70,14 +71,15 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 	 * The product {@code C^(-1) * y} is often reported as auxiliary in the
 	 * literature.
 	 */
-	public double[] getAux() {
+	public double[] getAux() throws NonPosDefMatrixException {
 		if (trainingSet.isModified())
 			setupPriorProcess();
 		return invC_y.getData();
 	}
 
 	@Override
-	public RegressionPosterior getGpPosterior(GpDataset testSet) {
+	public RegressionPosterior getGpPosterior(GpDataset testSet)
+			throws NonPosDefMatrixException {
 		if (trainingSet.getDimension() != testSet.getDimension())
 			throw new IllegalArgumentException(
 					"The training and test sets must have the same dimension!");
@@ -117,7 +119,7 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 	}
 
 	@Override
-	final public double getMarginalLikelihood() {
+	final public double getMarginalLikelihood() throws NonPosDefMatrixException {
 		setupPriorProcess();
 		double sum = 0;
 		final double[] diag = U.diag().getData();
@@ -131,7 +133,8 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 	}
 
 	@Override
-	public double[] getMarginalLikelihoodGradient() {
+	public double[] getMarginalLikelihoodGradient()
+			throws NonPosDefMatrixException {
 		setupPriorProcess();
 		final int hyperparams = getKernel().getHypeparameters().length;
 		final double[] gradient = new double[hyperparams];
@@ -155,7 +158,7 @@ public class RegressionGP extends AbstractGP<RegressionPosterior> {
 	}
 
 	@Deprecated
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NonPosDefMatrixException {
 
 		final int n = 1000;
 		final int m = 1000;

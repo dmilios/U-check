@@ -1,5 +1,6 @@
 package smoothedMC;
 
+import linalg.NonPosDefMatrixException;
 import modelChecking.MitlModelChecker;
 import optim.LocalOptimisation;
 import optim.PointValue;
@@ -46,7 +47,7 @@ public class SmoothedModelCheker {
 
 	public ProbitRegressionPosterior performSmoothedModelChecking(
 			MitlModelChecker modelChecker, Parameter[] parameters,
-			SmmcOptions options) {
+			SmmcOptions options) throws NonPosDefMatrixException {
 		long t0;
 		double elapsed;
 		t0 = System.currentTimeMillis();
@@ -62,7 +63,8 @@ public class SmoothedModelCheker {
 	}
 
 	public ProbitRegressionPosterior performSmoothedModelChecking(
-			GpDataset data, Parameter[] parameters, SmmcOptions options) {
+			GpDataset data, Parameter[] parameters, SmmcOptions options)
+			throws NonPosDefMatrixException {
 		final AnalyticApproximation approx = getAnalyticApproximation(data,
 				parameters, options);
 		return performSmoothedModelChecking(approx, parameters, options);
@@ -80,7 +82,7 @@ public class SmoothedModelCheker {
 
 	public AnalyticApproximation getAnalyticApproximation(
 			MitlModelChecker modelChecker, Parameter[] parameters,
-			SmmcOptions options) {
+			SmmcOptions options) throws NonPosDefMatrixException {
 		long t0;
 		double elapsed;
 		t0 = System.currentTimeMillis();
@@ -96,7 +98,8 @@ public class SmoothedModelCheker {
 	}
 
 	public AnalyticApproximation getAnalyticApproximation(GpDataset data,
-			Parameter[] parameters, SmmcOptions options) {
+			Parameter[] parameters, SmmcOptions options)
+			throws NonPosDefMatrixException {
 		GPEP gp = new GPEP(options.getKernelGP());
 		gp.setTrainingSet(data);
 		gp.setScale(options.getSimulationRuns());

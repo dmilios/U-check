@@ -2,6 +2,7 @@ package gp.regression;
 
 import linalg.IAlgebra;
 import linalg.IMatrix;
+import linalg.NonPosDefMatrixException;
 import gp.AbstractGP;
 import gp.GpDataset;
 import gp.kernels.KernelFunction;
@@ -48,7 +49,8 @@ public class ApproximateGPR extends AbstractGP<RegressionPosterior> {
 	}
 
 	@Override
-	public RegressionPosterior getGpPosterior(GpDataset testSet) {
+	public RegressionPosterior getGpPosterior(GpDataset testSet)
+			throws NonPosDefMatrixException {
 		setupPriorProcess();
 
 		final double[][] dataUM = inducingData.calculateCovariances(
@@ -70,7 +72,7 @@ public class ApproximateGPR extends AbstractGP<RegressionPosterior> {
 	final private static double log2pi_x_05 = 0.5 * Math.log(2 * Math.PI);
 
 	@Override
-	public double getMarginalLikelihood() {
+	public double getMarginalLikelihood() throws NonPosDefMatrixException {
 		setupPriorProcess();
 		final IMatrix invKuu = algebra.invertPositive(Kuu);
 		final IMatrix Qnn = Kun.transpose().mmul(invKuu).mmul(Kun);
@@ -96,5 +98,5 @@ public class ApproximateGPR extends AbstractGP<RegressionPosterior> {
 	public double[] getMarginalLikelihoodGradient() {
 		throw new IllegalAccessError("Not supported yet!");
 	}
-	
+
 }

@@ -16,15 +16,17 @@ public interface IAlgebra {
 
 	public IMatrix invert(IMatrix arg);
 
-	public IMatrix invertPositive(IMatrix arg);
+	public IMatrix invertPositive(IMatrix arg) throws NonPosDefMatrixException;
 
 	public IMatrix solve(IMatrix A, IMatrix B);
 
-	public IMatrix solvePositive(IMatrix A, IMatrix B);
+	public IMatrix solvePositive(IMatrix A, IMatrix B)
+			throws NonPosDefMatrixException;
 
-	public void solvePositiveInPlace(IMatrix A, IMatrix B);
+	public void solvePositiveInPlace(IMatrix A, IMatrix B)
+			throws NonPosDefMatrixException;
 
-	public IMatrix cholesky(IMatrix arg);
+	public IMatrix cholesky(IMatrix arg) throws NonPosDefMatrixException;
 
 	public double determinant(IMatrix A);
 

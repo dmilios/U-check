@@ -1,6 +1,7 @@
 package gp.classification;
 
 import linalg.IMatrix;
+import linalg.NonPosDefMatrixException;
 import optim.LocalOptimisation;
 import optim.PointValue;
 import optim.methods.PowellMethodApache;
@@ -38,7 +39,7 @@ public class GPEP extends AbstractGP<ProbitRegressionPosterior> {
 	private IMatrix invC;
 	private IMatrix mu_tilde;
 
-	public void doTraining() {
+	public void doTraining() throws NonPosDefMatrixException {
 		Gauss gauss = expectationPropagation(1e-6);
 
 		IMatrix v_tilde = gauss.Term.getColumn(0);
@@ -54,7 +55,8 @@ public class GPEP extends AbstractGP<ProbitRegressionPosterior> {
 				algebra.createEye(mu_tilde.getLength()));
 	}
 
-	public ProbitRegressionPosterior getGpPosterior(GpDataset testSet) {
+	public ProbitRegressionPosterior getGpPosterior(GpDataset testSet)
+			throws NonPosDefMatrixException {
 		final double[] mmK = testSet.calculateVariances(getKernel());
 		final double[][] mnK = testSet.calculateCovariances(getKernel(),
 				trainingSet);
@@ -66,11 +68,13 @@ public class GPEP extends AbstractGP<ProbitRegressionPosterior> {
 		IMatrix tmp = ks.mmul(invC);
 		IMatrix fs = tmp.mmul(mu_tilde);
 		IMatrix vfs = kss.sub(tmp.mmul(ks.transpose()).diag());
-		return new ProbitRegressionPosterior(testSet, fs.getData(), vfs.getData());
+		return new ProbitRegressionPosterior(testSet, fs.getData(),
+				vfs.getData());
 	}
 
 	@Deprecated
-	public ProbitRegressionPosterior getGpPosterior_old(GpDataset testSet) {
+	public ProbitRegressionPosterior getGpPosterior_old(GpDataset testSet)
+			throws NonPosDefMatrixException {
 		Gauss gauss = expectationPropagation(1e-6);
 
 		IMatrix v_tilde = gauss.Term.getColumn(0);
@@ -95,11 +99,12 @@ public class GPEP extends AbstractGP<ProbitRegressionPosterior> {
 		IMatrix fs = tmp.mmul(mu_tilde);
 		IMatrix vfs = kss.sub(tmp.mmul(ks.transpose()).diag());
 
-		return new ProbitRegressionPosterior(testSet, fs.getData(), vfs.getData());
+		return new ProbitRegressionPosterior(testSet, fs.getData(),
+				vfs.getData());
 	}
 
 	@Override
-	public double getMarginalLikelihood() {
+	public double getMarginalLikelihood() throws NonPosDefMatrixException {
 		Gauss gauss = expectationPropagation(1e-3);
 		return gauss.logZ;
 	}
@@ -111,7 +116,8 @@ public class GPEP extends AbstractGP<ProbitRegressionPosterior> {
 
 	double logdet_LC = 0;
 
-	private Gauss expectationPropagation(final double tolerance) {
+	private Gauss expectationPropagation(final double tolerance)
+			throws NonPosDefMatrixException {
 		double sum;
 		Gauss gauss = new Gauss();
 		final int n = trainingSet.getSize();
@@ -326,7 +332,8 @@ public class GPEP extends AbstractGP<ProbitRegressionPosterior> {
 		return update;
 	}
 
-	private double computeMarginalMoments(Gauss gauss, IMatrix Term) {
+	private double computeMarginalMoments(Gauss gauss, IMatrix Term)
+			throws NonPosDefMatrixException {
 
 		double sum;
 		double logZappx;
@@ -613,7 +620,7 @@ public class GPEP extends AbstractGP<ProbitRegressionPosterior> {
 	static public double CORRECTION_FACTOR = 1;
 
 	@Deprecated
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NonPosDefMatrixException {
 
 		final int n = 8;
 		final int m = 200;

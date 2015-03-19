@@ -1,5 +1,6 @@
 package gp;
 
+import linalg.NonPosDefMatrixException;
 import gp.AbstractGP;
 import optim.DifferentiableObjective;
 
@@ -17,8 +18,8 @@ final public class HyperparamLogLikelihood implements DifferentiableObjective {
 		double lik = Double.NEGATIVE_INFINITY;
 		try {
 			lik = gp.getMarginalLikelihood();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		} catch (NonPosDefMatrixException e) {
+			// System.out.println(e.getMessage());
 		}
 		return lik;
 	}
@@ -26,8 +27,13 @@ final public class HyperparamLogLikelihood implements DifferentiableObjective {
 	@Override
 	public double[] getGradientAt(double... point) {
 		gp.getKernel().setHyperarameters(point);
-		final double[] grad = gp.getMarginalLikelihoodGradient();
-		return grad;
+		try {
+			final double[] grad = gp.getMarginalLikelihoodGradient();
+			return grad;
+		} catch (NonPosDefMatrixException e) {
+			throw new IllegalStateException("Don't know what to do here!", e);
+		}
+
 	}
 
 }

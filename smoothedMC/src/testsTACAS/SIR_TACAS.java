@@ -6,6 +6,7 @@ import gp.classification.ProbitRegressionPosterior;
 import java.io.File;
 import java.io.IOException;
 
+import linalg.NonPosDefMatrixException;
 import smoothedMC.SmmcOptions;
 import smoothedMC.Parameter;
 import smoothedMC.SmmcUtils;
@@ -18,9 +19,10 @@ public class SIR_TACAS {
 	/**
 	 * @param args
 	 * @throws IOException
+	 * @throws NonPosDefMatrixException
 	 */
 	@SuppressWarnings("unused")
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, NonPosDefMatrixException {
 
 		final Parameter ki = new Parameter("ki", 0.005, 0.3);
 		final Parameter kr = new Parameter("kr", 0.005, 0.2);
@@ -61,10 +63,11 @@ public class SIR_TACAS {
 	 * @param withMeans
 	 *            If true, then mean information will be calculated; otherwise,
 	 *            derivative information will be calculated instead.
+	 * @throws NonPosDefMatrixException 
 	 */
 	public static final void smmc(String modelFile, String experimentName,
 			String mitlText, Parameter[] parameters, double tFinal,
-			boolean withMeans) throws IOException {
+			boolean withMeans) throws IOException, NonPosDefMatrixException {
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 
 		final SmmcOptions options = new SmmcOptions();

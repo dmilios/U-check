@@ -21,7 +21,7 @@ public class PowellMethodApache extends LocalOptimisation {
 		// Just keep track of the best solution manually
 		// To be used as last resort if the Powell method fails
 		final double[] bestSoFar = new double[init.length];
-		final double[] bestValueSoFar = new double[1];
+		final double[] bestValueSoFar = { -Double.MAX_VALUE };
 		System.arraycopy(init, 0, bestSoFar, 0, init.length);
 
 		final MultivariateFunction f = new MultivariateFunction() {
@@ -53,7 +53,7 @@ public class PowellMethodApache extends LocalOptimisation {
 			optimum = pair.getPoint();
 			value = pair.getValue();
 		} catch (TooManyEvaluationsException e) {
-			// Use last resort if the Powell method fails
+			// last resort if the Powell method fails
 			optimum = bestSoFar;
 			value = bestValueSoFar[0];
 		}

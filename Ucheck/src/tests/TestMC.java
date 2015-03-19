@@ -31,6 +31,10 @@ public class TestMC {
 
 	public static void main(String[] args) throws Exception {
 
+		final Process proc = Runtime.getRuntime().exec(
+				"gnuplot -e \"plot sin(x);\" -p");
+		proc.waitFor();
+
 		test__rumour();
 
 		// test__genetic_network_1();

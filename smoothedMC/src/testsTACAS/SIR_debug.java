@@ -6,6 +6,7 @@ import gp.classification.ProbitRegressionPosterior;
 import java.io.File;
 import java.io.IOException;
 
+import linalg.NonPosDefMatrixException;
 import smoothedMC.SmmcOptions;
 import smoothedMC.Parameter;
 import smoothedMC.SmmcUtils;
@@ -18,8 +19,10 @@ public class SIR_debug {
 	/**
 	 * @param args
 	 * @throws IOException
+	 * @throws NonPosDefMatrixException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException,
+			NonPosDefMatrixException {
 
 		final Parameter ki = new Parameter("ki", 0.005, 0.3);
 		final Parameter kr = new Parameter("kr", 0.005, 0.2);
@@ -52,10 +55,11 @@ public class SIR_debug {
 	 * @param withMeans
 	 *            If true, then mean information will be calculated; otherwise,
 	 *            derivative information will be calculated instead.
+	 * @throws NonPosDefMatrixException
 	 */
 	public static final void smmc(String modelFile, String experimentName,
 			String mitlText, Parameter[] parameters, double tFinal)
-			throws IOException {
+			throws IOException, NonPosDefMatrixException {
 		BiopepaFile biopepaFile = new BiopepaFile(modelFile);
 
 		final SmmcOptions options = new SmmcOptions();
@@ -95,7 +99,8 @@ public class SIR_debug {
 		System.out.println("Method: Smoothed MC");
 		System.out.println("SMC datapoints: " + options.getN());
 		System.out.println("Simulation runs: " + options.getSimulationRuns());
-		System.out.println("Smoothed MC datapoints: " + options.getNumberOfTestPoints());
+		System.out.println("Smoothed MC datapoints: "
+				+ options.getNumberOfTestPoints());
 		System.out.println(" - - - ");
 
 		// generate a GP dataset that contains observations produced via
@@ -109,8 +114,8 @@ public class SIR_debug {
 
 		// given the observations, do the smoothed MC
 		SmoothedModelCheker smmc = new SmoothedModelCheker();
-		ProbitRegressionPosterior post = smmc.performSmoothedModelChecking(data,
-				parameters, options);
+		ProbitRegressionPosterior post = smmc.performSmoothedModelChecking(
+				data, parameters, options);
 
 		SmmcUtils.results2matlab(post, filePrefix + "_smmc");
 		System.out.println(" - - - - - - - - - - - - - - - - - - - - - - - - ");

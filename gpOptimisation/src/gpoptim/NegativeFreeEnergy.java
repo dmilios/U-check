@@ -2,6 +2,7 @@ package gpoptim;
 
 import linalg.IAlgebra;
 import linalg.IMatrix;
+import linalg.NonPosDefMatrixException;
 import gp.kernels.KernelRBF;
 import gp.kernels.KernelRbfARD;
 import gp.regression.RegressionGP;
@@ -80,7 +81,12 @@ public class NegativeFreeEnergy implements ObjectiveFunction {
 		final double exp1 = Math.exp(-0.5 * invSigmaLambdaMu.dot(mu));
 
 		final int n = gp.getTrainingSet().getSize();
-		final double[] z = gp.getAux();
+		double[] z;
+		try {
+			z = gp.getAux();
+		} catch (NonPosDefMatrixException e) {
+			throw new IllegalStateException(e);
+		}
 		IMatrix invSigmaLambdaMu_i;
 		double sum = 0;
 		for (int i = 0; i < n; i++) {

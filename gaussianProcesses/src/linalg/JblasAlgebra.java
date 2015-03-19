@@ -5,6 +5,7 @@ import org.jblas.Decompose.LUDecomposition;
 import org.jblas.DoubleMatrix;
 import org.jblas.NativeBlas;
 import org.jblas.Solve;
+import org.jblas.exceptions.LapackPositivityException;
 
 public class JblasAlgebra implements IAlgebra {
 
@@ -44,7 +45,7 @@ public class JblasAlgebra implements IAlgebra {
 	}
 
 	@Override
-	public IMatrix invertPositive(IMatrix arg) {
+	public IMatrix invertPositive(IMatrix arg) throws NonPosDefMatrixException {
 		return solvePositive(arg, createEye(arg.getRows()));
 	}
 
@@ -57,17 +58,23 @@ public class JblasAlgebra implements IAlgebra {
 	}
 
 	@Override
-	public IMatrix solvePositive(IMatrix A, IMatrix B) {
+	public IMatrix solvePositive(IMatrix A, IMatrix B)
+			throws NonPosDefMatrixException {
 		// The 'dposv' function writes the solution on 'b'
 		final DoubleMatrix a = ((MatrixJBLAS) A).getMatrixObject().dup();
 		final DoubleMatrix b = ((MatrixJBLAS) B).getMatrixObject().dup();
-		NativeBlas.dposv('U', a.rows, b.columns, a.data, 0, a.rows, b.data, 0,
-				b.rows);
+		try {
+			NativeBlas.dposv('U', a.rows, b.columns, a.data, 0, a.rows, b.data,
+					0, b.rows);
+		} catch (LapackPositivityException e) {
+			throw new NonPosDefMatrixException();
+		}
 		return new MatrixJBLAS(b);
 	}
 
 	@Override
-	public void solvePositiveInPlace(IMatrix A, IMatrix B) {
+	public void solvePositiveInPlace(IMatrix A, IMatrix B)
+			throws NonPosDefMatrixException {
 		// The 'dposv' function writes the solution on 'b'
 		// and the Cholesky factorisation on 'a'
 		// (only if 'a' is the upper part of the original positive definite
@@ -77,14 +84,22 @@ public class JblasAlgebra implements IAlgebra {
 		for (int i = 0; i < a.rows; i++)
 			for (int j = 0; j < i; j++)
 				a.put(i, j, 0);
-		NativeBlas.dposv('U', a.rows, b.columns, a.data, 0, a.rows, b.data, 0,
-				b.rows);
+		try {
+			NativeBlas.dposv('U', a.rows, b.columns, a.data, 0, a.rows, b.data,
+					0, b.rows);
+		} catch (LapackPositivityException e) {
+			throw new NonPosDefMatrixException();
+		}
 	}
 
 	@Override
-	public IMatrix cholesky(IMatrix arg) {
+	public IMatrix cholesky(IMatrix arg) throws NonPosDefMatrixException {
 		final DoubleMatrix mat = ((MatrixJBLAS) arg).getMatrixObject();
-		return new MatrixJBLAS(Decompose.cholesky(mat));
+		try {
+			return new MatrixJBLAS(Decompose.cholesky(mat));
+		} catch (Exception e) {
+			throw new NonPosDefMatrixException();
+		}
 	}
 
 	@Override

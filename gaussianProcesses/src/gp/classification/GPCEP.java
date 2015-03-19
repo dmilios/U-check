@@ -1,6 +1,7 @@
 package gp.classification;
 
 import linalg.IMatrix;
+import linalg.NonPosDefMatrixException;
 import gp.AbstractGP;
 import gp.GpDataset;
 import gp.kernels.KernelFunction;
@@ -15,14 +16,15 @@ public class GPCEP extends AbstractGP<ProbitRegressionPosterior> {
 	}
 
 	@Override
-	public ProbitRegressionPosterior getGpPosterior(GpDataset testSet) {
+	public ProbitRegressionPosterior getGpPosterior(GpDataset testSet)
+			throws NonPosDefMatrixException {
 		Gauss gauss = calculatePosterior(testSet);
 		return new ProbitRegressionPosterior(testSet, gauss.m.getData(),
 				gauss.diagV.getData());
 	}
 
 	@Override
-	public double getMarginalLikelihood() {
+	public double getMarginalLikelihood() throws NonPosDefMatrixException {
 		Gauss gauss = calculatePosterior(trainingSet);
 		return gauss.logZ;
 	}
@@ -34,7 +36,8 @@ public class GPCEP extends AbstractGP<ProbitRegressionPosterior> {
 
 	double logdet_LC = 0;
 
-	private Gauss calculatePosterior(GpDataset testSet) {
+	private Gauss calculatePosterior(GpDataset testSet)
+			throws NonPosDefMatrixException {
 		if (trainingSet.getDimension() != testSet.getDimension())
 			throw new IllegalArgumentException(
 					"The training and test sets must have the same dimension!");
@@ -178,7 +181,8 @@ public class GPCEP extends AbstractGP<ProbitRegressionPosterior> {
 		return update;
 	}
 
-	private double computeMarginalMoments(Gauss gauss, IMatrix Term) {
+	private double computeMarginalMoments(Gauss gauss, IMatrix Term)
+			throws NonPosDefMatrixException {
 
 		double sum;
 		double logZappx;
@@ -331,7 +335,7 @@ public class GPCEP extends AbstractGP<ProbitRegressionPosterior> {
 	}
 
 	@Deprecated
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NonPosDefMatrixException {
 
 		final int n = 400;
 		final int m = 400;

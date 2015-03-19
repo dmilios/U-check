@@ -2,6 +2,7 @@ package gpoptim;
 
 import linalg.IAlgebra;
 import linalg.JblasAlgebra;
+import linalg.NonPosDefMatrixException;
 import optim.LocalOptimisation;
 import optim.ObjectiveFunction;
 import optim.PointValue;
@@ -103,7 +104,12 @@ public class GPOptimisation {
 			double[][] gridVals = options.getGridSampler().sample(m, lbounds,
 					ubounds);
 			testSet.set(gridVals);
-			final GpPosterior gpPost = gp.getGpPosterior(testSet);
+			GpPosterior gpPost;
+			try {
+				gpPost = gp.getGpPosterior(testSet);
+			} catch (NonPosDefMatrixException e) {
+				throw new IllegalStateException(e);
+			}
 			double[] decision = gpPost.getUpperBound(beta);
 			double[] observations = gp.getTrainingSet().getTargets();
 

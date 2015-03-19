@@ -2,6 +2,7 @@ package gp;
 
 import linalg.JblasAlgebra;
 import linalg.IAlgebra;
+import linalg.NonPosDefMatrixException;
 import gp.kernels.KernelFunction;
 
 public abstract class AbstractGP<PosteriorType extends GpPosterior> {
@@ -31,10 +32,13 @@ public abstract class AbstractGP<PosteriorType extends GpPosterior> {
 		this.trainingSet = trainingSet;
 	}
 
-	abstract public PosteriorType getGpPosterior(GpDataset testSet);
+	abstract public PosteriorType getGpPosterior(GpDataset testSet)
+			throws NonPosDefMatrixException;
 
-	abstract public double getMarginalLikelihood();
+	abstract public double getMarginalLikelihood()
+			throws NonPosDefMatrixException;
 
-	abstract public double[] getMarginalLikelihoodGradient();
+	abstract public double[] getMarginalLikelihoodGradient()
+			throws NonPosDefMatrixException;
 
 }

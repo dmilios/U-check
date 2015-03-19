@@ -1,5 +1,6 @@
 package smoothedMC;
 
+import linalg.NonPosDefMatrixException;
 import gp.GpDataset;
 import gp.classification.ProbitRegressionPosterior;
 import gp.classification.GPEP;
@@ -18,12 +19,22 @@ public final class AnalyticApproximation {
 	}
 
 	public ProbitRegressionPosterior getValuesAt(GpDataset points) {
-		return gp.getGpPosterior(points);
+		try {
+			return gp.getGpPosterior(points);
+		} catch (NonPosDefMatrixException e) {
+			// the GP is trained; this should not happen
+			throw new IllegalStateException(e);
+		}
 	}
 
 	public ProbitRegressionPosterior getValuesAt(double[][] points) {
 		final GpDataset testSet = new GpDataset(points);
-		return gp.getGpPosterior(testSet);
+		try {
+			return gp.getGpPosterior(testSet);
+		} catch (NonPosDefMatrixException e) {
+			// the GP is trained; this should not happen
+			throw new IllegalStateException(e);
+		}
 	}
 
 }

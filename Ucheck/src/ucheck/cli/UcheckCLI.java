@@ -1,6 +1,5 @@
 package ucheck.cli;
 
-import gp.GpDataset;
 import gp.classification.ProbitRegressionPosterior;
 import gpoptim.GpoResult;
 
@@ -9,20 +8,15 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import com.panayotis.gnuplot.JavaPlot;
-import com.panayotis.gnuplot.dataset.Point;
-import com.panayotis.gnuplot.dataset.PointDataSet;
-import com.panayotis.gnuplot.plot.DataSetPlot;
-import com.panayotis.gnuplot.style.PlotStyle;
-import com.panayotis.gnuplot.style.Style;
-
 import lff.LFFOptions;
 import lff.LearnFromFormulae;
+import linalg.NonPosDefMatrixException;
 import modelChecking.MitlModelChecker;
 import priors.Prior;
 import smoothedMC.SmmcOptions;
 import smoothedMC.SmmcUtils;
 import smoothedMC.SmoothedModelCheker;
+import ucheck.UcheckPlot;
 import ucheck.config.UcheckConfig;
 
 public class UcheckCLI {
@@ -123,9 +117,20 @@ public class UcheckCLI {
 		final smoothedMC.Parameter[] params = config.getSmMCParameters();
 
 		final SmoothedModelCheker smmc = new SmoothedModelCheker();
-		final ProbitRegressionPosterior result = smmc
-				.performSmoothedModelChecking(check, params, options);
+		ProbitRegressionPosterior result = null;
+		try {
+			result = smmc.performSmoothedModelChecking(check, params, options);
+		} catch (NonPosDefMatrixException e) {
+			log.printError("Non-positive definite Gram matrix; "
+					+ "try increasing \"covarianceCorrection\". "
+					+ "The current value has been: "
+					+ config.getSmMCOptions().getCovarianceCorrection());
+			return;
+		}
+
 		printSmmcResults(log, config, smmc, result);
+		final UcheckPlot plot = new UcheckPlot();
+		plot.plotSmoothedMC(result, params, 2);
 	}
 
 	private static void printInferenceResults(Log log, UcheckConfig config,
@@ -196,7 +201,6 @@ public class UcheckCLI {
 		final String mfile = dir + File.separator + "load_" + name + ".m";
 
 		final double beta = 2;
-		plotSmmc(result, beta);
 		final String resultStr = SmmcUtils.results2csv(result, beta);
 		final String matlabStr = produceMatlabScript(params, name);
 
@@ -219,30 +223,6 @@ public class UcheckCLI {
 		} catch (IOException e) {
 			log.printError("Could not write to output file '" + mfile + "'");
 		}
-	}
-
-	static public void plotSmmc(ProbitRegressionPosterior result, double beta) {
-		JavaPlot plot = new JavaPlot(true);
-		// plot.set("xrange", "[-0.5:0.5]");
-		
-		GpDataset input = result.getInputData();
-		final int n = input.getSize();
-		
-		final PointDataSet<Double> set = new PointDataSet<Double>(n);
-		for (int i = 0; i < n; i++) {
-			double x1 = input.getInstance(i)[0];
-			double x2 = input.getInstance(i)[1];
-			double y = result.getClassProbabilities()[i];
-			set.add(new Point<Double>(x1, x2, y));
-		}
-		
-		final PlotStyle style = new PlotStyle();
-		style.setStyle(Style.LINES);
-		final DataSetPlot currPlot = new DataSetPlot(set);
-		currPlot.setPlotStyle(style);
-		plot.addPlot(currPlot);
-		
-		plot.plot();
 	}
 
 	static private String produceMatlabScript(smoothedMC.Parameter[] params,
