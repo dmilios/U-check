@@ -181,7 +181,8 @@ public class SmoothedModelCheker {
 	}
 
 	private void optimiseGPHyperParameters(GPEP gp, SmmcOptions options) {
-		HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
+		final boolean logspace = true;
+		HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp, logspace);
 		GpDataset train = gp.getTrainingSet();
 		final double init[] = gp.getKernel().getDefaultHyperarameters(train);
 		if (variance(train.getTargets()) == 0) {
@@ -189,18 +190,26 @@ public class SmoothedModelCheker {
 			return; // don't bother optimising; they are all either '1' or '0'
 		}
 
+		if (logspace)
+			for (int i = 0; i < init.length; i++)
+				init[i] = Math.log(init[i]);
+
 		LocalOptimisation alg = new PowellMethodApache();
 		PointValue best = alg.optimise(func, init);
-
 		for (int r = 0; r < options.getHyperparamOptimisationRestarts(); r++) {
-			final double[] currnetInit = new double[init.length];
-			for (int i = 0; i < currnetInit.length; i++)
-				currnetInit[i] = Math.random() * init[i] * 2;
-			final PointValue curr = alg.optimise(func, currnetInit);
+			final double[] currentInit = new double[init.length];
+			for (int i = 0; i < currentInit.length; i++)
+				currentInit[i] = Math.random() * init[i] * 2;
+			final PointValue curr = alg.optimise(func, currentInit);
 			if (curr.getValue() > best.getValue())
 				best = curr;
 		}
-		gp.getKernel().setHyperarameters(best.getPoint());
+
+		final double[] point = best.getPoint();
+		if (logspace)
+			for (int i = 0; i < point.length; i++)
+				point[i] = Math.exp(best.getPoint()[i]);
+		gp.getKernel().setHyperarameters(point);
 	}
 
 	final static private double variance(double[] vector) {

@@ -6,18 +6,22 @@ import linalg.NonPosDefMatrixException;
 import optim.LocalOptimisation;
 import optim.ObjectiveFunction;
 import optim.PointValue;
+import optim.methods.PowellMethodApache;
 import gp.GpDataset;
 import gp.GpPosterior;
 import gp.HyperparamLogLikelihood;
 import gp.kernels.KernelFunction;
 import gp.regression.RegressionGP;
+import gpoptim.tranformations.EmptyTransformer;
+import gpoptim.tranformations.LogTransformer;
+import gpoptim.tranformations.Transformer;
 
 public class GPOptimisation {
 
 	private GpoOptions options = new GpoOptions();
 	private RegressionGP gp;
 	private double noiseTermUsed = 1;
-	private LogspaceConverter logspace = null;
+	private Transformer pointTransformer = null;
 	final private IAlgebra algebra;
 
 	public GPOptimisation() {
@@ -57,11 +61,12 @@ public class GPOptimisation {
 		gp = new RegressionGP(algebra, kernel);
 		gp.setPreferInversion(true);
 
-		logspace = new LogspaceConverter(lbounds, ubounds);
-		if (options.getLogspace()) {
-			lbounds = logspace.convertToLogspace(lbounds);
-			ubounds = logspace.convertToLogspace(ubounds);
-		}
+		if (options.getLogspace())
+			pointTransformer = new LogTransformer();
+		else
+			pointTransformer = new EmptyTransformer();
+		lbounds = pointTransformer.applyTransformation(lbounds);
+		ubounds = pointTransformer.applyTransformation(ubounds);
 
 		final GpoResult result = new GpoResult();
 		final int n = options.getInitialObservtions();
@@ -139,14 +144,14 @@ public class GPOptimisation {
 		result.setGpOptimTimeElapsed((t1 - t0) / 1000.0);
 		result.setIterations(iteration);
 		result.setEvaluations(evaluations);
+		result.setPointsExplored(gp.getTrainingSet());
 
 		final int bestIndex = maxarg(gp.getTrainingSet().getTargets());
 		double[] point = gp.getTrainingSet().getInstance(bestIndex);
 		double fitness = gp.getTrainingSet().getTargets()[bestIndex];
 
 		// fitness = optimiseCandidate(point, lbounds, ubounds, 0);
-		if (options.getLogspace())
-			point = logspace.convertfromLogspace(point);
+		point = pointTransformer.invertTransformation(point);
 
 		final double[][] cov = estimateCovariance(point, gp);
 		result.setSolution(point);
@@ -163,10 +168,7 @@ public class GPOptimisation {
 		final double[] noise = new double[n];
 		for (int i = 0; i < n; i++) {
 			final double[] point;
-			if (options.getLogspace())
-				point = logspace.convertfromLogspace(inputVals[i]);
-			else
-				point = inputVals[i];
+			point = pointTransformer.invertTransformation(inputVals[i]);
 			observations[i] = objFunction.getValueAt(point);
 			if (options.isHeteroskedastic())
 				noise[i] = objFunction.getVarianceAt(point);
@@ -190,8 +192,7 @@ public class GPOptimisation {
 	}
 
 	private double addToGP(double[] point, NoisyObjectiveFunction objFunction) {
-		if (options.getLogspace())
-			point = logspace.convertfromLogspace(point);
+		point = pointTransformer.invertTransformation(point);
 		final double observation = objFunction.getValueAt(point);
 		final double noise;
 		if (options.isHeteroskedastic())
@@ -200,6 +201,7 @@ public class GPOptimisation {
 			noise = noiseTermUsed;
 		else
 			noise = options.getNoiseTerm();
+		point = pointTransformer.applyTransformation(point);
 		gp.getTrainingSet().add(point, observation, noise);
 		return observation;
 	}
@@ -238,11 +240,17 @@ public class GPOptimisation {
 	}
 
 	private void optimiseGPHyperParameters(GpoOptions options) {
-		final HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp);
-		final LocalOptimisation alg = options.getLocalOptimiser();
-		final double init[] = gp.getKernel().getHypeparameters();
-		PointValue best = alg.optimise(func, init);
+		final boolean logspace = true;
+		HyperparamLogLikelihood func = new HyperparamLogLikelihood(gp, logspace);
+		GpDataset train = gp.getTrainingSet();
+		final double init[] = gp.getKernel().getDefaultHyperarameters(train);
 
+		if (logspace)
+			for (int i = 0; i < init.length; i++)
+				init[i] = Math.log(init[i]);
+
+		LocalOptimisation alg = new PowellMethodApache();
+		PointValue best = alg.optimise(func, init);
 		for (int r = 0; r < options.getHyperparamOptimisationRestarts(); r++) {
 			final double[] currentInit = new double[init.length];
 			for (int i = 0; i < currentInit.length; i++)
@@ -251,7 +259,12 @@ public class GPOptimisation {
 			if (curr.getValue() > best.getValue())
 				best = curr;
 		}
-		gp.getKernel().setHyperarameters(best.getPoint());
+
+		final double[] point = best.getPoint();
+		if (logspace)
+			for (int i = 0; i < point.length; i++)
+				point[i] = Math.exp(best.getPoint()[i]);
+		gp.getKernel().setHyperarameters(point);
 	}
 
 	/**
@@ -268,9 +281,9 @@ public class GPOptimisation {
 		for (int i = 0; i < dim; i++)
 			init[i] = 0.1;
 
-		NegativeFreeEnergy negfe = new NegativeFreeEnergy(algebra, point, gp);
+		NegativeFreeEnergy func = new NegativeFreeEnergy(algebra, point, gp);
 		final LocalOptimisation alg = options.getLocalOptimiser();
-		final double[] vectorForm = alg.optimise(negfe, init).getPoint();
+		final double[] vectorForm = alg.optimise(func, init).getPoint();
 		return NegativeFreeEnergy.vector2symmetricMatrix(vectorForm, dim);
 	}
 

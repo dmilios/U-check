@@ -7,14 +7,24 @@ import optim.DifferentiableObjective;
 final public class HyperparamLogLikelihood implements DifferentiableObjective {
 
 	final private AbstractGP<?> gp;
+	final private boolean logspace;
 
 	public HyperparamLogLikelihood(AbstractGP<?> gp) {
+		this(gp, false);
+	}
+
+	public HyperparamLogLikelihood(AbstractGP<?> gp, boolean logspace) {
 		this.gp = gp;
+		this.logspace = logspace;
 	}
 
 	@Override
 	public double getValueAt(double... point) {
-		gp.getKernel().setHyperarameters(point);
+		final double[] vec = point.clone();
+		if (logspace)
+			for (int i = 0; i < vec.length; i++)
+				vec[i] = Math.exp(vec[i]);
+		gp.getKernel().setHyperarameters(vec);
 		double lik = Double.NEGATIVE_INFINITY;
 		try {
 			lik = gp.getMarginalLikelihood();
@@ -26,7 +36,11 @@ final public class HyperparamLogLikelihood implements DifferentiableObjective {
 
 	@Override
 	public double[] getGradientAt(double... point) {
-		gp.getKernel().setHyperarameters(point);
+		final double[] vec = point.clone();
+		if (logspace)
+			for (int i = 0; i < vec.length; i++)
+				vec[i] = Math.exp(vec[i]);
+		gp.getKernel().setHyperarameters(vec);
 		try {
 			final double[] grad = gp.getMarginalLikelihoodGradient();
 			return grad;

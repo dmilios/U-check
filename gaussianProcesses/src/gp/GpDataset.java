@@ -280,4 +280,14 @@ final public class GpDataset {
 		return result;
 	}
 
+	public final String toCSV() {
+		final StringBuilder str = new StringBuilder();
+		for (int i = 0; i < getSize(); i++) {
+			for (int d = 0; d < getDimension(); d++)
+				str.append(dataX[i][d] + ",\t");
+			str.append(dataY[i] + "\n");
+		}
+		return str.toString();
+	}
+
 }

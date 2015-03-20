@@ -1,5 +1,7 @@
 package gpoptim;
 
+import gp.GpDataset;
+
 import java.util.Arrays;
 
 public final class GpoResult {
@@ -10,6 +12,8 @@ public final class GpoResult {
 	private double hyperparamOptimTimeElapsed;
 	private double gpOptimTimeElapsed;
 	private double[] hyperparamsUsed;
+	
+	private GpDataset pointsExplored;
 
 	private int iterations;
 	private int evaluations;
@@ -37,6 +41,14 @@ public final class GpoResult {
 		return str;
 	}
 
+	public GpDataset getPointsExplored() {
+		return pointsExplored;
+	}
+	
+	public void setPointsExplored(GpDataset pointsExplored) {
+		this.pointsExplored = pointsExplored;
+	}
+	
 	public double[] getSolution() {
 		return solution;
 	}
