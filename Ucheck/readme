@@ -4,20 +4,20 @@
 
 modelFile=MODEL
 # Required
-# "MODEL" is a file that contains the specification of a population CTMC 
+# 'MODEL' is a file that contains the specification of a population CTMC 
 # described either in the SimHyA or the Bio-PEPA language. Bio-PEPA models 
-# must be of the form "*.biopepa".
+# must be of the form '*.biopepa'.
 
 
 propertiesFile=PROPERTIES
 # Required
-# "PROPERTIES" is a file that contains the specification of one or more MiTL
+# 'PROPERTIES' is a file that contains the specification of one or more MiTL
 # properties.
 
 
 observationsFile=OBSERVATIONS
 # Required (inference only)
-# "OBSERVATIONS" is a csv file that contains a NxM matrix, whose rows 
+# 'OBSERVATIONS' is a csv file that contains a NxM matrix, whose rows 
 # correspond to N independent observations of the system in question.
 # A row is a single observation and contains M values ('0' or '1'),
 # one for each one of the MiTL formulae specified in the properties file.
@@ -35,7 +35,7 @@ observationsFile=OBSERVATIONS
 
 mode=MODE
 # Required
-# "MODE" can be one of the following:
+# 'MODE' can be one of the following:
 # 	inference   Perform parameter estimation for the model in MODEL,
 # 	            given the observations in the OBSERVATIONS file
 # 	            for the properties defined in the PROPERTIES file.
@@ -53,19 +53,19 @@ outputDir=./
 
 parameter NAME=[A, B]
 # Required
-# "NAME" is the name of the parameter; it must be present in the model
+# 'NAME' is the name of the parameter; it must be present in the model
 # for which uncertainty is expressed as a range over possible values.
-# 	"A" is the lower bound of the range defined. 
+# 	'A' is the lower bound of the range defined. 
 # 	    Because the parameters are considered to be kinetic constants, 
 # 	    the lower bound must be larger than zero.
-# 	"B" is the upper bound of the range defined.
+# 	'B' is the upper bound of the range defined.
 # At least one parameter has to be defined.
 
 
 prior NAME=DISTRIBUTION
 # Optional
 # Optionally, a parameter NAME can be associated with a prior distribution.
-# "DISTRIBUTION" can be one of the following:
+# 'DISTRIBUTION' can be one of the following:
 # 	uniform(A, B)    Uniform distribution specified in the internal [A, B]
 # 	exponential(MU)  Exponential distribution with mean parameter MU
 # 	gamma(K, THETA)  Gamma distribution with shape parameter K 
@@ -102,7 +102,7 @@ timepoints=NUMBER
 simulator=SIMULATOR
 # Optional (default value: ssa)
 # The simulation algorithm; Bio-PEPA and PRISM models support ssa only.
-# "SIMULATOR" can be one of the following:
+# 'SIMULATOR' can be one of the following:
 # 	ssa      Gillespie's stochastic simulation
 # 	odes     The CTMC is approximated by Ordinary Differential Equations
 # 	hybrid   Hybrid approach that automatically switches between ssa and odes.
@@ -116,7 +116,7 @@ simulator=SIMULATOR
 
 kernel=KERNEL
 # Optional (default value: rbfiso)
-# "KERNEL" can be one of the following:
+# 'KERNEL' can be one of the following:
 # 	rbfiso  Isometric Radial Basis Function kernel.
 # 	        Its hyperparameters control the amplitude and the lengthscale.
 # 	rbfard  RBF kernel that supports Automatic Relevance Determination.
@@ -178,7 +178,7 @@ numberOfTestPoints=NUMBER
 
 testPointsFile=POINTS
 # Optional (default value: none)
-# "POINTS" is a csv file that contains a NxD matrix, whose rows 
+# 'POINTS' is a csv file that contains a NxD matrix, whose rows 
 # correspond to N independent parameter combinations of D parameters.
 # Each row is a D-dimensional point in the parameter space.
 # For example, given N=2 and D=3, the contents could be:

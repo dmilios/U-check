@@ -92,8 +92,8 @@ public class UcheckConfig {
 				else if (optionSplit[0].equals("prior"))
 					readPrior(optionSplit[1], value);
 				else
-					log.printWarning("Congifuration option \"" + option
-							+ "\" is undefined at line " + lineCounter);
+					log.printWarning("Congifuration option '" + option
+							+ "' is undefined at line " + lineCounter);
 		}
 		scanner.close();
 		verifyLoadedInformation();
@@ -231,8 +231,8 @@ public class UcheckConfig {
 				model.setParameters(new String[] { parameterName },
 						new double[] { 1 });
 			} catch (Exception e) {
-				log.printError("Parameter \"" + parameterName
-						+ "\" does not exist in the model!");
+				log.printError("Parameter '" + parameterName
+						+ "' does not exist in the model!");
 			}
 
 		// --- verify that the kernel hyperparameters are valid
@@ -250,7 +250,7 @@ public class UcheckConfig {
 		if (kerneltype.equals("rbfard"))
 			if (lengthscales.length != parameterNames.size() && !defaultHyp
 					&& !optimHyp)
-				log.printError("The \"rbfard\" kernel requires "
+				log.printError("The 'rbfard' kernel requires "
 						+ "lengthscales to be specified for all parameters!");
 	}
 
@@ -258,8 +258,8 @@ public class UcheckConfig {
 		final PropertySpec spec = optionSpecs.get(property);
 
 		if (spec == null) {
-			log.printWarning("Congifuration option \"" + property
-					+ "\" is undefined at line " + line);
+			log.printWarning("Congifuration option '" + property
+					+ "' is undefined at line " + line);
 			return;
 		}
 
@@ -267,10 +267,10 @@ public class UcheckConfig {
 			configOptions.put(property, spec.getValueOf(value));
 
 		else {
-			log.printWarning("Invalid assignment for \"" + property
-					+ "\" at line " + line + "; it should be "
-					+ spec.getValidValues() + "; default value \""
-					+ spec.getDefaultValueString() + "\" is used.");
+			log.printWarning("Invalid assignment for '" + property
+					+ "' at line " + line + "; it should be "
+					+ spec.getValidValues() + "; default value '"
+					+ spec.getDefaultValueString() + "' is used.");
 			final Object defaultVal = spec.getDefaultValue();
 			configOptions.put(property, defaultVal);
 		}
@@ -278,7 +278,7 @@ public class UcheckConfig {
 
 	private void readParameter(String name, String value) {
 		final PropertySpec spec = new RangeSpec(name, new double[] { 0, 1 });
-		final String errormsg = "Invalid bounds for \"" + name + "\"; "
+		final String errormsg = "Invalid bounds for '" + name + "'; "
 				+ "should be of the form: " + spec.getValidValues();
 
 		if (spec.isValid(value))
@@ -297,8 +297,8 @@ public class UcheckConfig {
 		String[] splitValue = value.trim().split("\\(");
 		splitValue[1] = "(" + splitValue[1].trim(); // put "(" back
 
-		final String errmsg = "Invalid prior for \"" + name
-				+ "\"; prior will be ignored!";
+		final String errmsg = "Invalid prior for '" + name
+				+ "'; prior will be ignored!";
 
 		if (splitValue.length == 2) {
 			final String distribution = splitValue[0].trim();

@@ -8,7 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/smoothedMC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/stochasticSimulation"/>
 	<classpathentry kind="lib" path="lib/SimHyA.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/prism-4.0.3-src"/>
 	<classpathentry kind="lib" path="lib/JavaPlot.jar"/>
+	<classpathentry kind="lib" path="lib/prism.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

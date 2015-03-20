@@ -21,22 +21,14 @@ import ucheck.config.UcheckConfig;
 
 public class UcheckCLI {
 
-	private static final String readFile(String filename) throws IOException {
-		final FileInputStream input = new FileInputStream(filename);
-		final byte[] fileData = new byte[input.available()];
-		input.read(fileData);
-		input.close();
-		return new String(fileData);
-	}
-
 	public static void main(String[] args) throws IOException {
 
 		final Log log = new PrintStreamLog(System.out);
 
 		String title = "# U-check: "
 				+ "Model Checking and Parameter Synthesis under Uncertainty";
-		String usage = "Usage:  ucheck [-h|--help|FILE]\n";
-		String optionfilehelp = "  \"FILE\"       the experiment configuration file";
+		String usage = "Usage:  ucheck [-h|--help|FILE]";
+		String optionfilehelp = "  \'FILE\'       the experiment configuration file";
 		String helpOption = "  -h, --help   "
 				+ "a default configuration file will be print on screen";
 
@@ -45,13 +37,15 @@ public class UcheckCLI {
 
 		if (args.length == 0) {
 			log.println(usage);
+			log.println();
 			log.println(optionfilehelp);
 			log.println(helpOption);
+			log.println();
 			return;
 		}
 
 		if (args[0].equals("-h") || args[0].equals("--help")) {
-			log.println(readFile("readme"));
+			log.println(UcheckHelp.getHelp());
 			return;
 		}
 
@@ -122,8 +116,7 @@ public class UcheckCLI {
 		if (!outDir.exists())
 			outDir.mkdirs();
 		if (!outDir.canWrite() || !outDir.isDirectory()) {
-			log.printError("Cannot write into the \"" + outDir
-					+ "\" directory!");
+			log.printError("Cannot write into the '" + outDir + "' directory!");
 			return;
 		}
 
@@ -137,7 +130,7 @@ public class UcheckCLI {
 			result = smmc.performSmoothedModelChecking(check, params, options);
 		} catch (NonPosDefMatrixException e) {
 			log.printError("Non-positive definite Gram matrix; "
-					+ "try increasing \"covarianceCorrection\". "
+					+ "try increasing 'covarianceCorrection'. "
 					+ "The current value has been: "
 					+ config.getSmMCOptions().getCovarianceCorrection());
 			return;
