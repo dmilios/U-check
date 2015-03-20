@@ -93,7 +93,7 @@ public class GPOptimisation {
 		int failedAttempts = 0;
 		int evaluations = 0;
 
-		resetProgress("GP Optimisation...");
+		resetProgress("\nGP Optimisation...");
 		final long t0 = System.currentTimeMillis();
 		while (notCoverged) {
 			if (iteration++ > options.getMaxIterations()) {
@@ -175,7 +175,7 @@ public class GPOptimisation {
 		final double[] observations = new double[n];
 		final double[] noise = new double[n];
 
-		resetProgress("Initial Evaluations...");
+		resetProgress("\nInitial Evaluations...");
 		for (int i = 0; i < n; i++) {
 			final double[] point;
 			point = pointTransformer.invertTransformation(inputVals[i]);
@@ -257,7 +257,7 @@ public class GPOptimisation {
 		GpDataset train = gp.getTrainingSet();
 		final double init[] = gp.getKernel().getDefaultHyperarameters(train);
 
-		resetProgress("Hyperparameter optimisation...");
+		resetProgress("\nHyperparameter optimisation...");
 		if (logspace)
 			for (int i = 0; i < init.length; i++)
 				init[i] = Math.log(init[i]);

@@ -156,6 +156,7 @@ public class UcheckCLI {
 		log.println();
 		log.println();
 		log.println(result.toString());
+		log.println("\n");
 	}
 
 	private static void printRobustnessResults(Log log, UcheckConfig config,
@@ -173,6 +174,7 @@ public class UcheckCLI {
 		log.println();
 		log.println();
 		log.println(result.toString());
+		log.println("\n");
 	}
 
 	private static void printSmmcResults(Log log, UcheckConfig config,
@@ -234,6 +236,7 @@ public class UcheckCLI {
 		} catch (IOException e) {
 			log.printError("Could not write to output file '" + mfile + "'");
 		}
+		log.println("\n");
 	}
 
 	static private String produceMatlabScript(smoothedMC.Parameter[] params,

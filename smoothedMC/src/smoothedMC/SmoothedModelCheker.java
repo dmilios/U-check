@@ -137,7 +137,7 @@ public class SmoothedModelCheker {
 			}
 		}
 
-		resetProgress("Probit GP Regression...");
+		resetProgress("\nProbit GP Regression...");
 		t0 = System.currentTimeMillis();
 		gp.doTraining();
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
@@ -172,7 +172,7 @@ public class SmoothedModelCheker {
 		final int runs = options.getSimulationRuns();
 		final int timepoints = options.getSimulationTimepoints();
 
-		resetProgress("Initial Statistical Model Checking...");
+		resetProgress("\nInitial Statistical Model Checking...");
 		for (int i = 0; i < datapoints; i++) {
 			modelChecker.getModel().setParameters(paramNames, paramValueSet[i]);
 			boolean[][] obs = modelChecker.performMC(endTime, runs, timepoints);
@@ -196,7 +196,7 @@ public class SmoothedModelCheker {
 			return; // don't bother optimising; they are all either '1' or '0'
 		}
 
-		resetProgress("Hyperparameter optimisation...");
+		resetProgress("\nHyperparameter optimisation...");
 		if (logspace)
 			for (int i = 0; i < init.length; i++)
 				init[i] = Math.log(init[i]);
