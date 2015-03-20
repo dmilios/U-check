@@ -91,17 +91,22 @@ public class GPOptimisation {
 		int iteration = 0;
 		int addedPointsNoImprovement = 0;
 		int failedAttempts = 0;
-		int evaluations = n;
+		int evaluations = 0;
 
+		resetProgress("GP Optimisation...");
 		final long t0 = System.currentTimeMillis();
 		while (notCoverged) {
-			if (iteration++ > options.getMaxIterations())
+			if (iteration++ > options.getMaxIterations()) {
 				notCoverged = false;
-			else if (addedPointsNoImprovement > options
-					.getMaxAddedPointsNoImprovement())
+				result.setTerminationCause("Maximum iterations");
+			} else if (addedPointsNoImprovement > options
+					.getMaxAddedPointsNoImprovement()) {
 				notCoverged = false;
-			else if (failedAttempts > options.getMaxFailedAttempts())
+				result.setTerminationCause("No improvement observed");
+			} else if (failedAttempts > options.getMaxFailedAttempts()) {
 				notCoverged = false;
+				result.setTerminationCause("No more potential maxima were found");
+			}
 
 			final double beta = options.getBeta()
 					* (1 + 0.1 * Math.log(iteration));
@@ -139,7 +144,10 @@ public class GPOptimisation {
 					addedPointsNoImprovement = 0;
 			} else
 				failedAttempts++;
+			printProgress();
 		}
+		resetProgress("\n");
+
 		final long t1 = System.currentTimeMillis();
 		result.setGpOptimTimeElapsed((t1 - t0) / 1000.0);
 		result.setIterations(iteration);
@@ -166,13 +174,17 @@ public class GPOptimisation {
 				ubounds);
 		final double[] observations = new double[n];
 		final double[] noise = new double[n];
+
+		resetProgress("Initial Evaluations...");
 		for (int i = 0; i < n; i++) {
 			final double[] point;
 			point = pointTransformer.invertTransformation(inputVals[i]);
 			observations[i] = objFunction.getValueAt(point);
 			if (options.isHeteroskedastic())
 				noise[i] = objFunction.getVarianceAt(point);
+			printProgress();
 		}
+		resetProgress("\n");
 
 		if (!options.isHeteroskedastic()) {
 			if (options.getUseNoiseTermRatio()) {
@@ -245,6 +257,7 @@ public class GPOptimisation {
 		GpDataset train = gp.getTrainingSet();
 		final double init[] = gp.getKernel().getDefaultHyperarameters(train);
 
+		resetProgress("Hyperparameter optimisation...");
 		if (logspace)
 			for (int i = 0; i < init.length; i++)
 				init[i] = Math.log(init[i]);
@@ -258,7 +271,9 @@ public class GPOptimisation {
 			final PointValue curr = alg.optimise(func, currentInit);
 			if (curr.getValue() > best.getValue())
 				best = curr;
+			printProgress();
 		}
+		resetProgress("\n");
 
 		final double[] point = best.getPoint();
 		if (logspace)
@@ -312,6 +327,21 @@ public class GPOptimisation {
 				maxIndex = i;
 			}
 		return maxIndex;
+	}
+
+	private int dots = 0;
+
+	private void resetProgress(String msg) {
+		System.out.print(msg);
+		dots = msg.length();
+	}
+
+	private void printProgress() {
+		System.out.print('.');
+		if (++dots == 79) {
+			System.out.println();
+			dots = 0;
+		}
 	}
 
 }

@@ -24,7 +24,7 @@ simulator = ssa
 ## GP Kernel options
 kernel = rbfard
 amplitude = 1
-lengthscale = 2, 0.4
+lengthscale = 1, 1
 
 ## GP hypeparameters options
 hyperparamOptimisation = true
@@ -38,7 +38,7 @@ numberOfTestPoints = 100
 
 
 ## GP optimisation options
-logspace = false
+logspace = true
 maxIterations = 500
 maxAddedPointsNoImprovement = 100
 improvementFactor = 1.01

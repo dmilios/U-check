@@ -21,15 +21,24 @@ import ucheck.config.UcheckConfig;
 
 public class UcheckCLI {
 
-	public static void main(String[] args) {
+	private static final String readFile(String filename) throws IOException {
+		final FileInputStream input = new FileInputStream(filename);
+		final byte[] fileData = new byte[input.available()];
+		input.read(fileData);
+		input.close();
+		return new String(fileData);
+	}
+
+	public static void main(String[] args) throws IOException {
 
 		final Log log = new PrintStreamLog(System.out);
 
-		String title = "U-check: Model checking tool for uncertain systems";
-		String usage = "Usage:\n\tuncertainmc OPTIONFILE\n";
-		String optionfilehelp = "\"OPTIONFILE\" is a file that contains "
-				+ "all the experiment options.\n"
-				+ "If not set, then a default option file will be print on screen.\n";
+		String title = "# U-check: "
+				+ "Model Checking and Parameter Synthesis under Uncertainty";
+		String usage = "Usage:  ucheck [-h|--help|FILE]\n";
+		String optionfilehelp = "  \"FILE\"       the experiment configuration file";
+		String helpOption = "  -h, --help   "
+				+ "a default configuration file will be print on screen";
 
 		log.println(title);
 		log.println();
@@ -37,6 +46,12 @@ public class UcheckCLI {
 		if (args.length == 0) {
 			log.println(usage);
 			log.println(optionfilehelp);
+			log.println(helpOption);
+			return;
+		}
+
+		if (args[0].equals("-h") || args[0].equals("--help")) {
+			log.println(readFile("readme"));
 			return;
 		}
 
@@ -136,6 +151,7 @@ public class UcheckCLI {
 	private static void printInferenceResults(Log log, UcheckConfig config,
 			GpoResult result) {
 		final lff.Parameter[] params = config.getLFFParameters();
+		log.println();
 		log.println("# Inference from Qualitative Data");
 		log.println("Model file: " + config.getModelFile());
 		log.println("MiTL file: " + config.getMitlFile());
@@ -152,6 +168,7 @@ public class UcheckCLI {
 	private static void printRobustnessResults(Log log, UcheckConfig config,
 			GpoResult result) {
 		final lff.Parameter[] params = config.getLFFParameters();
+		log.println();
 		log.println("# Robust Parameter Synthesis");
 		log.println("Model file: " + config.getModelFile());
 		log.println("MiTL file: " + config.getMitlFile());
@@ -173,6 +190,7 @@ public class UcheckCLI {
 		final double hypElapsed = smmc.getHyperparamOptimTimeElapsed();
 		final double smmcElapsed = smmc.getSmoothedMCTimeElapsed();
 		final double[] hyperparams = smmc.getHyperparamsUsed();
+		log.println();
 		log.println("# Smoothed Model Checking --- Results");
 		log.println("Model file: " + config.getModelFile());
 		log.println("MiTL file: " + config.getMitlFile());

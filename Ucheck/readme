@@ -15,7 +15,6 @@ propertiesFile=PROPERTIES
 # properties.
 
 
-
 observationsFile=OBSERVATIONS
 # Required (inference only)
 # "OBSERVATIONS" is a csv file that contains a NxM matrix, whose rows 
@@ -34,7 +33,6 @@ observationsFile=OBSERVATIONS
 # In the case of smoothed MC, this option is just ignored.
 
 
-
 mode=MODE
 # Required
 # "MODE" can be one of the following:
@@ -47,6 +45,11 @@ mode=MODE
 # 	            for the properties defined in the PROPERTIES file.
 
 
+outputDir=./
+# Optional (default value: ./)
+# The smoothed MC results can be placed in a user specified directory.
+# If the directory doesn't exist, it will be created.
+
 
 parameter NAME=[A, B]
 # Required
@@ -57,10 +60,6 @@ parameter NAME=[A, B]
 # 	    the lower bound must be larger than zero.
 # 	"B" is the upper bound of the range defined.
 # At least one parameter has to be defined.
-
-
-
-
 
 
 prior NAME=DISTRIBUTION
@@ -75,8 +74,6 @@ prior NAME=DISTRIBUTION
 # If no prior is explicitly declared, then a uniform prior will be assumed.
 
 
-
-
 # Simulation options
 # ==================
 
@@ -89,15 +86,18 @@ runs=NUMBER
 # Optional (default value: 100)
 # The number of the independent simulations per parameter value.
 
+
 timeseriesEnabled=true|false
 # Optional (default value: true)
 # Indicates whether time-series will be used in model checking, 
 # instead of full trajectories.
 # For large models, the use of time-series is recommended.
 
+
 timepoints=NUMBER
 # Optional (default value: 1000)
 # The number of time-points for which the state is recorded in a time-series.
+
 
 simulator=SIMULATOR
 # Optional (default value: ssa)
@@ -109,8 +109,6 @@ simulator=SIMULATOR
 # ODEs can be used with robust parameter synthesis only.
 # If used, the following options are overridden:
 # 'timeseriesEnabled=true' and 'runs=1'
-
-
 
 
 # Kernel options
@@ -131,6 +129,7 @@ amplitude=NUMBER
 # The value of the amplitude hyperparameter of the GP Kernel.
 # It will be overridden if HYPERPARAMOPTIMISATION is true.
 
+
 lengthscale=NUMBER
 # Optional (default value: 1)
 # The value of the lengthscale hyperparameter of the GP Kernel.
@@ -145,6 +144,7 @@ hyperparamOptimisation=true|false
 # of the data under the GP.
 # If yes, any other option regarding hyperparameters will be overridden.
 
+
 hyperparamOptimisationRestarts=NUMBER
 # Optional (default value: 3)
 # The number of attempts to optimise hyperparameters via local optimisation.
@@ -154,9 +154,6 @@ useDefaultHyperparams=true|false
 # Optional (default value: false)
 # Indicates whether a simple heuristic is used to adjust the hyperparameters.
 # If yes, the user-specified kernel hyperparameters will be overridden.
-
-
-
 
 
 # GP data options
@@ -188,7 +185,6 @@ testPointsFile=POINTS
 # 	0.1, 0.3, 2
 # 	1.3, 4.2, 1
 # If set, the 'numberOfTestPoints' option will be overridden.
-
 
 
 # GP optimisation options
@@ -236,7 +232,6 @@ beta=NUMBER
 # where STDEV is the standard deviation as estimated by the GP.
 
 
-
 # GP Regression options
 # =====================
 
@@ -263,8 +258,6 @@ heteroskedastic=true|false
 # Optional (default value: false)
 # Whether an heteroskedastic GP is assumed; if yes, then the variance for
 # each data-point is calculated by the objective function.
-
-
 
 
 # GP Classification options

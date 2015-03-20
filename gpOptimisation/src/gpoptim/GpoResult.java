@@ -12,11 +12,12 @@ public final class GpoResult {
 	private double hyperparamOptimTimeElapsed;
 	private double gpOptimTimeElapsed;
 	private double[] hyperparamsUsed;
-	
+
 	private GpDataset pointsExplored;
 
 	private int iterations;
 	private int evaluations;
+	private String terminationCause;
 
 	@Override
 	public String toString() {
@@ -32,23 +33,32 @@ public final class GpoResult {
 			str += "    lengthscale: " + hyperparamsUsed[i] + "\n";
 		str += "\n";
 		str += "Fitness:  " + fitness + "\n";
-		str += " Iterations: " + iterations + "\n";
-		str += "Evaluations: " + evaluations + "\n";
+		str += "Iterations: " + iterations + "\n";
+		str += "Evaluations of the objective function: " + evaluations + "\n";
 		str += "\n";
 		str += "Time for hyperparam opt: " + hyperparamOptimTimeElapsed
 				+ " sec\n";
 		str += "Time for GP optimsation: " + gpOptimTimeElapsed + " sec\n";
+		str += "Termination cause: " + getTerminationCause();
 		return str;
+	}
+
+	public String getTerminationCause() {
+		return terminationCause;
+	}
+
+	public void setTerminationCause(String terminationCause) {
+		this.terminationCause = terminationCause;
 	}
 
 	public GpDataset getPointsExplored() {
 		return pointsExplored;
 	}
-	
+
 	public void setPointsExplored(GpDataset pointsExplored) {
 		this.pointsExplored = pointsExplored;
 	}
-	
+
 	public double[] getSolution() {
 		return solution;
 	}

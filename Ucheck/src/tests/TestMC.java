@@ -19,22 +19,25 @@ import model.Trajectory;
 import modelChecking.MitlModelChecker;
 import parsers.MitlFactory;
 import biopepa.BiopepaFile;
+import biopepa.BiopepaModel;
 import simhya.matlab.SimHyAModel;
 import simhya.model.flat.parser.TokenMgrError;
 import ssa.CTMCModel;
 import ssa.GillespieSSA;
 import ssa.StochasticSimulationAlgorithm;
 import ucheck.SimhyaModel;
+import ucheck.UcheckPlot;
 import ucheck.prism.PrismCtmcModel;
 
 public class TestMC {
 
 	public static void main(String[] args) throws Exception {
 
-		final Process proc = Runtime.getRuntime().exec(
-				"gnuplot -e \"plot sin(x);\" -p");
-		proc.waitFor();
+		// final Process proc = Runtime.getRuntime().exec(
+		// "gnuplot -e \"plot sin(x);\" -p");
+		// proc.waitFor();
 
+		// test__enzymatic();
 		test__rumour();
 
 		// test__genetic_network_1();
@@ -44,18 +47,35 @@ public class TestMC {
 		// compare_row_sums();
 	}
 
+	public static void test__enzymatic() throws Exception {
+
+		Trajectory x;
+		UcheckPlot plot = new UcheckPlot();
+
+		ModelInterface model = new BiopepaModel();
+		model.loadModel("models/enzymatic.biopepa");
+		String[] params = new String[] { "c1", "c2", "c3" };
+
+		final double t = 50;
+		
+		model.setParameters(params, new double[] { 0.1, 1, 0.1 });
+		x = model.generateTrajectories(t, 1, 1000)[0];
+		plot.plot(x);		
+	}
+
 	public static void test__rumour() throws Exception {
 
 		ModelInterface model = new SimhyaModel();
-		model.loadModel("models/rumour.txt");
+		model.loadModel("models/rumour_stiff.txt");
 		String[] params = new String[] { "k_s", "k_r" };
 
+		final double t = 5;
 		model.setParameters(params, new double[] { 0.05, 0.02 });
-		Trajectory traj = model.generateTrajectories(5, 1, 1000)[0];
+		Trajectory traj = model.generateTrajectories(t, 1, 1000)[0];
 		traj.toCSV();
 
 		JavaPlot plot = new JavaPlot();
-		addTrajectoryToPlot(traj, plot);
+		addTrajectoryToPlot(traj, plot, "I", "S", "R");
 		plot.plot();
 	}
 

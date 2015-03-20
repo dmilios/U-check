@@ -70,6 +70,7 @@ public final class UcheckPlot {
 			plot.set("size", "square");
 			plot.set("palette", "rgbformulae 22,13, -31");
 			plot.set("zlabel", "rotate");
+			plot.set("cbrange", "[0:1]");
 
 			final double[][] muDat = new double[n][3];
 			final double[][] lbDat = new double[n][3];

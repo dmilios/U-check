@@ -1,12 +1,5 @@
+const double N = 100;
 
-// use this file for the prism model
-// because prism variables have to start with low-case letter
-// in contrast with biopepa and simhya
-
-
-// The nested globally term indicates that we want the spreader population to remain above 50 for at least 0.02 time units.
-
-G[3.0, 5.0] ignorants > 0 & F[0.0, 1.0] (G<=0.02 spreaders >= 50)
+G[3.0, 5.0] ignorants > 0 & F[0.0, 1.0] (G<=0.02 spreaders >= 0.5 * N)
 F[0.5, 1.0] blockers >= spreaders
-G[1.4, 2.0] spreaders <= 25
-
+G[1.4, 2.0] spreaders <= 0.25 * N

@@ -137,10 +137,13 @@ public class SmoothedModelCheker {
 			}
 		}
 
+		resetProgress("Probit GP Regression...");
 		t0 = System.currentTimeMillis();
 		gp.doTraining();
 		elapsed = (System.currentTimeMillis() - t0) / 1000d;
 		smoothedMCTimeElapsed = elapsed;
+		resetProgress("\n");
+
 		if (options.isDebugEnabled()) {
 			System.out.println("Smoothed Model Checking:     " + elapsed
 					+ " sec");
@@ -169,6 +172,7 @@ public class SmoothedModelCheker {
 		final int runs = options.getSimulationRuns();
 		final int timepoints = options.getSimulationTimepoints();
 
+		resetProgress("Initial Statistical Model Checking...");
 		for (int i = 0; i < datapoints; i++) {
 			modelChecker.getModel().setParameters(paramNames, paramValueSet[i]);
 			boolean[][] obs = modelChecker.performMC(endTime, runs, timepoints);
@@ -176,7 +180,9 @@ public class SmoothedModelCheker {
 				if (obs[run][0])
 					paramValueOutputs[i]++;
 			paramValueOutputs[i] /= runs;
+			printProgress();
 		}
+		resetProgress("\n");
 		return new GpDataset(paramValueSet, paramValueOutputs);
 	}
 
@@ -190,6 +196,7 @@ public class SmoothedModelCheker {
 			return; // don't bother optimising; they are all either '1' or '0'
 		}
 
+		resetProgress("Hyperparameter optimisation...");
 		if (logspace)
 			for (int i = 0; i < init.length; i++)
 				init[i] = Math.log(init[i]);
@@ -203,7 +210,9 @@ public class SmoothedModelCheker {
 			final PointValue curr = alg.optimise(func, currentInit);
 			if (curr.getValue() > best.getValue())
 				best = curr;
+			printProgress();
 		}
+		resetProgress("\n");
 
 		final double[] point = best.getPoint();
 		if (logspace)
@@ -223,6 +232,21 @@ public class SmoothedModelCheker {
 			sum += aux * aux;
 		}
 		return sum / (double) (vector.length - 1);
+	}
+
+	private int dots = 0;
+
+	private void resetProgress(String msg) {
+		System.out.print(msg);
+		dots = msg.length();
+	}
+
+	private void printProgress() {
+		System.out.print('.');
+		if (++dots == 79) {
+			System.out.println();
+			dots = 0;
+		}
 	}
 
 }
