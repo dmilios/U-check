@@ -40,9 +40,9 @@ mode=MODE
 # 	            given the observations in the OBSERVATIONS file
 # 	            for the properties defined in the PROPERTIES file.
 # 	robust      Perform robust parameter synthesis for the model in MODEL,
-# 	            for the properties defined in the PROPERTIES file.
+# 	            for the first property defined in the PROPERTIES file.
 # 	smoothedmc  Perform smoothed model checking for the model in MODEL,
-# 	            for the properties defined in the PROPERTIES file.
+# 	            for the first property defined in the PROPERTIES file.
 
 
 outputDir=./
@@ -72,6 +72,17 @@ prior NAME=DISTRIBUTION
 # 	                 and scale parameter THETA
 # 	normal(MU, S2)   Normal distribution with mean MU and variance S2
 # If no prior is explicitly declared, then a uniform prior will be assumed.
+ 
+
+robustnessType=TYPE
+# Optional (default value: average)
+# The type of robustness to be maximised in robust parameter synthesis.
+# 'TYPE' can be one of the following:
+# 	average            The average robustness of the given property.
+# 	averageGivenTrue   The conditional average robustness 
+#                      given the property is true.
+# 	averageGivenFalse  The conditional average robustness 
+#                      given the property is false.
 
 
 # Simulation options
