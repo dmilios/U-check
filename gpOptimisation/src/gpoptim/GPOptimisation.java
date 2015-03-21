@@ -158,9 +158,17 @@ public class GPOptimisation {
 		double[] point = gp.getTrainingSet().getInstance(bestIndex);
 		double fitness = gp.getTrainingSet().getTargets()[bestIndex];
 
-		// fitness = optimiseCandidate(point, lbounds, ubounds, 0);
-		point = pointTransformer.invertTransformation(point);
+		// optimise wrt the emulated function
+		final double[] potential = point.clone();
+		optimiseCandidate(potential, lbounds, ubounds, 0);
+		final double potentialFit = objFunction.getValueAt(pointTransformer
+				.invertTransformation(potential));
+		if (potentialFit > fitness) {
+			point = potential;
+			fitness = potentialFit;
+		}
 
+		point = pointTransformer.invertTransformation(point);
 		final double[][] cov = estimateCovariance(point, gp);
 		result.setSolution(point);
 		result.setCovariance(cov);
