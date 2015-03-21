@@ -185,9 +185,6 @@ public class UcheckCLI {
 		log.println();
 		log.println();
 		log.println(result.toString());
-
-		writeToFile("points.csv", result.getPointsExplored().toCSV());
-
 		log.println("\n");
 	}
 
