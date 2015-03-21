@@ -217,25 +217,16 @@ public class UcheckCLI {
 		final String resultStr = SmmcUtils.results2csv(result, beta);
 		final String matlabStr = produceMatlabScript(params, name);
 
-		FileWriter fw;
-		try {
-			fw = new FileWriter(csv);
-			fw.write(resultStr);
-			fw.close();
-			log.println("Smoothed MC results have been successfully written to '"
-					+ csv + "'");
-		} catch (IOException e) {
+		if (writeToFile(csv, resultStr))
+			log.println("Smoothed MC results have been written to '" + csv
+					+ "'");
+		else
 			log.printError("Could not write to output file '" + csv + "'");
-		}
-		try {
-			fw = new FileWriter(mfile);
-			fw.write(matlabStr);
-			fw.close();
-			log.println("A MATLAB/Octave script has been successfully "
-					+ "produced in '" + mfile + "'");
-		} catch (IOException e) {
+		if (writeToFile(mfile, matlabStr))
+			log.println("A MATLAB/Octave script has been produced in '" + mfile
+					+ "'");
+		else
 			log.printError("Could not write to output file '" + mfile + "'");
-		}
 		log.println("\n");
 	}
 
@@ -277,6 +268,17 @@ public class UcheckCLI {
 		str += "upperConfBound = data(:, " + (dimension + 3) + ");\n";
 
 		return str;
+	}
+
+	static final private boolean writeToFile(String file, String contents) {
+		try {
+			FileWriter fw = new FileWriter(file);
+			fw.write(contents);
+			fw.close();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 
 }
