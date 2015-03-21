@@ -14,15 +14,20 @@ public class LFFRobustness implements NoisyObjectiveFunction {
 	private LFFOptions options = new LFFOptions();
 
 	private int propertyIndex = 0;
-	private boolean useAvergageOfPositives = false;
-	private boolean useAvergageOfNegatives = false;
+	private RobustnessType robustnessType;
 
 	private double[] cachedPoint = new double[0];
 	private double cachedVariance = 0;
 
 	public LFFRobustness(MitlModelChecker modelChecker, Parameter[] params) {
+		this(modelChecker, params, RobustnessType.AvgRobustness);
+	}
+
+	public LFFRobustness(MitlModelChecker modelChecker, Parameter[] params,
+			RobustnessType type) {
 		this.modelChecker = modelChecker;
 		this.params = params;
+		this.robustnessType = type;
 	}
 
 	public void setOptions(LFFOptions options) {
@@ -31,21 +36,6 @@ public class LFFRobustness implements NoisyObjectiveFunction {
 
 	public void setPropertyIndex(int propertyIndex) {
 		this.propertyIndex = propertyIndex;
-	}
-
-	public void useGlobalAvergage() {
-		this.useAvergageOfPositives = false;
-		this.useAvergageOfNegatives = false;
-	}
-
-	public void useAvergageOfPositives() {
-		this.useAvergageOfPositives = true;
-		this.useAvergageOfNegatives = false;
-	}
-
-	public void useAvergageOfNegatives() {
-		this.useAvergageOfNegatives = true;
-		this.useAvergageOfPositives = false;
 	}
 
 	@Override
@@ -70,10 +60,16 @@ public class LFFRobustness implements NoisyObjectiveFunction {
 		for (int i = 0; i < rho.length; i++)
 			rho[i] = result[i][propertyIndex];
 
-		if (useAvergageOfPositives)
+		switch (robustnessType) {
+		case CondAvgRobustnessTrue:
 			rho = keepPositive(rho);
-		if (useAvergageOfNegatives)
+			break;
+		case CondAvgRobustnessFalse:
 			rho = keepNegative(rho);
+			break;
+		case AvgRobustness:
+			break;
+		}
 
 		final double average = average(rho);
 		cachedPoint = point.clone();

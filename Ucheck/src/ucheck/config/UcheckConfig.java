@@ -18,6 +18,7 @@ import java.util.Set;
 import biopepa.BiopepaModel;
 import lff.LFFOptions;
 import lff.ObservationsFile;
+import lff.RobustnessType;
 import model.ModelInterface;
 import modelChecking.MitlModelChecker;
 import priors.ExponentialPrior;
@@ -204,7 +205,7 @@ public class UcheckConfig {
 					log.printError("Invalid observations file");
 			}
 		}
-		
+
 		// --- verify test points file
 		String testPointsFile = (String) configOptions.get("testPointsFile");
 		if (!testPointsFile.isEmpty()) {
@@ -407,6 +408,10 @@ public class UcheckConfig {
 		addProperty(new BooleanSpec("useNoiseTermRatio", false));
 		addProperty(new BooleanSpec("heteroskedastic", false));
 
+		// robust parameter synthesis specific options
+		addProperty(new CategoricalSpec("robustnessType", "average", "average",
+				"averageGivenTrue", "averageGivenFalse"));
+
 		// smoothedmc options (GP classification parameters)
 		addProperty(new DoubleSpec("covarianceCorrection", 1e-4, 0, false));
 	}
@@ -448,6 +453,17 @@ public class UcheckConfig {
 		if (dir.endsWith(File.separator))
 			dir = dir.substring(0, dir.length() - 1);
 		return dir;
+	}
+
+	public RobustnessType getRobustnessType() {
+		final String option = (String) configOptions.get("robustnessType");
+		if (option.equals("average"))
+			return RobustnessType.AvgRobustness;
+		if (option.equals("averageGivenTrue"))
+			return RobustnessType.CondAvgRobustnessTrue;
+		if (option.equals("averageGivenFalse"))
+			return RobustnessType.CondAvgRobustnessFalse;
+		throw new IllegalAccessError();
 	}
 
 	public smoothedMC.Parameter[] getSmMCParameters() {

@@ -9,6 +9,16 @@ parameter k_s = [0.0001, 2]
 parameter k_r = [0.0001, 0.5]
 
 
+
+robustnessType = averageGivenTrue
+
+# alternatively, it could have been:
+# robustnessType = average
+# robustnessType = averageGivenFalse
+
+
+
+
 ## simulation options
 endTime = 5
 runs = 100

@@ -106,7 +106,7 @@ public class UcheckCLI {
 		LearnFromFormulae lff = new LearnFromFormulae(modelChecker);
 		lff.setParams(params);
 		lff.setOptions(lffOptions);
-		GpoResult result = lff.robustSystemDesign();
+		GpoResult result = lff.robustSystemDesign(config.getRobustnessType());
 		printRobustnessResults(log, config, result);
 	}
 
@@ -163,7 +163,18 @@ public class UcheckCLI {
 			GpoResult result) {
 		final lff.Parameter[] params = config.getLFFParameters();
 		log.println();
-		log.println("# Robust Parameter Synthesis");
+		log.println("#  Robust Parameter Synthesis");
+		switch (config.getRobustnessType()) {
+		case AvgRobustness:
+			log.println("## Average Robustness");
+			break;
+		case CondAvgRobustnessTrue:
+			log.println("## Conditional Average Robustness given the property is true");
+			break;
+		case CondAvgRobustnessFalse:
+			log.println("## Conditional Average Robustness given the property is false");
+			break;
+		}
 		log.println("Model file: " + config.getModelFile());
 		log.println("MiTL file: " + config.getMitlFile());
 		log.println();
@@ -174,6 +185,9 @@ public class UcheckCLI {
 		log.println();
 		log.println();
 		log.println(result.toString());
+
+		writeToFile("points.csv", result.getPointsExplored().toCSV());
+
 		log.println("\n");
 	}
 

@@ -5,6 +5,7 @@ import gpoptim.GpoResult;
 import gridSampling.LatinHypercubeSampler;
 import lff.LearnFromFormulae;
 import lff.Parameter;
+import lff.RobustnessType;
 import modelChecking.MitlModelChecker;
 import simhya.model.flat.parser.TokenMgrError;
 import ucheck.SimhyaModel;
@@ -43,7 +44,7 @@ public class TestRobust {
 		lff.getOptions().getGpoOptions().setUseDefaultHyperparams(true);
 		lff.getOptions().getGpoOptions().setKernelGP(new KernelRBF());
 
-		GpoResult result = lff.robustSystemDesign();
+		GpoResult result = lff.robustSystemDesign(RobustnessType.AvgRobustness);
 		System.out.println(result);
 	}
 

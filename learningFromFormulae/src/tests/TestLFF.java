@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import lff.LearnFromFormulae;
 import lff.Parameter;
+import lff.RobustnessType;
 import modelChecking.MitlModelChecker;
 import biopepa.BiopepaModel;
 
@@ -18,9 +19,9 @@ public class TestLFF {
 	public static void main(String[] args) throws Exception {
 
 		testLFFRobust();
-		//testLFF();
+		// testLFF();
 	}
-	
+
 	public static void testLFFRobust() throws Exception {
 		final String modelFile = "models/rumour.biopepa";
 		final String mitlFile = "formulae/rumour.mtl";
@@ -53,9 +54,9 @@ public class TestLFF {
 		lff.getOptions().getGpoOptions().setUseDefaultHyperparams(true);
 		lff.getOptions().getGpoOptions().setKernelGP(new KernelRBF());
 
-		GpoResult result = lff.robustSystemDesign();
+		GpoResult result = lff.robustSystemDesign(RobustnessType.AvgRobustness);
 		System.out.println(result);
-	}	
+	}
 
 	public static void testLFF() throws Exception {
 		final String modelFile = "models/rumour.biopepa";

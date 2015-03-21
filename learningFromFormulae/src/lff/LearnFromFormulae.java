@@ -64,8 +64,9 @@ public class LearnFromFormulae {
 		return gpo.optimise(post, lbounds, ubounds);
 	}
 
-	public GpoResult robustSystemDesign() {
-		final LFFRobustness robustness = new LFFRobustness(modelChecker, params);
+	public GpoResult robustSystemDesign(RobustnessType type) {
+		final LFFRobustness robustness = new LFFRobustness(modelChecker,
+				params, type);
 		robustness.setOptions(options);
 
 		GPOptimisation gpo = new GPOptimisation();
