@@ -231,10 +231,12 @@ public class UcheckCLI {
 		final String name = fullname.substring(0, fullname.lastIndexOf('.'));
 		final String csv = dir + File.separator + name + ".csv";
 		final String mfile = dir + File.separator + "load_" + name + ".m";
+		final String plotfile = dir + File.separator + "plot_" + name + ".m";
 
 		final double beta = 2;
 		final String resultStr = SmmcUtils.results2csv(result, beta);
 		final String matlabStr = produceMatlabScript(params, name);
+		final String plotStr = producePlottingScript(params, name);
 
 		if (writeToFile(csv, resultStr))
 			log.println("Smoothed MC results have been written to '" + csv
@@ -246,6 +248,13 @@ public class UcheckCLI {
 					+ "'");
 		else
 			log.printError("Could not write to output file '" + mfile + "'");
+		if (!plotStr.isEmpty() && !config.testPointsHaveBeenSetExplicitly())
+			if (writeToFile(plotfile, plotStr))
+				log.println("A MATLAB/Octave script has been produced in '"
+						+ plotfile + "'");
+			else
+				log.printError("Could not write to output file '" + plotfile
+						+ "'");
 		log.println("\n");
 	}
 
@@ -268,6 +277,8 @@ public class UcheckCLI {
 		str += "\tdata = csvread('" + name + ".csv', 1);\n";
 		str += "end\n";
 		str += "\n";
+		str += "% 'paramNames'      array that "
+				+ "contains the names of the parameters explored\n";
 		str += "% 'paramValues'     " + "is a Nx" + dimension
 				+ " matrix (grid of values in the parameter space)\n";
 		str += "% 'probabilities'   "
@@ -287,6 +298,63 @@ public class UcheckCLI {
 		str += "upperConfBound = data(:, " + (dimension + 3) + ");\n";
 
 		return str;
+	}
+
+	static private String producePlottingScript(smoothedMC.Parameter[] params,
+			String name) {
+		final int dimension = params.length;
+		String str = "";
+		str += "% ===== This file has been automatically produced by the\n";
+		str += "% ===== U-check model checking tool for uncertain systems\n";
+		str += "% \n";
+		str += "%       It plots the Smoothed Model Checking results from '"
+				+ name + ".csv'\n";
+		str += "%       Parameters explored: " + params[0].getName();
+		for (int i = 1; i < params.length; i++)
+			str += ", " + params[i].getName();
+		str += "\n\n";
+		str += "% load the variables in the workspace\n";
+		str += "load_" + name + ";\n";
+		str += "\n";
+		str += "% 'paramNames'      array that "
+				+ "contains the names of the parameters explored\n";
+		str += "% 'paramValues'     " + "is a Nx" + dimension
+				+ " matrix (grid of values in the parameter space)\n";
+		str += "% 'probabilities'   "
+				+ "contains the estimated satisfaction probabilities\n";
+		str += "% 'lowerConfBound'  "
+				+ "Lower confidence bound for the satisfaction probabilities\n";
+		str += "% 'upperConfBound'  "
+				+ "Upper confidence bound for the satisfaction probabilities\n";
+		str += "\n";
+
+		if (dimension == 1) {
+			str += "x = paramValues;\n";
+			str += "lb = lowerConfBound;\n";
+			str += "ub = upperConfBound;\n";
+			str += "plot(x, probabilities, 'r', x, lb, 'k--', x, ub, 'k--');\n";
+			str += "xlabel(paramNames(1));\n";
+			str += "ylabel('Satisfaction Probability');\n";
+			str += "legend('Estimate', 'Confidence bounds');\n";
+			return str;
+		}
+
+		if (dimension == 2) {
+			str += "n = length(probabilities);\n";
+			str += "x1 = reshape(paramValues(:, 1), sqrt(n), sqrt(n));\n";
+			str += "x2 = reshape(paramValues(:, 2), sqrt(n), sqrt(n));\n";
+			str += "pr = reshape(probabilities, sqrt(n), sqrt(n));\n";
+			str += "ub = reshape(upperConfBound, sqrt(n), sqrt(n));\n";
+			str += "surf (x1, x2, pr); hold on;\n";
+			str += "m=mesh (x1, x2, ub); set(m,'facecolor','none');\n";
+			str += "hold off;\n";
+			str += "xlabel(paramNames(1));\n";
+			str += "ylabel(paramNames(2));\n";
+			str += "zlabel('Satisfaction Probability');\n";
+			return str;
+		}
+
+		return "";
 	}
 
 	static final private boolean writeToFile(String file, String contents) {

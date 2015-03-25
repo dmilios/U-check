@@ -439,9 +439,8 @@ public class UcheckConfig {
 		return observations;
 	}
 
-	@Deprecated
-	public double[][] getTestPoints() {
-		return testPoints;
+	public boolean testPointsHaveBeenSetExplicitly() {
+		return testPoints != null;
 	}
 
 	public String getOutputDir() {
