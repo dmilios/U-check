@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.panayotis.gnuplot.GNUPlotException;
+
 import lff.LFFOptions;
 import lff.LearnFromFormulae;
 import linalg.NonPosDefMatrixException;
@@ -138,7 +140,13 @@ public class UcheckCLI {
 
 		printSmmcResults(log, config, smmc, result);
 		final UcheckPlot plot = new UcheckPlot();
-		plot.plotSmoothedMC(result, params, 2);
+		try {
+			plot.plotSmoothedMC(result, params, 2);
+		} catch (GNUPlotException e) {
+			log.printWarning("Gnuplot executable '/usr/bin/gnuplot' "
+					+ "was not found.\n         Please install Gnuplot "
+					+ "for automatic plotting of the results");
+		}
 	}
 
 	private static void printInferenceResults(Log log, UcheckConfig config,
