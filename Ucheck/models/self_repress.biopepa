@@ -1,0 +1,34 @@
+
+// This model is a mess!!!
+// Kinetic laws are wrong, and we have negative populations!
+
+// runnning example of Luca's paper: 
+// Mean-field approximation and quasi-equilibrium reduction of PCTMCs
+// qest 2014
+
+
+kp = 1;
+kd = 1;
+kb = 1;
+ku = 1;
+
+N = 100;
+espilon = 0.01;
+init1 = N; 
+init2 = N - 1;
+init3 = 0;
+
+
+w1 = [ espilon * kp * X2 ] ;
+w2 = [ espilon * kd * X3 ] ;
+w3 = [ kb * X2 * X3 / N ] ;
+w4 = [ ku * X1 ] ;
+
+
+X1 = w3 << + w4 >> ;
+X2 = w3 >> + w4 << ;
+X3 = w1 >> + w2 << ;
+
+
+
+X1[init1] <*> X2[init2] <*> X3[init3]

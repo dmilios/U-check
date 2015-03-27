@@ -1,0 +1,34 @@
+
+// Example in Luca's paper, Section 5.1: 
+// Mean-field approximation and quasi-equilibrium reduction of PCTMCs
+// QEST 2014
+
+
+N = 100;
+epsilon = 0.001;
+
+a1 = 10;
+a2 = 10;
+b1 = 1.4;
+b2 = 1.4;
+
+init1 = 1; 
+init2 = 1;
+init3 = 0;
+
+
+v1 = [ a1 * N^(b1 + 1) / (N^b1 + X2^b1) ] ;
+v2 = [ X1 ] ;
+v3 = [ a2 * N^(b2 + 1) / (N^b2 + X1^b2) ] ;
+v4 = [ X2 ] ;
+v5 = [ epsilon * X1 ] ;
+v6 = [ epsilon * X3 ] ;
+
+
+X1 = v1 >> + v2 << ;
+X2 = v3 >> + v4 << ;
+X3 = v5 >> + v6 << ;
+
+
+X1[init1] <*> X2[init2] <*> X3[init3]
+

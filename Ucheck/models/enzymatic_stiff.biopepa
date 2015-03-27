@@ -1,0 +1,46 @@
+
+// Stiff example from the paper:
+
+// Cao, Y., Gillespie, D.T., Petzold, L.R. 
+// Accelerated stochastic simulation of the stiff enzyme-substrate reaction
+// The Journal of Chemical Physics, 123(14): 144917-12, 2005
+
+
+
+//  VII. NUMERICAL EXAMPLES --  first example  --  Equation (33), page 7
+
+
+// Start_time = 0;
+// Stop_time = 2500000;
+
+
+// E + S  <-->  C  -->  E + P
+// (or  S1 + S2  <-->  S3  -->  S1 + S4, in the paper)
+// c1 = 0.0001, c2 = 1, c3 = 0.0001
+// e0 = 220, s0 = 3000, c0 = 0, p0 = 0
+
+
+
+c1 = 0.0001;
+c2 = 1;
+c3 = 0.0001;
+
+
+e0 = 220;
+s0 = 3000;
+c0 = 0;
+p0 = 0;
+
+
+kineticLawOf r1 : c1 * E * S;
+kineticLawOf r2 : c2 * C;
+kineticLawOf r3 : c3 * C;
+
+
+E = r1 << + r2 >> + r3 >>;
+S = r1 << + r2 >> ;
+C = r1 >> + r2 << + r3 << ;
+P = r3 >> ;
+
+
+E[e0] <*> S[s0] <*> C[c0] <*> P[p0]
