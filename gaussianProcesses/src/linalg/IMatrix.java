@@ -31,6 +31,8 @@ public interface IMatrix {
 	public IMatrix duplicate();
 	
 	public IMatrix transpose();
+	
+	public int rank();
 
 	public IMatrix add(IMatrix arg);
 

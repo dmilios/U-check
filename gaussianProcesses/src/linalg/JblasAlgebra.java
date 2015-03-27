@@ -4,6 +4,7 @@ import org.jblas.Decompose;
 import org.jblas.Decompose.LUDecomposition;
 import org.jblas.DoubleMatrix;
 import org.jblas.NativeBlas;
+import org.jblas.Singular;
 import org.jblas.Solve;
 import org.jblas.exceptions.LapackPositivityException;
 
@@ -202,6 +203,18 @@ final class MatrixJBLAS implements IMatrix {
 	@Override
 	public IMatrix transpose() {
 		return new MatrixJBLAS(matrixObject.transpose());
+	}
+
+	@Override
+	public int rank() {
+		final DoubleMatrix v = Singular.SVDValues(matrixObject);
+		if (!v.isVector())
+			throw new IllegalStateException();
+		int nonzero = 0;
+		for (int i = 0; i < v.getLength(); i++)
+			if (v.get(i) != 0)
+				nonzero++;
+		return nonzero;
 	}
 
 	@Override
