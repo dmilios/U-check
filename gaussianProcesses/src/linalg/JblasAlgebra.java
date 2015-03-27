@@ -210,9 +210,10 @@ final class MatrixJBLAS implements IMatrix {
 		final DoubleMatrix v = Singular.SVDValues(matrixObject);
 		if (!v.isVector())
 			throw new IllegalStateException();
+		final double machineEpsilon = Math.ulp(1.0);
 		int nonzero = 0;
 		for (int i = 0; i < v.getLength(); i++)
-			if (v.get(i) != 0)
+			if (Math.abs(v.get(i)) > machineEpsilon)
 				nonzero++;
 		return nonzero;
 	}
