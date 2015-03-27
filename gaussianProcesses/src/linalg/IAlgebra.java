@@ -28,6 +28,13 @@ public interface IAlgebra {
 
 	public IMatrix cholesky(IMatrix arg) throws NonPosDefMatrixException;
 
+	/**
+	 * Compute the singular value decomposition: arg = U*S*V'
+	 * 
+	 * @return An array that holds the matrices: U, S ad V
+	 */
+	public IMatrix[] svd(IMatrix arg);
+
 	public double determinant(IMatrix A);
 
 }

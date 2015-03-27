@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import cmsb2015.SlowScaleSSA;
+
 import com.panayotis.gnuplot.JavaPlot;
 import com.panayotis.gnuplot.dataset.Point;
 import com.panayotis.gnuplot.dataset.PointDataSet;
@@ -53,7 +55,7 @@ public class TestMC {
 
 		BiopepaFile bio = new BiopepaFile("models/toggle.biopepa");
 		CTMCModel ctmc = bio.getModel();
-		StochasticSimulationAlgorithm ssa = new GillespieSSA(ctmc);
+		StochasticSimulationAlgorithm ssa = new SlowScaleSSA(ctmc);
 		final double t = 10000;
 
 		final long t0 = System.currentTimeMillis();

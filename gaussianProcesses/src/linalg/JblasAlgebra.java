@@ -104,6 +104,16 @@ public class JblasAlgebra implements IAlgebra {
 	}
 
 	@Override
+	public IMatrix[] svd(IMatrix arg) {
+		final DoubleMatrix mat = ((MatrixJBLAS) arg).getMatrixObject();
+		final IMatrix[] usv = new IMatrix[3];
+		final DoubleMatrix[] results = Singular.fullSVD(mat);
+		for (int i = 0; i < usv.length; i++)
+			usv[i] = new MatrixJBLAS(results[i]);
+		return usv;
+	}
+	
+	@Override
 	public double determinant(IMatrix A) {
 		final DoubleMatrix a = ((MatrixJBLAS) A).getMatrixObject();
 		LUDecomposition<DoubleMatrix> lu = Decompose.lu(a);
