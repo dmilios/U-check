@@ -12,6 +12,14 @@ final public class ArithmeticFunction extends ArithmeticExpression {
 		this.argument = argument;
 	}
 
+	public ArithmeticFunctionType getFunction() {
+		return function;
+	}
+	
+	public ArithmeticExpression getArgument() {
+		return argument;
+	}
+	
 	@Override
 	public int getPriority() {
 		return 0;

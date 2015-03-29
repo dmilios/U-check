@@ -11,6 +11,10 @@ public final class ArithmeticConstant extends ArithmeticExpression {
 		this.value = value;
 	}
 
+	public double getValue() {
+		return value;
+	}
+	
 	@Override
 	public int getPriority() {
 		return 0;

@@ -11,6 +11,14 @@ final public class ArithmeticUnaryExpr extends ArithmeticExpression {
 		this.operator = operator;
 		this.operant = operant;
 	}
+	
+	public ArithmeticExpression getOperant() {
+		return operant;
+	}
+	
+	public ArithmeticUnaryOperator getOperator() {
+		return operator;
+	}
 
 	@Override
 	public int getPriority() {

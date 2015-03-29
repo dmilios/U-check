@@ -16,6 +16,18 @@ final public class ArithmeticBinaryExpr extends ArithmeticExpression {
 		this.rightOperant = right;
 	}
 
+	public ArithmeticExpression getLeftOperant() {
+		return leftOperant;
+	}
+	
+	public ArithmeticExpression getRightOperant() {
+		return rightOperant;
+	}
+	
+	public ArithmeticBinaryOperator getOperator() {
+		return operator;
+	}
+	
 	@Override
 	public int getPriority() {
 		return operator.getPriority();
