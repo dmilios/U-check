@@ -36,7 +36,8 @@ public class TestMC {
 		// "gnuplot -e \"plot sin(x);\" -p");
 		// proc.waitFor();
 
-		test__toggle();
+		test__regulated_transcription();
+		//test__toggle();
 		// test__rumour();
 
 		// test__genetic_network_1();
@@ -44,6 +45,25 @@ public class TestMC {
 
 		// test_extinction_formula();
 		// compare_row_sums();
+	}
+
+	public static void test__regulated_transcription() throws Exception {
+
+		Trajectory x;
+		UcheckPlot plot = new UcheckPlot();
+
+		BiopepaFile bio = new BiopepaFile(
+				"models/regulated_transcription.biopepa");
+		CTMCModel ctmc = bio.getModel();
+		StochasticSimulationAlgorithm ssa = new GillespieSSA(ctmc);
+		final double t = 2100;
+
+		final long t0 = System.currentTimeMillis();
+		x = ssa.generateTimeseries(0, t, 1000);
+		final double elapsed = (System.currentTimeMillis() - t0) / 1000.0;
+
+		System.out.println("elapsed: " + elapsed + " sec");
+		plot.plot(x);
 	}
 
 	public static void test__toggle() throws Exception {
@@ -63,7 +83,7 @@ public class TestMC {
 		System.out.println("elapsed: " + elapsed + " sec");
 		plot.plot(x, "X3");
 	}
-	
+
 	public static void test__enzymatic() throws Exception {
 
 		Trajectory x;

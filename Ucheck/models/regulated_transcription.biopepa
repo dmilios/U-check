@@ -38,8 +38,8 @@ c5 = 0.012e+9 / (avogadro * volume);
 c6 = 0.4791;
 c7 = 0.00012e+9 / (avogadro * volume);
 c8 = 0.8765e-11;
-c9 = 0.05e+9 / (avogadro * volume) * 100;
-c10 = 0.5 * 100;
+c9 = 0.05e+9 / (avogadro * volume);
+c10 = 0.5;
 
 
 r1  = [c1 * RNA];
