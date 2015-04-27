@@ -1,0 +1,66 @@
+// Haseltine, Rawlings - 2002
+// Approximate simulation of coupled fast and slow reactions for stochastic chemical kinetics
+
+// see section IV.B
+
+
+
+// T: viral template
+// G: viral genome
+// S: viral structural protein
+// V: secreted virus
+
+// nucleotides + T -> G + T
+// nucleotides + G -> T
+// nucleotides + amino_acids + T -> S + T
+// T -> 0
+// S -> 0
+// G + S -> V
+
+// nucleotides and amino acids are available at constant concentrations
+// or more simply 
+// r1:  T -> G + T
+// r2:  G -> T
+// r3:  T -> S + T
+// r4:  T -> 0
+// r5:  S -> 0
+// r6:  G + S -> V
+
+
+// slow reactions:  r1, r2, r4, r6
+// r1:  0 --> G,  [1 * T]
+// r2:  G --> T,  [0.025 * G]
+// r4:  T --> 0,  [0.25 * T]
+// r6:  G --> 0,  [7.5e-6 * G * S]
+
+
+// fast reactions:  r3, r5
+// r3:  0 --> S,  [1000 * T]
+// r5:  S --> 0,  [1.9985 * S]
+
+
+
+// day^{-1}
+k1 = 1;
+k2 = 0.025;
+k3 = 1000;
+k4 = 0.25;
+k5 = 1.9985;
+k6 = 7.5e-6;
+
+r1 = [k1 * T];
+r2 = [k2 * G];
+r3 = [k3 * T];
+r4 = [k4 * T];
+r5 = [k5 * S];
+r6 = [k6 * G * S];
+
+
+T = r2 >>  + r4 << ;
+G = r1 >> + r2 << + r6 << ;
+S = r3 >> + r5 << + r6 << ;
+// V = r6 >> ;
+
+
+T[10] <*> G[0] <*> S[0] 
+// <*> V[0]

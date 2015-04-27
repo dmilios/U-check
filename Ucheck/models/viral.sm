@@ -1,0 +1,81 @@
+// Haseltine, Rawlings - 2002
+// Approximate simulation of coupled fast and slow reactions for stochastic chemical kinetics
+
+// see section IV.B
+
+
+
+// T: viral template
+// G: viral genome
+// S: viral structural protein
+// V: secreted virus
+
+// nucleotides + T -> G + T
+// nucleotides + G -> T
+// nucleotides + amino_acids + T -> S + T
+// T -> 0
+// S -> 0
+// G + S -> V
+
+// nucleotides and amino acids are available at constant concentrations
+// or more simply 
+// r1:  T -> G + T
+// r2:  G -> T
+// r3:  T -> S + T
+// r4:  T -> 0
+// r5:  S -> 0
+// r6:  G + S -> V
+
+
+// slow reactions:  r1, r2, r4, r6
+// r1:  0 --> G,  [1 * T]
+// r2:  G --> T,  [0.025 * G]
+// r4:  T --> 0,  [0.25 * T]
+// r6:  G --> 0,  [7.5e-6 * G * S]
+
+
+// fast reactions:  r3, r5
+// r3:  0 --> S,  [1000 * T]
+// r5:  S --> 0,  [1.9985 * S]
+
+
+// day^{-1}
+const double k1 = 1;
+const double k2 = 0.025;
+const double k3 = 1000;
+const double k4 = 0.25;
+const double k5 = 1.9985;
+const double k6 = 7.5e-6;
+
+module genome
+	genome : [0..500] init 0;
+	[r1] true -> 1 : (genome'=genome+1);
+	[r2] true -> genome : (genome'=genome-1);
+	[r6] true -> genome : (genome'=genome-1);
+endmodule
+
+module structure
+	structure : [0..1000] init 0;
+	[r3] true -> 1 : (structure'=structure+1);
+	[r5] true -> structure : (structure'=structure-1);
+	[r6] true -> structure : (structure'=structure-1);
+endmodule
+
+module template
+	template : [0..100] init 10;
+	[r1] true -> template : true;
+	[r2] true -> 1 : (template'=template+1);
+	[r3] true -> template : true;
+	[r4] true -> template : (template'=template-1);
+endmodule
+
+module base_rates
+	dummy : bool; // dummy variable
+	[r1] true -> k1 : true;
+	[r2] true -> k2 : true;
+	[r3] true -> k3 : true;
+	[r4] true -> k4 : true;
+	[r5] true -> k5 : true;
+	[r6] true -> k6 : true;
+endmodule
+

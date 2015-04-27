@@ -1,0 +1,66 @@
+//  Goutsias's model of regulated transcription
+// John Goutsias. Quasiequilibrium approximation of fast reaction kinetics in stochastic biochemical systems. The Journal of Chemical Physics, 122(18):184102, 2005.
+
+
+// M		Protein monomer
+// D		Transcription factor
+// RNA		mRNA
+// DNA		Unvound DNA
+// DNA_D	DNA bound at one site
+// DNA_2D	DNA bound at two sites
+
+
+// r1:  RNA -> RNA + M
+// r2:  M -> 0
+// r3:  DNA_D -> RNA + DNA_D
+// r4:  RNA -> 0
+// r5:  DNA + D -> DNA_D
+// r6:  DNA_D -> DNA + D
+// r7:  DNA_D + D -> DNA_2D
+// r8:  DNA_2D -> DNA_D + D
+// r9:  M + M -> D
+// r10: D -> M + M
+
+
+avogadro = 6.0221415e+23;
+volume = 1e-15;
+
+
+// t_final: 35 min or 2100 sec
+
+
+// sec^{-1}
+c1 = 0.043;
+c2 = 0.0007;
+c3 = 0.0715;
+c4 = 0.0039;
+c5 = 0.012e+9 / (avogadro * volume);
+c6 = 0.4791;
+c7 = 0.00012e+9 / (avogadro * volume);
+c8 = 0.8765e-11;
+c9 = 0.05e+9 / (avogadro * volume) * 100;
+c10 = 0.5 * 100;
+
+
+r1  = [c1 * RNA];
+r2  = [c2 * M];
+r3  = [c3 * DNA_D];
+r4  = [c4 * RNA];
+r5  = [c5 * DNA * D];
+r6  = [c6 * DNA_D];
+r7  = [c7 * DNA_D * D];
+r8  = [c8 * DNA_2D];
+r9  = [c9 * M * (M - 1)];
+r10 = [c10 * D];
+
+
+M = r1>> + r2<< + (r9, 2)<< + (r10, 2)>>;
+D = r5<< + r6>> + r7<< + r8>> + r9>> + r10<<;
+RNA = r3>> + r4<<;
+DNA = r5<< + r6>>;
+DNA_D = r5>> + r6<< + r7<< + r8>>;
+DNA_2D = r7>> + r8<<;
+
+
+M[2] <*> D[6] <*> RNA[0] <*> DNA[2] <*> DNA_D[0] <*> DNA_2D[0]
+
