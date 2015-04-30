@@ -36,8 +36,9 @@ public class TestMC {
 		// "gnuplot -e \"plot sin(x);\" -p");
 		// proc.waitFor();
 
-		test__regulated_transcription();
-		//test__toggle();
+		test__viral();
+		// test__regulated_transcription();
+		// test__toggle();
 		// test__rumour();
 
 		// test__genetic_network_1();
@@ -45,6 +46,25 @@ public class TestMC {
 
 		// test_extinction_formula();
 		// compare_row_sums();
+	}
+
+	public static void test__viral() throws Exception {
+		Trajectory x;
+		UcheckPlot plot = new UcheckPlot();
+
+		ModelInterface model = new PrismCtmcModel();
+		model.loadModel("models/viral.sm");
+		final double t = 200;
+
+		model.setParameters(new String[] { "k1", "k3" },
+				new double[] { 1, 1000 }); // 1, 1000
+
+		final long t0 = System.currentTimeMillis();
+		x = model.generateTrajectories(t, 1, 1000)[0];
+		final double elapsed = (System.currentTimeMillis() - t0) / 1000.0;
+
+		System.out.println("elapsed: " + elapsed + " sec");
+		plot.plot(x, "genome", "template");
 	}
 
 	public static void test__regulated_transcription() throws Exception {

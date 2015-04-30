@@ -62,7 +62,7 @@ module structure
 endmodule
 
 module template
-	template : [0..100] init 10;
+	template : [0..100] init 1;
 	[r1] true -> template : true;
 	[r2] true -> 1 : (template'=template+1);
 	[r3] true -> template : true;
