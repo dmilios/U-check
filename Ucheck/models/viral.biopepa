@@ -48,19 +48,19 @@ k4 = 0.25;
 k5 = 1.9985;
 k6 = 7.5e-6;
 
-r1 = [k1 * T];
-r2 = [k2 * G];
-r3 = [k3 * T];
-r4 = [k4 * T];
-r5 = [k5 * S];
-r6 = [k6 * G * S];
+r1 = [k1 * Template];
+r2 = [k2 * Genome];
+r3 = [k3 * Template];
+r4 = [k4 * Template];
+r5 = [k5 * Structural];
+r6 = [k6 * Genome * Structural];
 
 
-T = r2 >>  + r4 << ;
-G = r1 >> + r2 << + r6 << ;
-S = r3 >> + r5 << + r6 << ;
+Template = r2 >>  + r4 << ;
+Genome = r1 >> + r2 << + r6 << ;
+Structural = r3 >> + r5 << + r6 << ;
 // V = r6 >> ;
 
 
-T[1] <*> G[0] <*> S[0] 
+Template[1] <*> Genome[0] <*> Structural[0] 
 // <*> V[0]
