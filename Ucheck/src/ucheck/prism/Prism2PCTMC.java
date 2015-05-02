@@ -56,7 +56,8 @@ public final class Prism2PCTMC {
 		final Context context = new Context();
 		for (int i = 0; i < n; i++) {
 			final Variable var = new Variable(names.get(i), context);
-			Declaration dec = modules.getVarDeclaration(i);
+			final int index = modules.getVarIndex(names.get(i));
+			final Declaration dec = modules.getVarDeclaration(index);
 			int init = dec.getStart().evaluateInt(modules.getConstantValues());
 			context.setValue(var, init);
 		}
@@ -70,8 +71,9 @@ public final class Prism2PCTMC {
 		final int n = names.size();
 		final Context context = new Context();
 		for (int i = 0; i < n; i++) {
-			final Variable var = new Variable(names.get(i), context);
-			final double val = modules.getConstantValues().getDoubleValue(i);
+			final String s = names.get(i);
+			final Variable var = new Variable(s, context);
+			final double val = modules.getConstantValues().getDoubleValueOf(s);
 			context.setValue(var, val);
 		}
 		return context;

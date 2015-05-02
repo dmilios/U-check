@@ -40,6 +40,9 @@
 
 
 // day^{-1}
+const double k_amino_acids = 1;
+const double k_nucleotides = 1;
+
 const double k1 = 1;
 const double k2 = 0.025;
 const double k3 = 1000;
@@ -71,9 +74,9 @@ endmodule
 
 module base_rates
 	dummy : bool; // dummy variable
-	[r1] true -> k1 : true;
-	[r2] true -> k2 : true;
-	[r3] true -> k3 : true;
+	[r1] true -> k1 * k_nucleotides : true;
+	[r2] true -> k2 * k_nucleotides : true;
+	[r3] true -> k3 * k_nucleotides * k_amino_acids : true;
 	[r4] true -> k4 : true;
 	[r5] true -> k5 : true;
 	[r6] true -> k6 : true;
