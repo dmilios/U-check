@@ -56,8 +56,8 @@ public class TestMC {
 		model.loadModel("models/viral.sm");
 		final double t = 200;
 
-		model.setParameters(new String[] { "k1", "k3" },
-				new double[] { 1, 1000 }); // 1, 1000
+		model.setParameters(new String[] { "k_nucleotides", "k_amino_acids" },
+				new double[] { 1, 1 }); // 1, 1000
 
 		final long t0 = System.currentTimeMillis();
 		x = model.generateTrajectories(t, 1, 1000)[0];
