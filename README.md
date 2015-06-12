@@ -1,5 +1,6 @@
-# uncertainModelChecking
-Machine learning methods for model checking uncertain CTMCs
+# U-check
+A tool for Model Checking and Parameter Synthesis under Uncertainty
+
 
 
 ## Projects
@@ -40,4 +41,3 @@ Command-line tool for model checking and parameter synthesis under uncertainty
 Depends on:
 - gpoMC
 - smoothedMC
-
